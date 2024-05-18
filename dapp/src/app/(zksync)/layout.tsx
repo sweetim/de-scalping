@@ -20,7 +20,7 @@ const config = createConfig(
     },
     walletConnectProjectId: "3744d5a2fe976f821f378bdd74fcab66",
     appName: "de-scalper",
-
+    ssr: true,
     // Optional App Info
     appDescription: "decentralized ticket platform",
     appUrl: "https://family.co", // your app's url
