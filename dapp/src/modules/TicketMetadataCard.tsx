@@ -18,7 +18,7 @@ const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
             <Flex justify="space-between">
               <h1 className="text-2xl font-bold">{metadata.title}</h1>
               <div className="bg-purple-300 max-w-fit p-2 font-bold rounded-full">
-                <p>{metadata.availableTickets}</p>
+                <p>{Number(metadata.availableTickets)}</p>
               </div>
             </Flex>
             <p className="text-gray-500 text-base">November 6 - 7, 2023 | <a target="_blank" href={metadata.location.uri}>{metadata.location.name}</a></p>

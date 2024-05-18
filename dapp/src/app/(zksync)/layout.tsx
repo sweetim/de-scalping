@@ -10,7 +10,10 @@ import { WagmiProvider, createConfig, http } from "wagmi";
 
 const config = createConfig(
   getDefaultConfig({
-    chains: [zkSyncSepoliaTestnet, zkSyncInMemoryNode],
+    chains: [
+      zkSyncSepoliaTestnet,
+      zkSyncInMemoryNode
+    ],
     transports: {
       [zkSyncSepoliaTestnet.id]: http(),
       [zkSyncInMemoryNode.id]: http(),
@@ -19,7 +22,7 @@ const config = createConfig(
     appName: "de-scalper",
 
     // Optional App Info
-    appDescription: "puzzle gameFI",
+    appDescription: "decentralized ticket platform",
     appUrl: "https://family.co", // your app's url
     appIcon: "https://family.co/logo.png",
   })

@@ -1,6 +1,5 @@
 "use client"
 
-import { FC } from "react";
 import { Col, Row } from "antd";
 import { CONTRACT_ADDRESS, TicketMetadata, convertOnChainToTicketMetadata } from "@/contract";
 import TicketMetadataCard from "@/modules/TicketMetadataCard";
