@@ -12,11 +12,11 @@ const config = createConfig(
   getDefaultConfig({
     chains: [
       zkSyncSepoliaTestnet,
-      zkSyncInMemoryNode
+      // zkSyncInMemoryNode,
     ],
     transports: {
       [zkSyncSepoliaTestnet.id]: http(),
-      [zkSyncInMemoryNode.id]: http(),
+      // [zkSyncInMemoryNode.id]: http(),
     },
     walletConnectProjectId: "3744d5a2fe976f821f378bdd74fcab66",
     appName: "de-scalper",

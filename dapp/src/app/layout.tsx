@@ -5,7 +5,6 @@ import { Mali } from "next/font/google";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider, ThemeConfig, theme } from 'antd';
 
-
 const mali = Mali({
   weight: "400",
   subsets: ["latin"]
@@ -26,7 +25,6 @@ export const metadata: Metadata = {
   title: "de-scalper",
   description: "transparent ticket buying platform",
 };
-
 
 export default function RootLayout({
   children,

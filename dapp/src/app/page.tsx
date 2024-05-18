@@ -1,9 +1,8 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
     <main>
-      <h2>ha</h2>
+      <h2>de scalping</h2>
+      <p>decentralized ticket platform</p>
     </main>
   );
 }
