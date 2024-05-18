@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { TicketMaster } from "../typechain-types";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = "0x111C3E89Ce80e62EE88318C2804920D4c96f92bb";
+const CONTRACT_ADDRESS = "0xbd294792265E8370676028F16e3A3F73732A7965";
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!";
 
 // An example of a script to interact with the contract

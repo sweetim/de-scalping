@@ -14,10 +14,10 @@ export type TicketPageProps = {
   }
 }
 
-export const TicketPage: FC<TicketPageProps> = ({ params }) => {
+export default function CollectionPage({ params }: TicketPageProps) {
   const { id } = params;
 
-  const ticketId = id; // "40874bbc-7bd6-4b8d-9e67-fa24192c28ce"
+  const ticketId = id; // "a0790b0b-66b1-4e31-8e21-fbbbb3bf7f3a"
   const { data, isSuccess } = useReadTicketMasterGetTicketMetadata({
     address: CONTRACT_ADDRESS,
     args: [
@@ -43,7 +43,7 @@ export const TicketPage: FC<TicketPageProps> = ({ params }) => {
         className="overflow-auto p-5 h-full">
         <Row>
           {metadata.pricing.map(item => (
-            <TicketPricingCard pricing={item} />
+            <TicketPricingCard key={item.name} pricing={item} />
           ))}
         </Row>
         <Row>
@@ -60,4 +60,4 @@ export const TicketPage: FC<TicketPageProps> = ({ params }) => {
   );
 };
 
-export default TicketPage
+// export default TicketPage

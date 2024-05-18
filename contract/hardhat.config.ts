@@ -7,7 +7,7 @@ import '@nomicfoundation/hardhat-chai-matchers'
 import "@matterlabs/hardhat-zksync";
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "inMemoryNode",
+  defaultNetwork: "zkSyncSepoliaTestnet",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",

@@ -5,13 +5,14 @@ import { Flex, Layout } from "antd";
 import { Header, Content } from "antd/lib/layout/layout";
 import { ConnectKitButton, ConnectKitProvider, getDefaultConfig } from "connectkit";
 import Link from "next/link";
-import { zkSyncInMemoryNode } from "viem/chains";
+import { zkSyncInMemoryNode, zkSyncSepoliaTestnet } from "viem/chains";
 import { WagmiProvider, createConfig, http } from "wagmi";
 
 const config = createConfig(
   getDefaultConfig({
-    chains: [zkSyncInMemoryNode],
+    chains: [zkSyncSepoliaTestnet, zkSyncInMemoryNode],
     transports: {
+      [zkSyncSepoliaTestnet.id]: http(),
       [zkSyncInMemoryNode.id]: http(),
     },
     walletConnectProjectId: "3744d5a2fe976f821f378bdd74fcab66",

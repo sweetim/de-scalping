@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = "0x111C3E89Ce80e62EE88318C2804920D4c96f92bb"
+export const CONTRACT_ADDRESS = "0xbd294792265E8370676028F16e3A3F73732A7965"
 
 export type TicketMetadata = {
   title: string,
