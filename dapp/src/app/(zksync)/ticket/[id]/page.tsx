@@ -1,14 +1,16 @@
 "use client"
 
 import { Col, Row } from "antd";
-import { CONTRACT_ADDRESS, TicketMetadata, convertOnChainToTicketMetadata } from "@/contract";
-import { CenterDiv,
+import { CONTRACT_ADDRESS, TicketMetadata, client, convertOnChainToTicketMetadata } from "@/contract";
+import {
+  CenterDiv,
   LoadingGif,
   TicketPricingCard,
   TicketBuyingCard,
   TicketMetadataCard
 } from "@/modules";
-import { useReadTicketMasterGetTicketMetadata, useWriteTicketMasterBuyTicket } from "@/generated"
+import { ticketMasterAbi, useReadTicketMasterGetTicketMetadata, useWriteTicketMasterBuyTicket } from "@/generated"
+import { zkSyncSepoliaTestnet } from "viem/zksync";
 
 export type TicketPageProps = {
   params: {
@@ -18,15 +20,15 @@ export type TicketPageProps = {
 
 export default function CollectionPage({ params }: TicketPageProps) {
   const { id } = params;
-
   const ticketId = id; // "a0790b0b-66b1-4e31-8e21-fbbbb3bf7f3a"
   const { data, isSuccess, status, error } = useReadTicketMasterGetTicketMetadata({
     address: CONTRACT_ADDRESS,
+    chainId: zkSyncSepoliaTestnet.id,
     args: [
       ticketId
     ]
   })
-  console.log(status, error)
+
   const metadata: TicketMetadata = convertOnChainToTicketMetadata(data as any)
 
   const renderLoading = () => (
@@ -56,8 +58,8 @@ export default function CollectionPage({ params }: TicketPageProps) {
   )
 
   return (
-   <>
-   { isSuccess ? renderTicket() : renderLoading() }
-   </>
+    <>
+      {isSuccess ? renderTicket() : renderLoading()}
+    </>
   );
 };
