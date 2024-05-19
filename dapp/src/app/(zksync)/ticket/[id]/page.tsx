@@ -1,7 +1,7 @@
 "use client"
 
 import { Col, Row } from "antd";
-import { CONTRACT_ADDRESS, TicketMetadata, client, convertOnChainToTicketMetadata } from "@/contract";
+import { CONTRACT_ADDRESS, TicketMetadata, convertOnChainToTicketMetadata } from "@/contract";
 import {
   CenterDiv,
   LoadingGif,
