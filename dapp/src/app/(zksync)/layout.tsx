@@ -1,10 +1,11 @@
 "use client"
 
+import Image from 'next/image'
+import Link from "next/link";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Flex, Layout } from "antd";
 import { Header, Content } from "antd/lib/layout/layout";
 import { ConnectKitButton, ConnectKitProvider, getDefaultConfig } from "connectkit";
-import Link from "next/link";
 import { zkSyncInMemoryNode, zkSyncSepoliaTestnet } from "viem/chains";
 import { WagmiProvider, createConfig, http } from "wagmi";
 
@@ -12,11 +13,11 @@ const config = createConfig(
   getDefaultConfig({
     chains: [
       zkSyncSepoliaTestnet,
-      // zkSyncInMemoryNode,
+      zkSyncInMemoryNode,
     ],
     transports: {
       [zkSyncSepoliaTestnet.id]: http(),
-      // [zkSyncInMemoryNode.id]: http(),
+      [zkSyncInMemoryNode.id]: http(),
     },
     walletConnectProjectId: "3744d5a2fe976f821f378bdd74fcab66",
     appName: "de-scalper",
@@ -45,7 +46,13 @@ export default function CollectionLayout({
                 justify="space-between"
                 align="center">
                 <Link href="/">
-                  <img className="w-8 h-8 rounded-full bg-[#404040]" src="/scalp.png" alt="logo" />
+                  <Image width={0}
+                    height={0}
+                    className="w-9 h-auto"
+                    sizes="100vw"
+                    src="/scalp.png"
+                    priority={false}
+                    alt="logo" />
                 </Link>
                 <div className="fixed top-3 right-3">
                   <ConnectKitButton />
