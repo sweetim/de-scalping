@@ -1,17 +1,13 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-contract TicketMaster {
+contract TicketCollection {
   struct TicketMetadata {
     string title;
     string description;
     string uri;
-    uint availableTickets;
     TicketLocation location;
-    TicketPricing pricing_1;
-    TicketPricing pricing_2;
-    TicketPricing pricing_3;
-    TicketPricing pricing_4;
+    TicketPricing[] pricing;
   }
 
   struct TicketLocation {
@@ -22,25 +18,27 @@ contract TicketMaster {
   struct TicketPricing {
     string name;
     string description;
-    uint amount;
+    uint price;
+    uint tickets;
   }
 
-  mapping(string => TicketMetadata) tickets;
+  mapping(string => TicketMetadata) public ticketCollection;
+  TicketMetadata[] public collection;
 
   constructor() {
   }
 
-  function createNewTicket(string calldata uuid, TicketMetadata calldata ticketMetadata) public {
-    tickets[uuid] = ticketMetadata;
-  }
-
-  function buyTicket(string calldata ticketUuid, string calldata ticketType) public {
-    TicketMetadata memory metadata = tickets[ticketUuid];
-    metadata.availableTickets -= 1;
-    tickets[ticketUuid] = metadata;
+  function createNewCollection(string calldata uuid, TicketMetadata calldata ticketMetadata) public {
+    ticketCollection[uuid] = ticketMetadata;
   }
 
   function getTicketMetadata(string calldata uuid) public view returns(TicketMetadata memory) {
-    return tickets[uuid];
+    return ticketCollection[uuid];
+  }
+
+  function buyTicket(string calldata ticketUuid, string calldata ticketType) public {
+    // TicketMetadata memory metadata = tickets[ticketUuid];
+    // metadata.tickets -= 1;
+    // tickets[ticketUuid] = metadata;
   }
 }

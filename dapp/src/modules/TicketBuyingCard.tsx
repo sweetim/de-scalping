@@ -1,12 +1,22 @@
 "use client"
 
-import { CONTRACT_ADDRESS, TicketPricing } from "@/contract";
-import { Button, Flex, Select } from "antd";
-import { FC, useState } from "react";
+import {
+  CONTRACT_ADDRESS,
+  TicketPricing,
+} from "@/contract"
+import {
+  Button,
+  Flex,
+  Select,
+} from "antd"
+import {
+  FC,
+  useState,
+} from "react"
 import { useWriteTicketMasterBuyTicket } from "@/generated"
 
 export type TicketBuyingCardProps = {
-  id: string,
+  id: string
   pricing: TicketPricing[]
 }
 
@@ -20,8 +30,8 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
       address: CONTRACT_ADDRESS,
       args: [
         id,
-        selectedTicketPricing
-      ]
+        selectedTicketPricing,
+      ],
     })
   }
 
@@ -32,10 +42,11 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
   return (
     <Flex vertical className="w-full h-full m-3 bg-white p-3 max-w-[530px]">
       <h1 className="text-2xl font-bold">Checkout</h1>
-      <Flex justify="space-between" align="center" >
+      <Flex justify="space-between" align="center">
         <Flex
           className="p-2"
-          align="center">
+          align="center"
+        >
           <p className="text-gray-500 text-base mr-5">Ticket</p>
           <Select
             className="w-60"
@@ -43,16 +54,21 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
             onSelect={(item) => setSelectedTicketPricing(item)}
             options={pricing.map(item => ({
               value: item.name,
-              label: item.name
+              label: item.name,
             }))}
           />
         </Flex>
         <h2 className="text-xl font-bold">{`${selectedTicketPrice} USDC`}</h2>
       </Flex>
-      <Flex justify="center" align="center" className="mt-5" >
-        <Button type="primary"
+      <Flex justify="center" align="center" className="mt-5">
+        <Button
+          type="primary"
           size="large"
-          className="!px-16 !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" onClick={buyClickHandler}>BUY</Button>
+          className="!px-16 !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+          onClick={buyClickHandler}
+        >
+          BUY
+        </Button>
       </Flex>
     </Flex>
   )
