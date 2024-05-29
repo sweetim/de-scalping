@@ -1,18 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import {IPaymaster, ExecutionResult, PAYMASTER_VALIDATION_SUCCESS_MAGIC} from "@matterlabs/zksync-contracts/l2/system-contracts/interfaces/IPaymaster.sol";
 import {IPaymasterFlow} from "@matterlabs/zksync-contracts/l2/system-contracts/interfaces/IPaymasterFlow.sol";
 import {TransactionHelper, Transaction} from "@matterlabs/zksync-contracts/l2/system-contracts/libraries/TransactionHelper.sol";
 
 import "@matterlabs/zksync-contracts/l2/system-contracts/Constants.sol";
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-/// @author Matter Labs
-/// @notice This smart contract pays the gas fees for accounts with balance of a specific ERC20 token. It makes use of the approval-based flow paymaster.
-contract ApprovalPaymaster is IPaymaster, Ownable {
+contract ShopPaymaster is IPaymaster {
     uint256 constant PRICE_FOR_PAYING_FEES = 1;
 
     address public allowedToken;
@@ -50,7 +47,6 @@ contract ApprovalPaymaster is IPaymaster, Ownable {
         bytes4 paymasterInputSelector = bytes4(
             _transaction.paymasterInput[0:4]
         );
-        // Approval based flow
         if (paymasterInputSelector == IPaymasterFlow.approvalBased.selector) {
             // While the transaction data consists of address, uint256 and bytes data,
             // the data is not needed for this paymaster
@@ -115,11 +111,7 @@ contract ApprovalPaymaster is IPaymaster, Ownable {
         bytes32,
         ExecutionResult _txResult,
         uint256 _maxRefundedGas
-    ) external payable override onlyBootloader {}
-
-    function withdraw(address _to) external onlyOwner {
-        (bool success, ) = payable(_to).call{value: address(this).balance}("");
-        require(success, "Failed to withdraw funds from paymaster.");
+    ) external payable override onlyBootloader {
     }
 
     receive() external payable {}

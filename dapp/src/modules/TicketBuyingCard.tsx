@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  CONTRACT_ADDRESS,
-  TicketPricing,
-} from "@/contract"
+import { TicketPricing } from "@/contract"
 import {
   Button,
   Flex,
@@ -13,7 +10,6 @@ import {
   FC,
   useState,
 } from "react"
-import { useWriteTicketMasterBuyTicket } from "@/generated"
 
 export type TicketBuyingCardProps = {
   id: string
@@ -22,22 +18,14 @@ export type TicketBuyingCardProps = {
 
 const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
   const [selectedTicketPricing, setSelectedTicketPricing] = useState("")
-  const { writeContractAsync } = useWriteTicketMasterBuyTicket()
 
   async function buyClickHandler() {
     console.log(selectedTicketPricing)
-    await writeContractAsync({
-      address: CONTRACT_ADDRESS,
-      args: [
-        id,
-        selectedTicketPricing,
-      ],
-    })
   }
 
   const selectedTicketPrice = pricing
     .filter(p => p.name === selectedTicketPricing)
-    .map(p => p.amount)[0] || 0
+    .map(p => p.price)[0] || 0
 
   return (
     <Flex vertical className="w-full h-full m-3 bg-white p-3 max-w-[530px]">

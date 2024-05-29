@@ -18,6 +18,20 @@
     scrollbar-width: none;
     /* Firefox */
   }
+
+  .bg-colorful {
+    @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
+  }
+}
+
+@layer components {
+  .btn-colorful {
+    @apply p-3 rounded-full hover:border-purple-500 hover:border-4 hover:shadow-sm hover:shadow-white !text-white !border-none !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
+  }
+
+  .bg-colorful {
+    @apply !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
+  }
 }
 
 html,
@@ -28,6 +42,4 @@ body {
   scrollbar-color: white #1e293b;
 }
 
-.bg-colorful {
-  @apply bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-}
+

@@ -1,18 +1,23 @@
 import { Flex } from "antd"
-import { FC, ReactElement } from "react"
+import {
+  FC,
+  ReactElement,
+} from "react"
 
 type CenterDivProps = {
-  children: ReactElement
+  className?: string
+  children: ReactElement | ReactElement[]
 }
 
-const CenterDiv: FC<CenterDivProps> = ({ children }) => {
+const CenterDiv: FC<CenterDivProps> = ({ children, className }) => {
   return (
     <Flex
       justify="center"
       align="center"
       gap="small"
       vertical
-      className="w-full h-full bg-colorful">
+      className={`w-full h-full ${className}`}
+    >
       {children}
     </Flex>
   )

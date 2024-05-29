@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-contract TicketCollection {
+contract TicketShop {
   struct TicketMetadata {
     string title;
     string description;
@@ -22,18 +22,18 @@ contract TicketCollection {
     uint tickets;
   }
 
-  mapping(string => TicketMetadata) public ticketCollection;
+  mapping(string => TicketMetadata) public ticketShop;
   TicketMetadata[] public collection;
 
   constructor() {
   }
 
   function createNewCollection(string calldata uuid, TicketMetadata calldata ticketMetadata) public {
-    ticketCollection[uuid] = ticketMetadata;
+    ticketShop[uuid] = ticketMetadata;
   }
 
   function getTicketMetadata(string calldata uuid) public view returns(TicketMetadata memory) {
-    return ticketCollection[uuid];
+    return ticketShop[uuid];
   }
 
   function buyTicket(string calldata ticketUuid, string calldata ticketType) public {

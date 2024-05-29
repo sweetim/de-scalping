@@ -1,14 +1,10 @@
 "use client"
 
 import {
-  Col,
-  Row,
-} from "antd"
-import {
-  CONTRACT_ADDRESS,
-  convertOnChainToTicketMetadata,
+  TICKET_SHOP_CONTRACT_ADDRESS,
   TicketMetadata,
 } from "@/contract"
+import { useReadTicketShopGetTicketMetadata } from "@/generated"
 import {
   CenterDiv,
   LoadingGif,
@@ -17,11 +13,9 @@ import {
   TicketPricingCard,
 } from "@/modules"
 import {
-  ticketMasterAbi,
-  useReadTicketMasterGetTicketMetadata,
-  useWriteTicketMasterBuyTicket,
-} from "@/generated"
-import { zkSyncSepoliaTestnet } from "viem/zksync"
+  Col,
+  Row,
+} from "antd"
 
 export type TicketPageProps = {
   params: {
@@ -31,17 +25,16 @@ export type TicketPageProps = {
 
 export default function CollectionPage({ params }: TicketPageProps) {
   const { id } = params
-  const ticketId = id // "a0790b0b-66b1-4e31-8e21-fbbbb3bf7f3a"
-  const { data, isSuccess, status, error } = useReadTicketMasterGetTicketMetadata({
-    address: CONTRACT_ADDRESS,
-    chainId: zkSyncSepoliaTestnet.id,
+  const ticketId = "01547b4d-7411-425f-ab99-11336de80c64" // "a0790b0b-66b1-4e31-8e21-fbbbb3bf7f3a"
+  const { data: ticketMetadata, isSuccess } = useReadTicketShopGetTicketMetadata({
+    address: TICKET_SHOP_CONTRACT_ADDRESS,
     args: [
       ticketId,
     ],
   })
 
-  const metadata: TicketMetadata = convertOnChainToTicketMetadata(data as any)
-
+  const metadata: TicketMetadata = ticketMetadata as any
+  console.log(metadata)
   const renderLoading = () => (
     <CenterDiv>
       <LoadingGif />
