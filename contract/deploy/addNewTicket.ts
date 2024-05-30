@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 import { TicketShop } from "../typechain-types"
 import { getWallet } from "./utils"
 
-const CONTRACT_ADDRESS = "0x1F0151386fB0AbBF0273238dF5E9bc519DE5e20B"
+const CONTRACT_ADDRESS = "0x26b368C3Ed16313eBd6660b72d8e4439a697Cb0B"
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!"
 
 export default async function() {
@@ -26,10 +26,15 @@ export default async function() {
       "Experience the magic of Coldplay live in Tokyo and sing along to all your favorite Coldplay hits, from Yellow to Viva La Vida",
     uri:
       "https://www.billboard.com/wp-content/uploads/2022/05/coldplay-2022-credit-stevie-rae-gibbs-press-billboard-1548.jpg",
+
     location: {
       name: "Tokyo Dome, Japan",
       uri: "https://maps.app.goo.gl/VftKxYjWcWr9Sxfr7",
     },
+    dates: [
+      "2023-06-20",
+      "2023-06-22",
+    ],
     pricing: [
       {
         name: "Gold",

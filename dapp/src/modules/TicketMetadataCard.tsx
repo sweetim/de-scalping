@@ -15,7 +15,7 @@ const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
     <Row>
       <Col sm={{ flex: "auto" }}>
         <Flex align="end" vertical>
-          <div className="bg-white p-5 m-5 rounded-2xl max-w-xl">
+          <div className="bg-white p-5 m-3 rounded-2xl max-w-xl">
             <Flex justify="space-between">
               <h1 className="text-2xl font-bold">{metadata.title}</h1>
             </Flex>
@@ -23,7 +23,7 @@ const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
               November 6 - 7, 2023 | <a target="_blank" href={metadata.location.uri}>{metadata.location.name}</a>
             </p>
             <img
-              className="rounded-xl my-2"
+              className="rounded-xl my-2 min-w-[32rem] max-w-[32rem]"
               src={metadata.uri}
               alt="ticket-image"
             />

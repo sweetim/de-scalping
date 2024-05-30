@@ -281,7 +281,7 @@ export const ticketShopAbi = [
     type: 'function',
     inputs: [
       { name: 'ticketUuid', internalType: 'string', type: 'string' },
-      { name: 'ticketType', internalType: 'string', type: 'string' },
+      { name: 'ticketTypeIndex', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'buyTicket',
     outputs: [],
@@ -319,6 +319,7 @@ export const ticketShopAbi = [
           { name: 'title', internalType: 'string', type: 'string' },
           { name: 'description', internalType: 'string', type: 'string' },
           { name: 'uri', internalType: 'string', type: 'string' },
+          { name: 'dates', internalType: 'string[]', type: 'string[]' },
           {
             name: 'location',
             internalType: 'struct TicketShop.TicketLocation',
@@ -359,6 +360,7 @@ export const ticketShopAbi = [
           { name: 'title', internalType: 'string', type: 'string' },
           { name: 'description', internalType: 'string', type: 'string' },
           { name: 'uri', internalType: 'string', type: 'string' },
+          { name: 'dates', internalType: 'string[]', type: 'string[]' },
           {
             name: 'location',
             internalType: 'struct TicketShop.TicketLocation',
@@ -383,6 +385,13 @@ export const ticketShopAbi = [
       },
     ],
     stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'increment',
+    outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
@@ -730,6 +739,13 @@ export const useWriteTicketShopCreateNewCollection =
   })
 
 /**
+ * Wraps __{@link useWriteContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"increment"`
+ */
+export const useWriteTicketShopIncrement = /*#__PURE__*/ createUseWriteContract(
+  { abi: ticketShopAbi, functionName: 'increment' },
+)
+
+/**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link ticketShopAbi}__
  */
 export const useSimulateTicketShop = /*#__PURE__*/ createUseSimulateContract({
@@ -752,4 +768,13 @@ export const useSimulateTicketShopCreateNewCollection =
   /*#__PURE__*/ createUseSimulateContract({
     abi: ticketShopAbi,
     functionName: 'createNewCollection',
+  })
+
+/**
+ * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"increment"`
+ */
+export const useSimulateTicketShopIncrement =
+  /*#__PURE__*/ createUseSimulateContract({
+    abi: ticketShopAbi,
+    functionName: 'increment',
   })
