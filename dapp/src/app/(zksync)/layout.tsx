@@ -6,8 +6,10 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query"
 import {
+  Button,
   Flex,
   Layout,
+  Space,
 } from "antd"
 import {
   Content,
@@ -47,7 +49,12 @@ export default function CollectionLayout({
                   />
                 </Link>
                 <div className="fixed top-3 right-3">
-                  <ConnectKitButton />
+                  <Space className="flex flex-row justify-center align-middle items-center">
+                    <Link href="/create">
+                      <Button className="!bg-[#404040] !rounded-full !h-[40px] !text-white !border-none">Create</Button>
+                    </Link>
+                    <ConnectKitButton />
+                  </Space>
                 </div>
               </Flex>
             </Header>

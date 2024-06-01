@@ -20,8 +20,10 @@ import {
   createWalletClient,
   custom,
 } from "viem"
-import { zkSyncInMemoryNode } from "viem/chains"
-import { eip712WalletActions } from "viem/zksync"
+import {
+  eip712WalletActions,
+  zkSyncSepoliaTestnet,
+} from "viem/zksync"
 import { useWalletClient } from "wagmi"
 import { utils } from "zksync-ethers"
 
@@ -36,7 +38,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
 
   async function buyClickHandler() {
     const walletClient = createWalletClient({
-      chain: zkSyncInMemoryNode,
+      chain: zkSyncSepoliaTestnet,
       transport: custom((window as any).ethereum!),
     }).extend(eip712WalletActions())
 
