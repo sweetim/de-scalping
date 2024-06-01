@@ -23,7 +23,7 @@ export default function EventPage() {
     )
   }
 
-  const renderTickets = data.filter(({ id }) => id === "0b009db2-bf56-4cc3-817d-5c71038f4470").map(
+  const renderTickets = data.filter(({ id }) => id !== "0b009db2-bf56-4cc3-817d-5c71038f4470").map(
     (x, i) => {
       const metadata = x as TicketMetadata
 
