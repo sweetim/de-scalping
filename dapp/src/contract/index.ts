@@ -1,5 +1,8 @@
 import { getDefaultConfig } from "connectkit"
-import { zkSyncInMemoryNode } from "viem/chains"
+import {
+  zkSyncInMemoryNode,
+  zkSyncSepoliaTestnet,
+} from "viem/chains"
 import {
   createConfig,
   http,
@@ -34,12 +37,12 @@ export type TicketPricing = {
 export const WALLET_CONFIG = createConfig(
   getDefaultConfig({
     chains: [
+      zkSyncSepoliaTestnet,
       zkSyncInMemoryNode,
-      // zkSyncSepoliaTestnet,
     ],
     transports: {
+      [zkSyncSepoliaTestnet.id]: http(),
       [zkSyncInMemoryNode.id]: http(),
-      // [zkSyncSepoliaTestnet.id]: http(),
     },
     walletConnectProjectId: "3744d5a2fe976f821f378bdd74fcab66",
     appName: "de-scalper",
