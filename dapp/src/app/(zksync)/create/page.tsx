@@ -190,7 +190,7 @@ export default function CreatePage() {
         },
       ],
     }
-    return <PublishTicketMetadata ticketMetadata={DEFAULT_TICKET} />
+    return <PublishTicketMetadata ticketMetadata={ticketMetadata} />
   }
 
   const renderStepContent = () => {
