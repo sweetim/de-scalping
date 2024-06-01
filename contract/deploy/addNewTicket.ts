@@ -20,7 +20,10 @@ export default async function() {
     getWallet(),
   ) as any
 
+  const id = uuidv4()
+
   const ticketMetadata: TicketShop.TicketMetadataStruct = {
+    id,
     title: "Coldplay Concert Tokyo 2023",
     description:
       "Experience the magic of Coldplay live in Tokyo and sing along to all your favorite Coldplay hits, from Yellow to Viva La Vida",
@@ -63,7 +66,6 @@ export default async function() {
     ],
   }
 
-  const id = uuidv4()
   await contract.createNewCollection(id, ticketMetadata)
   console.log(`added new ticket collection (${id})`)
   const item = await contract.getTicketMetadata(id)

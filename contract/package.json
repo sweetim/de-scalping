@@ -7,7 +7,9 @@
   "repository": "https://github.com/matter-labs/zksync-hardhat-template.git",
   "scripts": {
     "deploy": "hardhat deploy-zksync --script deploy.ts",
+    "interact:mint": "hardhat deploy-zksync --script mintTicket.ts",
     "interact:add-new-ticket": "hardhat deploy-zksync --script addNewTicket.ts",
+    "interact:buy-ticket-using-paymaster": "hardhat deploy-zksync --script buyTicketUsingPaymaster.ts",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "test": "hardhat test --network hardhat",

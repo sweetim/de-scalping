@@ -7,7 +7,9 @@ import {
 import { TicketShop } from "../typechain-types"
 
 describe("TicketShop", function() {
+  const id = uuidv4()
   const TICKET_METADATA: TicketShop.TicketMetadataStruct = {
+    id,
     title: "Coldplay Concert Tokyo 2023",
     description:
       "Experience the magic of Coldplay live in Tokyo and sing along to all your favorite Coldplay hits, from Yellow to Viva La Vida",
@@ -79,14 +81,15 @@ describe("TicketShop", function() {
     const ticketId = 1
     const id = uuidv4()
     await ticketShop.createNewCollection(id, TICKET_METADATA)
+
     const actualBefore = await ticketShop.getTicketMetadata(id)
-    expect(actualBefore[5][ticketId][3])
+    expect(actualBefore[6][ticketId][3])
       .to.be.eq(Number(TICKET_METADATA.pricing[ticketId].tickets))
 
     await ticketShop.buyTicket(id, ticketId)
 
     const actualAfter = await ticketShop.getTicketMetadata(id)
-    expect(actualAfter[5][ticketId][3])
+    expect(actualAfter[6][ticketId][3])
       .to.be.eq(Number(TICKET_METADATA.pricing[ticketId].tickets) - 1)
   })
 })

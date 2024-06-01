@@ -33,7 +33,7 @@ export default function Home() {
           <p>no more scalper to steal your tickets</p>
           <p>with us you could enjoy the best ticket buying experience</p>
         </div>
-        <Link href="/create" className="btn-colorful">
+        <Link href="/events" className="btn-colorful">
           Explore Events
         </Link>
       </CenterDiv>

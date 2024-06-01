@@ -292,6 +292,7 @@ export const ticketShopAbi = [
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'collection',
     outputs: [
+      { name: 'id', internalType: 'string', type: 'string' },
       { name: 'title', internalType: 'string', type: 'string' },
       { name: 'description', internalType: 'string', type: 'string' },
       { name: 'uri', internalType: 'string', type: 'string' },
@@ -316,6 +317,7 @@ export const ticketShopAbi = [
         internalType: 'struct TicketShop.TicketMetadata',
         type: 'tuple',
         components: [
+          { name: 'id', internalType: 'string', type: 'string' },
           { name: 'title', internalType: 'string', type: 'string' },
           { name: 'description', internalType: 'string', type: 'string' },
           { name: 'uri', internalType: 'string', type: 'string' },
@@ -349,14 +351,15 @@ export const ticketShopAbi = [
   },
   {
     type: 'function',
-    inputs: [{ name: 'uuid', internalType: 'string', type: 'string' }],
-    name: 'getTicketMetadata',
+    inputs: [],
+    name: 'getAllCollection',
     outputs: [
       {
         name: '',
-        internalType: 'struct TicketShop.TicketMetadata',
-        type: 'tuple',
+        internalType: 'struct TicketShop.TicketMetadata[]',
+        type: 'tuple[]',
         components: [
+          { name: 'id', internalType: 'string', type: 'string' },
           { name: 'title', internalType: 'string', type: 'string' },
           { name: 'description', internalType: 'string', type: 'string' },
           { name: 'uri', internalType: 'string', type: 'string' },
@@ -388,16 +391,50 @@ export const ticketShopAbi = [
   },
   {
     type: 'function',
-    inputs: [],
-    name: 'increment',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    inputs: [{ name: 'uuid', internalType: 'string', type: 'string' }],
+    name: 'getTicketMetadata',
+    outputs: [
+      {
+        name: '',
+        internalType: 'struct TicketShop.TicketMetadata',
+        type: 'tuple',
+        components: [
+          { name: 'id', internalType: 'string', type: 'string' },
+          { name: 'title', internalType: 'string', type: 'string' },
+          { name: 'description', internalType: 'string', type: 'string' },
+          { name: 'uri', internalType: 'string', type: 'string' },
+          { name: 'dates', internalType: 'string[]', type: 'string[]' },
+          {
+            name: 'location',
+            internalType: 'struct TicketShop.TicketLocation',
+            type: 'tuple',
+            components: [
+              { name: 'name', internalType: 'string', type: 'string' },
+              { name: 'uri', internalType: 'string', type: 'string' },
+            ],
+          },
+          {
+            name: 'pricing',
+            internalType: 'struct TicketShop.TicketPricing[]',
+            type: 'tuple[]',
+            components: [
+              { name: 'name', internalType: 'string', type: 'string' },
+              { name: 'description', internalType: 'string', type: 'string' },
+              { name: 'price', internalType: 'uint256', type: 'uint256' },
+              { name: 'tickets', internalType: 'uint256', type: 'uint256' },
+            ],
+          },
+        ],
+      },
+    ],
+    stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: '', internalType: 'string', type: 'string' }],
     name: 'ticketShop',
     outputs: [
+      { name: 'id', internalType: 'string', type: 'string' },
       { name: 'title', internalType: 'string', type: 'string' },
       { name: 'description', internalType: 'string', type: 'string' },
       { name: 'uri', internalType: 'string', type: 'string' },
@@ -699,6 +736,15 @@ export const useReadTicketShopCollection = /*#__PURE__*/ createUseReadContract({
 })
 
 /**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"getAllCollection"`
+ */
+export const useReadTicketShopGetAllCollection =
+  /*#__PURE__*/ createUseReadContract({
+    abi: ticketShopAbi,
+    functionName: 'getAllCollection',
+  })
+
+/**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"getTicketMetadata"`
  */
 export const useReadTicketShopGetTicketMetadata =
@@ -739,13 +785,6 @@ export const useWriteTicketShopCreateNewCollection =
   })
 
 /**
- * Wraps __{@link useWriteContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"increment"`
- */
-export const useWriteTicketShopIncrement = /*#__PURE__*/ createUseWriteContract(
-  { abi: ticketShopAbi, functionName: 'increment' },
-)
-
-/**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link ticketShopAbi}__
  */
 export const useSimulateTicketShop = /*#__PURE__*/ createUseSimulateContract({
@@ -768,13 +807,4 @@ export const useSimulateTicketShopCreateNewCollection =
   /*#__PURE__*/ createUseSimulateContract({
     abi: ticketShopAbi,
     functionName: 'createNewCollection',
-  })
-
-/**
- * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"increment"`
- */
-export const useSimulateTicketShopIncrement =
-  /*#__PURE__*/ createUseSimulateContract({
-    abi: ticketShopAbi,
-    functionName: 'increment',
   })

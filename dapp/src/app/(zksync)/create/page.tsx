@@ -23,6 +23,7 @@ import {
   Steps,
 } from "antd"
 import { useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 
 const steps = [
   {
@@ -42,6 +43,7 @@ export default function CreatePage() {
   const [ currentStep, setCurrentStep ] = useState(0)
 
   const [ ticketMetadata, setTicketMetadata ] = useState<TicketMetadata>({
+    id: uuidv4(),
     title: "",
     description: "",
     uri: "",
@@ -144,7 +146,9 @@ export default function CreatePage() {
   )
 
   const renderPublishTicketMetadata = () => {
+    const id = uuidv4()
     const DEFAULT_TICKET: TicketMetadata = {
+      id,
       title: "Coldplay Concert Tokyo 2023",
       description:
         "Experience the magic of Coldplay live in Tokyo and sing along to all your favorite Coldplay hits, from Yellow to Viva La Vida",

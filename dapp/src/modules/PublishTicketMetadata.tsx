@@ -12,7 +12,6 @@ import {
   FC,
   useState,
 } from "react"
-import { v4 as uuidv4 } from "uuid"
 import { useWalletClient } from "wagmi"
 
 type PublishTicketMetadataProps = {
@@ -25,7 +24,7 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
   const [ finish, setFinish ] = useState(false)
 
   async function publishClickHandler() {
-    const id = uuidv4()
+    const { id } = ticketMetadata
 
     const tx = await walletClient?.writeContract({
       abi: ticketShopAbi,
@@ -39,7 +38,6 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
 
     setFinish(true)
     setTicketUri(id)
-    console.log(id)
   }
 
   return (

@@ -1,6 +1,12 @@
 "use client"
 
-import { TicketPricing } from "@/contract"
+import {
+  SHOP_PAYMASTER_CONTRACT_ADDRESS,
+  TICKET_ERC20_CONTRACT_ADDRESS,
+  TICKET_SHOP_CONTRACT_ADDRESS,
+  TicketPricing,
+} from "@/contract"
+import { ticketShopAbi } from "@/generated"
 import {
   Button,
   Flex,
@@ -10,6 +16,14 @@ import {
   FC,
   useState,
 } from "react"
+import {
+  createWalletClient,
+  custom,
+} from "viem"
+import { zkSyncInMemoryNode } from "viem/chains"
+import { eip712WalletActions } from "viem/zksync"
+import { useWalletClient } from "wagmi"
+import { utils } from "zksync-ethers"
 
 export type TicketBuyingCardProps = {
   id: string
@@ -17,9 +31,37 @@ export type TicketBuyingCardProps = {
 }
 
 const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
-  const [selectedTicketPricing, setSelectedTicketPricing] = useState("")
+  const { data: wc } = useWalletClient()
+  const [ selectedTicketPricing, setSelectedTicketPricing ] = useState("")
 
   async function buyClickHandler() {
+    const walletClient = createWalletClient({
+      chain: zkSyncInMemoryNode,
+      transport: custom((window as any).ethereum!),
+    }).extend(eip712WalletActions())
+
+    const paymasterParams = utils.getPaymasterParams(
+      SHOP_PAYMASTER_CONTRACT_ADDRESS,
+      {
+        type: "ApprovalBased",
+        token: TICKET_ERC20_CONTRACT_ADDRESS,
+        minimalAllowance: BigInt("1"),
+        innerInput: new Uint8Array(),
+      },
+    )
+
+    const tx = await walletClient.writeContract({
+      account: wc?.account!,
+      abi: ticketShopAbi,
+      address: TICKET_SHOP_CONTRACT_ADDRESS,
+      functionName: "buyTicket",
+      args: [
+        id,
+        BigInt(0),
+      ],
+      paymaster: paymasterParams.paymaster as `0x${string}`,
+      paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
+    })
     console.log(selectedTicketPricing)
   }
 

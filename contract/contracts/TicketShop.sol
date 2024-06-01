@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 contract TicketShop {
   struct TicketMetadata {
+    string id;
     string title;
     string description;
     string uri;
@@ -26,6 +27,7 @@ contract TicketShop {
   mapping(string => TicketMetadata) public ticketShop;
   TicketMetadata[] public collection;
   uint value = 0;
+
   constructor() {
   }
 
