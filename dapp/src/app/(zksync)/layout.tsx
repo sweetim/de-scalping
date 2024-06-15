@@ -1,29 +1,90 @@
 "use client"
 
-import { WALLET_CONFIG } from "@/contract"
+import NavBarAction from "@/modules/NavBarActions"
 import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query"
 import {
-  Button,
-  Flex,
-  Layout,
-  Space,
-} from "antd"
+  CHAIN_NAMESPACES,
+  WEB3AUTH_NETWORK,
+} from "@web3auth/base"
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider"
+import { MetamaskAdapter } from "@web3auth/metamask-adapter"
+import { Web3AuthOptions } from "@web3auth/modal"
 import {
-  Content,
-  Header,
-} from "antd/lib/layout/layout"
+  Web3AuthContextConfig,
+  Web3AuthInnerContext,
+  Web3AuthProvider,
+} from "@web3auth/modal-react-hooks"
+import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin"
+import { WalletServicesProvider } from "@web3auth/wallet-services-plugin-react-hooks"
+import { Layout } from "antd"
+import { Content } from "antd/lib/layout/layout"
+import { zkSyncInMemoryNode } from "viem/chains"
 import {
-  ConnectKitButton,
-  ConnectKitProvider,
-} from "connectkit"
-import Image from "next/image"
-import Link from "next/link"
-import { WagmiProvider } from "wagmi"
+  createConfig,
+  http,
+  WagmiProvider,
+} from "wagmi"
 
 const queryClient = new QueryClient()
+const WEB3_AUTH_CLIENT_ID = "BNJRSXS1UtdwjQ_Ox5dwgdUQe3G9QbHp2oNfVR_6E8dsZePqGzumiY8R9UKsENq5D_Psuh6Fr0jJdNMQlqxJ_Uk"
+
+const privateKeyProvider = new EthereumPrivateKeyProvider({
+  config: {
+    chainConfig: {
+      chainNamespace: CHAIN_NAMESPACES.EIP155,
+      chainId: zkSyncInMemoryNode.id.toString(16),
+      rpcTarget: zkSyncInMemoryNode.rpcUrls.default.http[0],
+      displayName: zkSyncInMemoryNode.name,
+      blockExplorerUrl: zkSyncInMemoryNode.blockExplorers?.default.url,
+      ticker: zkSyncInMemoryNode.nativeCurrency.symbol,
+      tickerName: zkSyncInMemoryNode.nativeCurrency.name,
+      isTestnet: true,
+    },
+  },
+})
+
+const metamaskAdapter = new MetamaskAdapter({
+  clientId: WEB3_AUTH_CLIENT_ID,
+  sessionTime: 3600, // 1 hour in seconds
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
+  chainConfig: {
+    chainNamespace: CHAIN_NAMESPACES.EIP155,
+    chainId: zkSyncInMemoryNode.id.toString(16),
+    rpcTarget: zkSyncInMemoryNode.rpcUrls.default.http[0],
+  },
+})
+
+const web3AuthOptions: Web3AuthOptions = {
+  clientId: WEB3_AUTH_CLIENT_ID,
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
+  privateKeyProvider: privateKeyProvider,
+}
+
+const walletServicesPlugin = new WalletServicesPlugin({
+  wsEmbedOpts: {},
+  walletInitOptions: {
+    whiteLabel: {
+      showWidgetButton: true,
+    },
+  },
+})
+
+const web3AuthContextConfig: Web3AuthContextConfig = {
+  web3AuthOptions,
+  adapters: [ metamaskAdapter ],
+  plugins: [ walletServicesPlugin ],
+  // plugins: [],
+}
+
+const config = createConfig({
+  chains: [ zkSyncInMemoryNode ],
+  transports: {
+    [zkSyncInMemoryNode.id]: http(),
+  },
+})
 
 export default function CollectionLayout({
   children,
@@ -31,39 +92,19 @@ export default function CollectionLayout({
   children: React.ReactNode
 }>) {
   return (
-    <WagmiProvider config={WALLET_CONFIG}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>
-          <Layout className="h-screen">
-            <Header className="!p-3 !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-              <Flex className="h-full" justify="space-between" align="center">
-                <Link href="/">
-                  <Image
-                    width={0}
-                    height={0}
-                    className="w-9 h-auto"
-                    sizes="100vw"
-                    src="/scalp.png"
-                    priority={false}
-                    alt="logo"
-                  />
-                </Link>
-                <div className="fixed top-3 right-3">
-                  <Space className="flex flex-row justify-center align-middle items-center">
-                    <Link href="/create">
-                      <Button className="!bg-[#404040] !rounded-full !h-[40px] !text-white !border-none">Create</Button>
-                    </Link>
-                    <ConnectKitButton />
-                  </Space>
-                </div>
-              </Flex>
-            </Header>
-            <Content className="h-full overflow-auto no-scrollbar !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-              {children}
-            </Content>
-          </Layout>
-        </ConnectKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <Web3AuthProvider config={web3AuthContextConfig}>
+      <WalletServicesProvider context={Web3AuthInnerContext}>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <Layout className="h-screen !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+              <NavBarAction />
+              <Content className="h-full overflow-auto no-scrollbar ">
+                {children}
+              </Content>
+            </Layout>
+          </QueryClientProvider>
+        </WagmiProvider>
+      </WalletServicesProvider>
+    </Web3AuthProvider>
   )
 }

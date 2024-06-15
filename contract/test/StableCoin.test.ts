@@ -7,7 +7,7 @@ import {
 import { JPYC } from "../typechain-types"
 
 describe("StableCoins", function() {
-  async function deployTicketShop() {
+  async function deployStableCoins() {
     const owner = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     const user_1 = getWallet(LOCAL_RICH_WALLETS[1].privateKey)
     const user_2 = getWallet(LOCAL_RICH_WALLETS[2].privateKey)
@@ -29,8 +29,14 @@ describe("StableCoins", function() {
     }
   }
 
+  it("should return correct decimals value", async () => {
+    const { jpyc } = await deployStableCoins()
+
+    expect(await jpyc.decimals()).to.be.eq(0)
+  })
+
   it("should able to mint by owner", async function() {
-    const { jpyc, user_1 } = await deployTicketShop()
+    const { jpyc, user_1 } = await deployStableCoins()
 
     const MINT_AMOUNT = BigInt(100_000)
     const balance_before = await jpyc.balanceOf(user_1.address)
@@ -46,7 +52,7 @@ describe("StableCoins", function() {
   })
 
   it("should not able to mint if it is not owner", async function() {
-    const { jpyc, user_1, user_2 } = await deployTicketShop()
+    const { jpyc, user_1, user_2 } = await deployStableCoins()
 
     const MINT_AMOUNT = BigInt(100_000)
     const balance_before = await jpyc.balanceOf(user_1.address)
@@ -66,7 +72,7 @@ describe("StableCoins", function() {
   })
 
   it("should able to transfer by owner", async () => {
-    const { jpyc, user_1, user_2 } = await deployTicketShop()
+    const { jpyc, user_1, user_2 } = await deployStableCoins()
 
     const MINT_AMOUNT = BigInt(100_000)
     const AMOUNT_TO_TRANSFER = BigInt(10_000)
@@ -100,7 +106,7 @@ describe("StableCoins", function() {
   })
 
   it("should able to transfer by non owner", async () => {
-    const { jpyc, user_1, user_2 } = await deployTicketShop()
+    const { jpyc, user_1, user_2 } = await deployStableCoins()
 
     const MINT_AMOUNT = BigInt(100_000)
     const ALLOWANCE_ALLOWED = BigInt(20_000)

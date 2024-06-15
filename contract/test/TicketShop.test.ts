@@ -215,4 +215,15 @@ describe("TicketShop", function() {
     expect(jpycBalance_before - jpycBalance_after).to.be.eq(0)
     expect(ticketCount_before - ticketCount_after).to.be.eq(0)
   })
+
+  it("should able to approve allowance", async () => {
+    const beforeAllowance = await jpyc.allowance(user_1.address, ticketShopAddress)
+
+    await (
+      await ticketShop.connect(user_1).approve(0)
+    ).wait()
+    const afterAllowance = await jpyc.allowance(user_1.address, ticketShopAddress)
+
+    console.log(beforeAllowance, afterAllowance)
+  })
 })

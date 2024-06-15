@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  TICKET_SHOP_FACTORY_ADDRESS,
-  TicketMetadata,
-} from "@/contract"
+import { TICKET_SHOP_FACTORY_ADDRESS } from "@/contract"
 import {
   useReadTicketShopFactoryGetTicketShops,
   useReadTicketShopGetTicketMetadata,

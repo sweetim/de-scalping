@@ -6,9 +6,14 @@ import {
   TicketPricing,
 } from "@/contract"
 import {
+  jpycAbi,
+  ticketShopAbi,
+  useReadJpycAllowance,
+  useReadJpycBalanceOf,
   useReadTicketShopGetShopPaymasterAddress,
-  useWriteJpycApprove,
 } from "@/generated"
+import { IProvider } from "@web3auth/base"
+import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import {
   Button,
   Flex,
@@ -20,89 +25,138 @@ import {
   useState,
 } from "react"
 import {
+  createPublicClient,
   createWalletClient,
   custom,
+  http,
 } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
 import { eip712WalletActions } from "viem/zksync"
-import { useWalletClient } from "wagmi"
+import { useAccount } from "wagmi"
+import { utils } from "zksync-ethers"
 
 export type TicketBuyingCardProps = {
   pricing: readonly TicketPricing[]
 }
 
 const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
-  const { address } = useParams<TicketPageParams>()
+  const { address: ticketShopAddress } = useParams<TicketPageParams>()
+  const { address } = useAccount()
+  const {
+    provider,
+  } = useWeb3Auth()
 
   const { data: shopPaymasterAddress } = useReadTicketShopGetShopPaymasterAddress(
     {
-      address,
+      address: ticketShopAddress,
     },
   )
-  console.log(shopPaymasterAddress)
-  const { writeContractAsync: jpycApprove, status } = useWriteJpycApprove()
 
-  const { data: wc } = useWalletClient()
+  const { data: allowance } = useReadJpycAllowance({
+    address: JPYC_ADDRESS,
+    args: [
+      address!,
+      ticketShopAddress,
+    ],
+  })
+
+  const { data: jpycBalance } = useReadJpycBalanceOf({
+    address: JPYC_ADDRESS,
+    args: [
+      address!,
+    ],
+  })
+  console.log(jpycBalance)
 
   const [ selectedTicketType, setSelectedTicketType ] = useState("")
 
   async function buyClickHandler() {
-    // console.log("here")
+    if (!provider) return
+    if (!shopPaymasterAddress) return
+    if (!ticketShopAddress) return
 
-    // const [ account ] = await window.ethereum.request({
-    //   method: "eth_requestAccounts",
-    // })
-    // console.log(account)
-    const walletClient = createWalletClient({
-      account: wc?.account!,
-      // account,
+    console.log(allowance)
+
+    const privateKey = await provider.request({
+      method: "eth_private_key",
+    })
+    console.log("here", privateKey)
+
+    const publicClient = createPublicClient({
       chain: zkSyncInMemoryNode,
-      transport: custom(window.ethereum),
+      transport: http(),
+    })
+
+    const walletClient = createWalletClient({
+      chain: zkSyncInMemoryNode,
+      transport: custom<IProvider>(provider),
     }).extend(eip712WalletActions())
 
-    await jpycApprove({
+    const [ address ] = await walletClient.getAddresses()
+
+    const paymasterParams = utils.getPaymasterParams(
+      shopPaymasterAddress,
+      {
+        type: "General",
+        innerInput: new Uint8Array(),
+      },
+    )
+
+    const gasApprove = await publicClient.estimateContractGas({
+      account: address,
+      abi: jpycAbi,
       address: JPYC_ADDRESS,
+      functionName: "approve",
       args: [
-        address,
+        ticketShopAddress,
         BigInt(1_000),
       ],
     })
-
-    // const tx = await walletClient.writeContract({
-    //   account: wc?.account!,
-    //   abi: usdtAbi,
-    //   address: USDT_ADDRESS,
-    //   functionName: "approve",
-    //   args: [
-    // address,
-    // BigInt(1_000),
-    //   ],
-    // })
-
-    // console.log(tx)
-
-    // const paymasterParams = utils.getPaymasterParams(
-    //   shopPaymasterAddress!,
-    //   {
-    //     type: "General",
-    //     innerInput: new Uint8Array(),
-    //   },
-    // )
-    // console.log(shopPaymasterAddress)
-    // console.log("start")
-    // const tx = await walletClient.writeContract({
-    //   account,
-    //   abi: ticketShopAbi,
-    //   address,
-    //   functionName: "buyTicket",
-    //   args: [
-    //     BigInt(0),
-    //   ],
-    //   maxPriorityFeePerGas: BigInt(1_000_000_000_000_000),
-    //   paymaster: paymasterParams.paymaster as `0x${string}`,
-    //   paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
-    // })
-    // console.log(tx)
+    console.log(gasApprove)
+    await publicClient.waitForTransactionReceipt({
+      hash: await walletClient.writeContract({
+        account: address,
+        abi: jpycAbi,
+        address: JPYC_ADDRESS,
+        functionName: "approve",
+        args: [
+          ticketShopAddress,
+          BigInt(1_000),
+        ],
+        gas: gasApprove,
+        paymaster: paymasterParams.paymaster as `0x${string}`,
+        paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
+      }),
+    })
+    console.log("done")
+    console.log("start estimate", ticketShopAddress)
+    const gas = await publicClient.estimateContractGas({
+      account: address,
+      abi: ticketShopAbi,
+      address: ticketShopAddress,
+      functionName: "buyTicket",
+      args: [
+        BigInt(0),
+      ],
+    })
+    console.log(gas)
+    const txBuyTicket = await walletClient.writeContract({
+      account: address,
+      abi: ticketShopAbi,
+      address: ticketShopAddress,
+      functionName: "buyTicket",
+      args: [
+        BigInt(0),
+      ],
+      gas,
+      paymaster: paymasterParams.paymaster as `0x${string}`,
+      paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
+    })
+    console.log("done")
+    await publicClient.waitForTransactionReceipt({
+      hash: txBuyTicket,
+    })
+    console.log("finish")
   }
 
   const selectedTicketPrice = pricing

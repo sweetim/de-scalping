@@ -8,9 +8,11 @@
   "scripts": {
     "deploy:ticket-shop-factory": "hardhat deploy-zksync --script deployTicketShopFactory.ts",
     "deploy:stable-coin": "hardhat deploy-zksync --script deployStableCoin.ts",
+    "deploy:all": "npm run deploy:stable-coin && npm run deploy:ticket-shop-factory",
     "interact:mint-stable-coin": "hardhat deploy-zksync --script mintStableCoin.ts",
     "interact:create-ticket-shop": "hardhat deploy-zksync --script createTicketShop.ts",
     "interact:buy-ticket-using-paymaster": "hardhat deploy-zksync --script buyTicketUsingPaymaster.ts",
+    "interact:all": "npm run interact:mint-stable-coin && npm run interact:create-ticket-shop",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
     "test": "hardhat test --network hardhat",

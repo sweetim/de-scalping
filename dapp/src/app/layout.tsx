@@ -10,7 +10,7 @@ import { Mali } from "next/font/google"
 
 const mali = Mali({
   weight: "400",
-  subsets: ["latin"],
+  subsets: [ "latin" ],
 })
 
 const antThemeConfig: ThemeConfig = {
@@ -38,7 +38,9 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={`${mali.className} h-full w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500`}>
         <ConfigProvider theme={antThemeConfig}>
-          <AntdRegistry>{children}</AntdRegistry>
+          <AntdRegistry>
+            {children}
+          </AntdRegistry>
         </ConfigProvider>
       </body>
     </html>

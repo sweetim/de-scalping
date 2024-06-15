@@ -11,7 +11,7 @@ if (!TICKET_ERC20_ADDRESS) throw "⛔️ Provide address of the contract to inte
 if (!USDT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!"
 if (!JPYC_ADDRESS) throw "⛔️ Provide address of the contract to interact with!"
 
-const TO_ADDRESS = "0x36615Cf349d7F6344891B1e7CA7C72883F5dc049"
+const TO_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 
 export default async function() {
   const mintToData = [
