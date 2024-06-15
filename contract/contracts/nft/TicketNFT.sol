@@ -9,6 +9,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+
+import "../TicketSchema.sol";
 
 contract TicketNFT is
     ERC721URIStorage,
@@ -22,7 +25,7 @@ contract TicketNFT is
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdTracker;
 
-    constructor(string memory collectionName, string memory symobol) ERC721(collectionName, symobol) {
+    constructor(string memory collectionName, string memory symbol) ERC721(collectionName, symbol) {
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(BURNER_ROLE, msg.sender);
     }
@@ -50,7 +53,7 @@ contract TicketNFT is
         }
     }
 
-    function mint(address to, string memory uri) external onlyOwner {
+    function mint(address to, string calldata uri) external onlyOwner {
         _tokenIdTracker.increment();
         _mint(to, _tokenIdTracker.current());
         _setTokenURI(_tokenIdTracker.current(), uri);

@@ -1,34 +1,30 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 import {IPaymaster, ExecutionResult, PAYMASTER_VALIDATION_SUCCESS_MAGIC} from "@matterlabs/zksync-contracts/l2/system-contracts/interfaces/IPaymaster.sol";
 import {IPaymasterFlow} from "@matterlabs/zksync-contracts/l2/system-contracts/interfaces/IPaymasterFlow.sol";
 import {TransactionHelper, Transaction} from "@matterlabs/zksync-contracts/l2/system-contracts/libraries/TransactionHelper.sol";
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "@matterlabs/zksync-contracts/l2/system-contracts/Constants.sol";
 
-contract ShopPaymaster is IPaymaster {
-    uint256 constant PRICE_FOR_PAYING_FEES = 1;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    address public allowedToken;
-    address public allowContractAddress;
-
+/// @author Matter Labs
+/// @notice This contract does not include any validations other than using the paymaster general flow.
+contract ShopPaymaster is IPaymaster, Ownable {
     modifier onlyBootloader() {
         require(
             msg.sender == BOOTLOADER_FORMAL_ADDRESS,
             "Only bootloader can call this method"
         );
-
+        // Continue execution if called from the bootloader.
         _;
     }
 
-    constructor(address _erc20, address _allowContractAddress) {
-        allowedToken = _erc20;
-        allowContractAddress = _allowContractAddress;
+    address private allowedContract;
+
+    constructor(address _allowedContract) {
+        allowedContract = _allowedContract;
     }
 
     function validateAndPayForPaymasterTransaction(
@@ -41,11 +37,9 @@ contract ShopPaymaster is IPaymaster {
         onlyBootloader
         returns (bytes4 magic, bytes memory context)
     {
-        require(
-            allowContractAddress == address(uint160(_transaction.to)),
-            "contract not allowed for paymaster"
-        );
+        require(address(uint160(_transaction.to)) == allowedContract, "not allowed contract");
 
+        // By default we consider the transaction as accepted.
         magic = PAYMASTER_VALIDATION_SUCCESS_MAGIC;
         require(
             _transaction.paymasterInput.length >= 4,
@@ -55,51 +49,22 @@ contract ShopPaymaster is IPaymaster {
         bytes4 paymasterInputSelector = bytes4(
             _transaction.paymasterInput[0:4]
         );
-
-        if (paymasterInputSelector == IPaymasterFlow.approvalBased.selector) {
-            (address token, uint256 amount, bytes memory data) = abi.decode(
-                _transaction.paymasterInput[4:],
-                (address, uint256, bytes)
-            );
-
-            require(token == allowedToken, "Invalid token");
-
-            address userAddress = address(uint160(_transaction.from));
-            address thisAddress = address(this);
-
-            uint256 providedAllowance = IERC20(token).allowance(
-                userAddress,
-                thisAddress
-            );
-            require(
-                providedAllowance >= PRICE_FOR_PAYING_FEES,
-                "Min allowance too low"
-            );
-
+        if (paymasterInputSelector == IPaymasterFlow.general.selector) {
+            // Note, that while the minimal amount of ETH needed is tx.gasPrice * tx.gasLimit,
+            // neither paymaster nor account are allowed to access this context variable.
             uint256 requiredETH = _transaction.gasLimit *
                 _transaction.maxFeePerGas;
 
-            try
-                IERC20(token).transferFrom(userAddress, thisAddress, amount)
-            {} catch (bytes memory revertReason) {
-                if (revertReason.length <= 4) {
-                    revert("Failed to transferFrom from users' account");
-                } else {
-                    assembly {
-                        revert(add(0x20, revertReason), mload(revertReason))
-                    }
-                }
-            }
-
+            // The bootloader never returns any data, so it can safely be ignored here.
             (bool success, ) = payable(BOOTLOADER_FORMAL_ADDRESS).call{
                 value: requiredETH
             }("");
             require(
                 success,
-                "Failed to transfer tx fee to the bootloader. Paymaster balance might not be enough."
+                "Failed to transfer tx fee to the Bootloader. Paymaster balance might not be enough."
             );
         } else {
-            revert("Unsupported paymaster flow");
+            revert("Unsupported paymaster flow in paymasterParams.");
         }
     }
 
@@ -111,6 +76,12 @@ contract ShopPaymaster is IPaymaster {
         ExecutionResult _txResult,
         uint256 _maxRefundedGas
     ) external payable override onlyBootloader {}
+
+    function withdraw(address payable _to) external onlyOwner {
+        uint256 balance = address(this).balance;
+        (bool success, ) = _to.call{value: balance}("");
+        require(success, "Failed to withdraw funds from paymaster.");
+    }
 
     receive() external payable {}
 }

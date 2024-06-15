@@ -1,56 +1,109 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import "./TicketSchema.sol";
 import "./nft/TicketNFT.sol";
+import "./paymasters/ShopPaymaster.sol";
 
 contract TicketShop {
-  struct TicketMetadata {
-    string id;
-    string title;
-    string description;
-    string uri;
-    string[] dates;
-    TicketLocation location;
-    TicketPricing[] pricing;
-  }
+    IERC20 private erc20Token;
+    TicketSchema.Metadata private ticketMetadata;
+    TicketNFT private ticketNft;
+    ShopPaymaster private shopPaymaster;
 
-  struct TicketLocation {
-    string name;
-    string uri;
-  }
+    constructor(
+        TicketSchema.Metadata memory _ticketMetadata,
+        address _allowedErc20Token
+    ) payable {
+        ticketMetadata = _ticketMetadata;
+        erc20Token = IERC20(_allowedErc20Token);
+        ticketNft = new TicketNFT(_ticketMetadata.name, "TICKET");
+        shopPaymaster = new ShopPaymaster(address(this));
+    }
 
-  struct TicketPricing {
-    string name;
-    string description;
-    uint price;
-    uint tickets;
-  }
+    function getTicketMetadata()
+        public
+        view
+        returns (TicketSchema.Metadata memory)
+    {
+        return ticketMetadata;
+    }
 
-  mapping(string => TicketMetadata) public ticketShop;
-  TicketMetadata[] public collection;
-  uint value = 0;
-  TicketNFT ticketNft;
+    function getNftAddress() external view returns (address) {
+        return address(ticketNft);
+    }
 
-  constructor() {
-  }
+    function getShopPaymaster() external view returns (address) {
+        return address(shopPaymaster);
+    }
 
-  function createNewCollection(string calldata uuid, TicketMetadata calldata ticketMetadata) public {
-    ticketShop[uuid] = ticketMetadata;
-    collection.push(ticketMetadata);
+    function buyTicket(uint ticketTypeIndex) external {
+        uint ticketPrice = ticketMetadata.pricing[ticketTypeIndex].price;
+        uint ticketsLeft = ticketMetadata.pricing[ticketTypeIndex].tickets;
 
-    ticketNft = new TicketNFT(ticketMetadata.title, ticketMetadata.description);
-  }
+        bool hasTicketAlready = ticketNft.balanceOf(msg.sender) == 0;
 
-  function getAllCollection() public view returns(TicketMetadata[] memory) {
-    return collection;
-  }
+        require(hasTicketAlready, "only allow to purchase 1 ticket");
+        require(ticketsLeft > 0, "tickets sold out");
 
-  function getTicketMetadata(string calldata uuid) public view returns(TicketMetadata memory) {
-    return ticketShop[uuid];
-  }
+        erc20Token.transferFrom(msg.sender, address(this), ticketPrice);
+        ticketMetadata.pricing[ticketTypeIndex].tickets -= 1;
 
-  function buyTicket(string calldata ticketUuid, uint ticketTypeIndex) public {
-    ticketShop[ticketUuid].pricing[ticketTypeIndex].tickets -= 1;
-    ticketNft.mint(msg.sender, "");
-  }
+        string memory uri = generateUri(ticketTypeIndex);
+        ticketNft.mint(msg.sender, uri);
+    }
+
+    function generateUri(uint ticketTypeIndex) internal view returns (string memory) {
+         bytes memory uriData = abi.encodePacked('{',
+                '"name":"', ticketMetadata.name, '",'
+                '"description":"', ticketMetadata.description, '",'
+                '"image":"', ticketMetadata.uri, '",'
+                '"attributes": [',
+                    '{',
+                        '"display_type": "date",'
+                        '"trait_type": "Start date",'
+                        '"value":', ticketMetadata.dates[0],
+                    '}',
+                    '{',
+                        '"display_type": "date",'
+                        '"trait_type": "End date",'
+                        '"value":', ticketMetadata.dates[1],
+                    '}',
+                    '{',
+                        '"trait_type": "Location name",'
+                        '"value":', ticketMetadata.location.name,
+                    '}',
+                    '{',
+                        '"trait_type": "Location uri",'
+                        '"value":', ticketMetadata.location.uri,
+                    '}',
+                    '{',
+                        '"trait_type": "Ticket type",'
+                        '"value":', ticketMetadata.pricing[ticketTypeIndex].name,
+                    '}',
+                    '{',
+                        '"trait_type": "Ticket description",'
+                        '"value":', ticketMetadata.pricing[ticketTypeIndex].description,
+                    '}',
+                    '{',
+                        '"trait_type": "Ticket price",'
+                        '"value":', ticketMetadata.pricing[ticketTypeIndex].price,
+                    '}',
+                    '{',
+                        '"trait_type": "Ticket ID",'
+                        '"value":', ticketMetadata.pricing[ticketTypeIndex].tickets,
+                    '}',
+                ']'
+            '}');
+
+
+        return string(
+            abi.encodePacked(
+                "data:application/json;base64,",
+                Base64.encode(abi.encodePacked(uriData))
+            )
+        );
+    }
 }
