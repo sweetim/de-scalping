@@ -39,7 +39,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
   async function buyClickHandler() {
     const walletClient = createWalletClient({
       chain: zkSyncSepoliaTestnet,
-      transport: custom((window as any).ethereum!),
+      transport: custom(window.ethereum),
     }).extend(eip712WalletActions())
 
     const paymasterParams = utils.getPaymasterParams(

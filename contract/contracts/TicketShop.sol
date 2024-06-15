@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+import "./nft/TicketNFT.sol";
+
 contract TicketShop {
   struct TicketMetadata {
     string id;
@@ -27,6 +29,7 @@ contract TicketShop {
   mapping(string => TicketMetadata) public ticketShop;
   TicketMetadata[] public collection;
   uint value = 0;
+  TicketNFT ticketNft;
 
   constructor() {
   }
@@ -34,6 +37,8 @@ contract TicketShop {
   function createNewCollection(string calldata uuid, TicketMetadata calldata ticketMetadata) public {
     ticketShop[uuid] = ticketMetadata;
     collection.push(ticketMetadata);
+
+    ticketNft = new TicketNFT(ticketMetadata.title, ticketMetadata.description);
   }
 
   function getAllCollection() public view returns(TicketMetadata[] memory) {
@@ -46,5 +51,6 @@ contract TicketShop {
 
   function buyTicket(string calldata ticketUuid, uint ticketTypeIndex) public {
     ticketShop[ticketUuid].pricing[ticketTypeIndex].tickets -= 1;
+    ticketNft.mint(msg.sender, "");
   }
 }

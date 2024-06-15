@@ -5,11 +5,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TicketERC20 is ERC20, Ownable {
+contract USDT is ERC20, Ownable {
     uint8 private _decimals;
 
-    constructor() ERC20("TICKET", "TKT") {
-        _decimals = 0;
+    constructor() ERC20("USD Tether", "USDT") {
+        _decimals = 18;
     }
 
     function mint(address _to, uint256 _amount) public onlyOwner returns (bool) {

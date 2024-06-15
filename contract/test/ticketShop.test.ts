@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import {
   deployContract,
   getWallet,
+  LOCAL_RICH_WALLETS,
 } from "../deploy/utils"
 import { TicketShop } from "../typechain-types"
 
@@ -52,7 +53,7 @@ describe("TicketShop", function() {
   }
 
   async function deployTicketShop() {
-    const wallet = getWallet()
+    const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
 
     const ticketShop: TicketShop = await deployContract(
       "TicketShop",
@@ -76,11 +77,13 @@ describe("TicketShop", function() {
   })
 
   it("should able to buy ticket", async function() {
-    const { ticketShop } = await deployTicketShop()
+    const { ticketShop, wallet } = await deployTicketShop()
 
     const ticketId = 1
     const id = uuidv4()
     await ticketShop.createNewCollection(id, TICKET_METADATA)
+
+    const beforeBalance = await wallet.getBalance()
 
     const actualBefore = await ticketShop.getTicketMetadata(id)
     expect(actualBefore[6][ticketId][3])
@@ -91,5 +94,9 @@ describe("TicketShop", function() {
     const actualAfter = await ticketShop.getTicketMetadata(id)
     expect(actualAfter[6][ticketId][3])
       .to.be.eq(Number(TICKET_METADATA.pricing[ticketId].tickets) - 1)
+
+    const afterBalance = await wallet.getBalance()
+
+    expect(beforeBalance - afterBalance).to.be.gt(0)
   })
 })
