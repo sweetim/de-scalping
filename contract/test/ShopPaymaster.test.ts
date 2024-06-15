@@ -56,7 +56,7 @@ describe("ShopPaymaster", function() {
       ticketShopAddress,
     ) as any
 
-    const ticketShopPaymasterAddress = await ticketShop.getShopPaymaster()
+    const ticketShopPaymasterAddress = await ticketShop.getShopPaymasterAddress()
     const ticketShopPaymaster: ShopPaymaster = await hre.zksyncEthers.getContractAt(
       "ShopPaymaster",
       ticketShopPaymasterAddress,

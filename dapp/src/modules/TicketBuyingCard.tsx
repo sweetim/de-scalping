@@ -1,17 +1,20 @@
 "use client"
 
+import { TicketPageParams } from "@/app/(zksync)/ticket/[address]/page"
 import {
-  SHOP_PAYMASTER_CONTRACT_ADDRESS,
-  TICKET_ERC20_CONTRACT_ADDRESS,
-  TICKET_SHOP_CONTRACT_ADDRESS,
+  JPYC_ADDRESS,
   TicketPricing,
 } from "@/contract"
-import { ticketShopAbi } from "@/generated"
+import {
+  useReadTicketShopGetShopPaymasterAddress,
+  useWriteJpycApprove,
+} from "@/generated"
 import {
   Button,
   Flex,
   Select,
 } from "antd"
+import { useParams } from "next/navigation"
 import {
   FC,
   useState,
@@ -20,55 +23,90 @@ import {
   createWalletClient,
   custom,
 } from "viem"
-import {
-  eip712WalletActions,
-  zkSyncSepoliaTestnet,
-} from "viem/zksync"
+import { zkSyncInMemoryNode } from "viem/chains"
+import { eip712WalletActions } from "viem/zksync"
 import { useWalletClient } from "wagmi"
-import { utils } from "zksync-ethers"
 
 export type TicketBuyingCardProps = {
-  id: string
-  pricing: TicketPricing[]
+  pricing: readonly TicketPricing[]
 }
 
-const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
+const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
+  const { address } = useParams<TicketPageParams>()
+
+  const { data: shopPaymasterAddress } = useReadTicketShopGetShopPaymasterAddress(
+    {
+      address,
+    },
+  )
+  console.log(shopPaymasterAddress)
+  const { writeContractAsync: jpycApprove, status } = useWriteJpycApprove()
+
   const { data: wc } = useWalletClient()
-  const [ selectedTicketPricing, setSelectedTicketPricing ] = useState("")
+
+  const [ selectedTicketType, setSelectedTicketType ] = useState("")
 
   async function buyClickHandler() {
+    // console.log("here")
+
+    // const [ account ] = await window.ethereum.request({
+    //   method: "eth_requestAccounts",
+    // })
+    // console.log(account)
     const walletClient = createWalletClient({
-      chain: zkSyncSepoliaTestnet,
+      account: wc?.account!,
+      // account,
+      chain: zkSyncInMemoryNode,
       transport: custom(window.ethereum),
     }).extend(eip712WalletActions())
 
-    const paymasterParams = utils.getPaymasterParams(
-      SHOP_PAYMASTER_CONTRACT_ADDRESS,
-      {
-        type: "ApprovalBased",
-        token: TICKET_ERC20_CONTRACT_ADDRESS,
-        minimalAllowance: BigInt("1"),
-        innerInput: new Uint8Array(),
-      },
-    )
-
-    const tx = await walletClient.writeContract({
-      account: wc?.account!,
-      abi: ticketShopAbi,
-      address: TICKET_SHOP_CONTRACT_ADDRESS,
-      functionName: "buyTicket",
+    await jpycApprove({
+      address: JPYC_ADDRESS,
       args: [
-        id,
-        BigInt(0),
+        address,
+        BigInt(1_000),
       ],
-      paymaster: paymasterParams.paymaster as `0x${string}`,
-      paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
     })
-    console.log(selectedTicketPricing)
+
+    // const tx = await walletClient.writeContract({
+    //   account: wc?.account!,
+    //   abi: usdtAbi,
+    //   address: USDT_ADDRESS,
+    //   functionName: "approve",
+    //   args: [
+    // address,
+    // BigInt(1_000),
+    //   ],
+    // })
+
+    // console.log(tx)
+
+    // const paymasterParams = utils.getPaymasterParams(
+    //   shopPaymasterAddress!,
+    //   {
+    //     type: "General",
+    //     innerInput: new Uint8Array(),
+    //   },
+    // )
+    // console.log(shopPaymasterAddress)
+    // console.log("start")
+    // const tx = await walletClient.writeContract({
+    //   account,
+    //   abi: ticketShopAbi,
+    //   address,
+    //   functionName: "buyTicket",
+    //   args: [
+    //     BigInt(0),
+    //   ],
+    //   maxPriorityFeePerGas: BigInt(1_000_000_000_000_000),
+    //   paymaster: paymasterParams.paymaster as `0x${string}`,
+    //   paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
+    // })
+    // console.log(tx)
   }
 
   const selectedTicketPrice = pricing
-    .filter(p => p.name === selectedTicketPricing)
+    .filter(p => p.name === selectedTicketType)
     .map(p => p.price)[0] || 0
 
   return (
@@ -83,7 +121,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing, id }) => {
           <Select
             className="w-60"
             size="large"
-            onSelect={(item) => setSelectedTicketPricing(item)}
+            onSelect={(item) => setSelectedTicketType(item)}
             options={pricing.map(item => ({
               value: item.name,
               label: item.name,

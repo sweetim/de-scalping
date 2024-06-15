@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  TICKET_SHOP_CONTRACT_ADDRESS,
-  TicketMetadata,
-} from "@/contract"
+import { TicketMetadata } from "@/contract"
 import { useReadTicketShopGetTicketMetadata } from "@/generated"
 import {
   CenterDiv,
@@ -16,21 +13,17 @@ import {
   Col,
   Row,
 } from "antd"
+import { useParams } from "next/navigation"
 
-export type TicketPageProps = {
-  params: {
-    id: string
-  }
+export type TicketPageParams = {
+  address: `0x${string}`
 }
 
-export default function CollectionPage({ params }: TicketPageProps) {
-  const { id } = params
-  // const ticketId = "ec87f4b7-0215-46af-82b2-82c9f4e69d02" // "a0790b0b-66b1-4e31-8e21-fbbbb3bf7f3a"
+export default function CollectionPage() {
+  const { address } = useParams<TicketPageParams>()
+
   const { data: ticketMetadata, isSuccess } = useReadTicketShopGetTicketMetadata({
-    address: TICKET_SHOP_CONTRACT_ADDRESS,
-    args: [
-      id,
-    ],
+    address,
   })
 
   const metadata = ticketMetadata as TicketMetadata
@@ -59,7 +52,7 @@ export default function CollectionPage({ params }: TicketPageProps) {
             )}
           </Row>
           <Row>
-            <TicketBuyingCard id={id} pricing={metadata.pricing} />
+            <TicketBuyingCard pricing={metadata.pricing} />
           </Row>
         </Col>
       </Row>

@@ -9,7 +9,7 @@ contract JPYC is ERC20, Ownable {
     uint8 private _decimals;
 
     constructor() ERC20("JPY Coin", "JPYC") {
-        _decimals = 18;
+        _decimals = 0;
     }
 
     function mint(address _to, uint256 _amount) public onlyOwner returns (bool) {

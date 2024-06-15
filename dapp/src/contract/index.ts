@@ -1,22 +1,23 @@
 import { getDefaultConfig } from "connectkit"
-import { zkSyncSepoliaTestnet } from "viem/chains"
+import { zkSyncInMemoryNode } from "viem/chains"
 import {
   createConfig,
   http,
 } from "wagmi"
 
-export const TICKET_ERC20_CONTRACT_ADDRESS = "0x8B39F9F171805ec9f9Ff0fD93461c301fCf51131"
-export const SHOP_PAYMASTER_CONTRACT_ADDRESS = "0x5686c890827423ff58eb4C8fDe8D18C3cbCc11b3"
-export const TICKET_SHOP_CONTRACT_ADDRESS = "0xCEE92F4e26B57e03510211760330cD787479957B"
+export const TICKET_ERC20_ADDRESS = "0xb76eD02Dea1ba444609602BE5D587c4bFfd67153"
+export const USDT_ADDRESS = "0xf2FcC18ED5072b48C0a076693eCa72fE840b3981"
+export const JPYC_ADDRESS = "0x5fE58d975604E6aF62328d9E505181B94Fc0718C"
+export const TICKET_SHOP_FACTORY_ADDRESS = "0x094499Df5ee555fFc33aF07862e43c90E6FEe501"
 
 export type TicketMetadata = {
   id: string
-  title: string
+  name: string
   description: string
   uri: string
-  dates: string[]
+  dates: readonly [bigint, bigint]
   location: TicketLocation
-  pricing: TicketPricing[]
+  pricing: readonly TicketPricing[]
 }
 
 export type TicketLocation = {
@@ -34,12 +35,12 @@ export type TicketPricing = {
 export const WALLET_CONFIG = createConfig(
   getDefaultConfig({
     chains: [
-      zkSyncSepoliaTestnet,
-      // zkSyncInMemoryNode,
+      // zkSyncSepoliaTestnet,
+      zkSyncInMemoryNode,
     ],
     transports: {
-      [zkSyncSepoliaTestnet.id]: http(),
-      // [zkSyncInMemoryNode.id]: http(),
+      // [zkSyncSepoliaTestnet.id]: http(),
+      [zkSyncInMemoryNode.id]: http(),
     },
     walletConnectProjectId: "3744d5a2fe976f821f378bdd74fcab66",
     appName: "de-scalper",

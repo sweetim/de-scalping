@@ -1020,7 +1020,7 @@ export const ticketShopAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'getShopPaymaster',
+    name: 'getShopPaymasterAddress',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
@@ -2414,12 +2414,12 @@ export const useReadTicketShopGetNftAddress =
   })
 
 /**
- * Wraps __{@link useReadContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"getShopPaymaster"`
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"getShopPaymasterAddress"`
  */
-export const useReadTicketShopGetShopPaymaster =
+export const useReadTicketShopGetShopPaymasterAddress =
   /*#__PURE__*/ createUseReadContract({
     abi: ticketShopAbi,
-    functionName: 'getShopPaymaster',
+    functionName: 'getShopPaymasterAddress',
   })
 
 /**

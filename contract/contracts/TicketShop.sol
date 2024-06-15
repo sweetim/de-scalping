@@ -8,10 +8,10 @@ import "./nft/TicketNFT.sol";
 import "./paymasters/ShopPaymaster.sol";
 
 contract TicketShop {
-    IERC20 private erc20Token;
+    IERC20 private immutable erc20Token;
     TicketSchema.Metadata private ticketMetadata;
-    TicketNFT private ticketNft;
-    ShopPaymaster private shopPaymaster;
+    TicketNFT private immutable ticketNft;
+    ShopPaymaster private immutable shopPaymaster;
 
     constructor(
         TicketSchema.Metadata memory _ticketMetadata,
@@ -35,7 +35,7 @@ contract TicketShop {
         return address(ticketNft);
     }
 
-    function getShopPaymaster() external view returns (address) {
+    function getShopPaymasterAddress() external view returns (address) {
         return address(shopPaymaster);
     }
 
@@ -55,55 +55,59 @@ contract TicketShop {
         ticketNft.mint(msg.sender, uri);
     }
 
-    function generateUri(uint ticketTypeIndex) internal view returns (string memory) {
-         bytes memory uriData = abi.encodePacked('{',
+    function generateUri(
+        uint ticketTypeIndex
+    ) internal view returns (string memory) {
+        bytes memory uriData = abi.encodePacked(
+            "{",
                 '"name":"', ticketMetadata.name, '",'
                 '"description":"', ticketMetadata.description, '",'
                 '"image":"', ticketMetadata.uri, '",'
                 '"attributes": [',
-                    '{',
+                    "{",
                         '"display_type": "date",'
                         '"trait_type": "Start date",'
                         '"value":', ticketMetadata.dates[0],
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"display_type": "date",'
                         '"trait_type": "End date",'
                         '"value":', ticketMetadata.dates[1],
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"trait_type": "Location name",'
                         '"value":', ticketMetadata.location.name,
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"trait_type": "Location uri",'
                         '"value":', ticketMetadata.location.uri,
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"trait_type": "Ticket type",'
                         '"value":', ticketMetadata.pricing[ticketTypeIndex].name,
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"trait_type": "Ticket description",'
                         '"value":', ticketMetadata.pricing[ticketTypeIndex].description,
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"trait_type": "Ticket price",'
                         '"value":', ticketMetadata.pricing[ticketTypeIndex].price,
-                    '}',
-                    '{',
+                    "}",
+                    "{",
                         '"trait_type": "Ticket ID",'
                         '"value":', ticketMetadata.pricing[ticketTypeIndex].tickets,
-                    '}',
-                ']'
-            '}');
-
-
-        return string(
-            abi.encodePacked(
-                "data:application/json;base64,",
-                Base64.encode(abi.encodePacked(uriData))
-            )
+                    "}",
+                "]"
+            "}"
         );
+
+        return
+            string(
+                abi.encodePacked(
+                    "data:application/json;base64,",
+                    Base64.encode(abi.encodePacked(uriData))
+                )
+            );
     }
 }

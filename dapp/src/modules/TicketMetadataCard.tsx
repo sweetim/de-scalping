@@ -6,6 +6,7 @@ import {
 import { FC } from "react"
 
 import { TicketMetadata } from "@/contract"
+
 type TicketMetadataProps = {
   metadata: TicketMetadata
 }
@@ -17,7 +18,7 @@ const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
         <Flex align="end" vertical>
           <div className="bg-white p-5 m-3 rounded-2xl max-w-xl">
             <Flex justify="space-between">
-              <h1 className="text-2xl font-bold">{metadata.title}</h1>
+              <h1 className="text-2xl font-bold">{metadata.name}</h1>
             </Flex>
             <p className="text-gray-500 text-base">
               November 6 - 7, 2023 | <a target="_blank" href={metadata.location.uri}>{metadata.location.name}</a>

@@ -12,10 +12,10 @@ type CenterDivProps = {
 const CenterDiv: FC<CenterDivProps> = ({ children, className }) => {
   return (
     <Flex
-      justify="center"
-      align="center"
-      gap="small"
       vertical
+      gap="small"
+      align="center"
+      justify="center"
       className={`w-full h-full ${className}`}
     >
       {children}

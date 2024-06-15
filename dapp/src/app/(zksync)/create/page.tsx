@@ -44,10 +44,13 @@ export default function CreatePage() {
 
   const [ ticketMetadata, setTicketMetadata ] = useState<TicketMetadata>({
     id: uuidv4(),
-    title: "",
+    name: "",
     description: "",
     uri: "",
-    dates: [],
+    dates: [
+      BigInt(0),
+      BigInt(0),
+    ],
     location: {
       name: "",
       uri: "",
@@ -68,7 +71,7 @@ export default function CreatePage() {
 
     setTicketMetadata(prev => ({
       ...prev,
-      title: data.title,
+      name: data.title,
       description: data.description,
       uri: data.images,
       dates: data.dates,
@@ -149,7 +152,7 @@ export default function CreatePage() {
     const id = uuidv4()
     const DEFAULT_TICKET: TicketMetadata = {
       id,
-      title: "Coldplay Concert Tokyo 2023",
+      name: "Coldplay Concert Tokyo 2023",
       description:
         "Experience the magic of Coldplay live in Tokyo and sing along to all your favorite Coldplay hits, from Yellow to Viva La Vida",
       uri:
