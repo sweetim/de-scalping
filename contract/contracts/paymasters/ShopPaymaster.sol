@@ -9,15 +9,13 @@ import "@matterlabs/zksync-contracts/l2/system-contracts/Constants.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-/// @author Matter Labs
-/// @notice This contract does not include any validations other than using the paymaster general flow.
 contract ShopPaymaster is IPaymaster, Ownable {
     modifier onlyBootloader() {
         require(
             msg.sender == BOOTLOADER_FORMAL_ADDRESS,
             "Only bootloader can call this method"
         );
-        // Continue execution if called from the bootloader.
+
         _;
     }
 
@@ -37,9 +35,11 @@ contract ShopPaymaster is IPaymaster, Ownable {
         onlyBootloader
         returns (bytes4 magic, bytes memory context)
     {
-        require(address(uint160(_transaction.to)) == allowedContract, "not allowed contract");
+        require(
+            address(uint160(_transaction.to)) == allowedContract,
+            "not allowed contract"
+        );
 
-        // By default we consider the transaction as accepted.
         magic = PAYMASTER_VALIDATION_SUCCESS_MAGIC;
         require(
             _transaction.paymasterInput.length >= 4,
@@ -50,12 +50,9 @@ contract ShopPaymaster is IPaymaster, Ownable {
             _transaction.paymasterInput[0:4]
         );
         if (paymasterInputSelector == IPaymasterFlow.general.selector) {
-            // Note, that while the minimal amount of ETH needed is tx.gasPrice * tx.gasLimit,
-            // neither paymaster nor account are allowed to access this context variable.
             uint256 requiredETH = _transaction.gasLimit *
                 _transaction.maxFeePerGas;
 
-            // The bootloader never returns any data, so it can safely be ignored here.
             (bool success, ) = payable(BOOTLOADER_FORMAL_ADDRESS).call{
                 value: requiredETH
             }("");

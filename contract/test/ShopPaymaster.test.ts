@@ -104,10 +104,6 @@ describe("ShopPaymaster", function() {
 
     const provider = getProvider()
 
-    const shopPaymasterBeforeBalance = await provider.getBalance(ticketShopPaymasterAddress)
-    const ethBalance_user1_before = await user_1.getBalance()
-    const jpycBalance_user1_before = await jpyc.balanceOf(user_1.address)
-
     const TICKET_TYPE_INDEX = 1
 
     const ticketMetadata = convertToStruct(
@@ -123,6 +119,10 @@ describe("ShopPaymaster", function() {
         .connect(user_1)
         .approve(ticketShopAddress, ticketPrice)
     ).wait()
+
+    const shopPaymasterBeforeBalance = await provider.getBalance(ticketShopPaymasterAddress)
+    const ethBalance_user1_before = await user_1.getBalance()
+    const jpycBalance_user1_before = await jpyc.balanceOf(user_1.address)
 
     const paymasterParams = utils.getPaymasterParams(
       ticketShopPaymasterAddress,
@@ -145,13 +145,59 @@ describe("ShopPaymaster", function() {
     ).wait()
 
     const shopPaymasterAfterBalance = await provider.getBalance(ticketShopPaymasterAddress)
-    expect(shopPaymasterBeforeBalance - shopPaymasterAfterBalance)
-      .to.be.gt(0)
+    expect(shopPaymasterBeforeBalance - shopPaymasterAfterBalance).to.be.gt(0)
 
     const ethBalance_user1_after = await user_1.getBalance()
     expect(ethBalance_user1_before - ethBalance_user1_after).to.be.eq(0)
 
     const jpycBalance_user1_after = await jpyc.balanceOf(user_1.address)
     expect(jpycBalance_user1_before - jpycBalance_user1_after).to.be.eq(ticketPrice)
+  })
+
+  it("should not able to sponsor transaction of other contract", async function() {
+    const {
+      user_1,
+      jpyc,
+      ticketShopAddress,
+      ticketShopPaymasterAddress,
+    } = await deployTicketShop()
+
+    const provider = getProvider()
+
+    const shopPaymasterBeforeBalance = await provider.getBalance(ticketShopPaymasterAddress)
+    const ethBalance_user1_before = await user_1.getBalance()
+
+    const paymasterParams = utils.getPaymasterParams(
+      ticketShopPaymasterAddress,
+      {
+        type: "General",
+        innerInput: new Uint8Array(),
+      },
+    )
+
+    try {
+      await (
+        await jpyc
+          .connect(user_1)
+          .approve(
+            ticketShopAddress,
+            BigInt(1_000),
+            {
+              customData: {
+                gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
+                paymasterParams: paymasterParams,
+              },
+            },
+          )
+      ).wait()
+    } catch (err) {
+      expect(err.message).to.include("no data present; likely require(false)")
+    }
+
+    const shopPaymasterAfterBalance = await provider.getBalance(ticketShopPaymasterAddress)
+    expect(shopPaymasterBeforeBalance - shopPaymasterAfterBalance).to.be.eq(0)
+
+    const ethBalance_user1_after = await user_1.getBalance()
+    expect(ethBalance_user1_before - ethBalance_user1_after).to.be.eq(0)
   })
 })
