@@ -20,7 +20,7 @@ contract TicketShop {
         ticketMetadata = _ticketMetadata;
         erc20Token = IERC20(_allowedErc20Token);
         ticketNft = new TicketNFT(_ticketMetadata.name, "TICKET");
-        shopPaymaster = new ShopPaymaster(address(this));
+        shopPaymaster = new ShopPaymaster(_allowedErc20Token);
     }
 
     function getTicketMetadata()

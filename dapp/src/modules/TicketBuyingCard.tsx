@@ -28,6 +28,7 @@ import {
   createPublicClient,
   createWalletClient,
   custom,
+  formatEther,
   http,
 } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
@@ -77,10 +78,10 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
 
     console.log(allowance)
 
-    const privateKey = await provider.request({
-      method: "eth_private_key",
-    })
-    console.log("here", privateKey)
+    // const privateKey = await provider.request({
+    //   method: "eth_private_key",
+    // })
+    // console.log("here", privateKey)
 
     const publicClient = createPublicClient({
       chain: zkSyncInMemoryNode,
@@ -97,7 +98,9 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     const paymasterParams = utils.getPaymasterParams(
       shopPaymasterAddress,
       {
-        type: "General",
+        type: "ApprovalBased",
+        token: JPYC_ADDRESS,
+        minimalAllowance: BigInt(1),
         innerInput: new Uint8Array(),
       },
     )
@@ -112,25 +115,28 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
         BigInt(1_000),
       ],
     })
-    console.log(gasApprove)
-    await publicClient.waitForTransactionReceipt({
-      hash: await walletClient.writeContract({
-        account: address,
-        abi: jpycAbi,
-        address: JPYC_ADDRESS,
-        functionName: "approve",
-        args: [
-          ticketShopAddress,
-          BigInt(1_000),
-        ],
-        gas: gasApprove,
-        paymaster: paymasterParams.paymaster as `0x${string}`,
-        paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
-      }),
-    })
+    console.log(gasApprove, address)
+    // await publicClient.waitForTransactionReceipt({
+    //   hash: await walletClient.writeContract({
+    //     account: address,
+    //     abi: jpycAbi,
+    //     address: JPYC_ADDRESS,
+    //     functionName: "approve",
+    //     args: [
+    //       ticketShopAddress,
+    //       BigInt(1_000),
+    //     ],
+    //     // gas: BigInt(100_000),
+    //     gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
+    //     maxFeePerGas: BigInt(25_000_000_000),
+    //     paymaster: paymasterParams.paymaster as `0x${string}`,
+    //     paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
+    //   }),
+    // })
+
     console.log("done")
     console.log("start estimate", ticketShopAddress)
-    const gas = await publicClient.estimateContractGas({
+    const gasBuyTicket = await publicClient.estimateContractGas({
       account: address,
       abi: ticketShopAbi,
       address: ticketShopAddress,
@@ -139,7 +145,8 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
         BigInt(0),
       ],
     })
-    console.log(gas)
+
+    console.log(formatEther(gasBuyTicket))
     const txBuyTicket = await walletClient.writeContract({
       account: address,
       abi: ticketShopAbi,
@@ -148,7 +155,10 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       args: [
         BigInt(0),
       ],
-      gas,
+      // gas: gasBuyTicket,
+      gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
+      maxFeePerGas: BigInt(25_000_000_000),
+      maxPriorityFeePerGas: BigInt(25_000_000_000),
       paymaster: paymasterParams.paymaster as `0x${string}`,
       paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
     })

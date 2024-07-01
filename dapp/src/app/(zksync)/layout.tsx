@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query"
 import {
   CHAIN_NAMESPACES,
+  CustomChainConfig,
   WEB3AUTH_NETWORK,
 } from "@web3auth/base"
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider"
@@ -14,13 +15,12 @@ import { MetamaskAdapter } from "@web3auth/metamask-adapter"
 import { Web3AuthOptions } from "@web3auth/modal"
 import {
   Web3AuthContextConfig,
-  Web3AuthInnerContext,
   Web3AuthProvider,
 } from "@web3auth/modal-react-hooks"
 import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin"
-import { WalletServicesProvider } from "@web3auth/wallet-services-plugin-react-hooks"
 import { Layout } from "antd"
 import { Content } from "antd/lib/layout/layout"
+import { toHex } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
 import {
   createConfig,
@@ -31,18 +31,20 @@ import {
 const queryClient = new QueryClient()
 const WEB3_AUTH_CLIENT_ID = "BNJRSXS1UtdwjQ_Ox5dwgdUQe3G9QbHp2oNfVR_6E8dsZePqGzumiY8R9UKsENq5D_Psuh6Fr0jJdNMQlqxJ_Uk"
 
+const chainConfig: CustomChainConfig = {
+  chainNamespace: CHAIN_NAMESPACES.EIP155,
+  chainId: toHex(zkSyncInMemoryNode.id),
+  rpcTarget: zkSyncInMemoryNode.rpcUrls.default.http[0],
+  displayName: zkSyncInMemoryNode.name,
+  blockExplorerUrl: zkSyncInMemoryNode.blockExplorers?.default.url || "https://sepolia.explorer.zksync.io/",
+  ticker: zkSyncInMemoryNode.nativeCurrency.symbol,
+  tickerName: zkSyncInMemoryNode.nativeCurrency.name,
+  isTestnet: true,
+}
+
 const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: {
-    chainConfig: {
-      chainNamespace: CHAIN_NAMESPACES.EIP155,
-      chainId: zkSyncInMemoryNode.id.toString(16),
-      rpcTarget: zkSyncInMemoryNode.rpcUrls.default.http[0],
-      displayName: zkSyncInMemoryNode.name,
-      blockExplorerUrl: zkSyncInMemoryNode.blockExplorers?.default.url,
-      ticker: zkSyncInMemoryNode.nativeCurrency.symbol,
-      tickerName: zkSyncInMemoryNode.nativeCurrency.name,
-      isTestnet: true,
-    },
+    chainConfig,
   },
 })
 
@@ -50,11 +52,7 @@ const metamaskAdapter = new MetamaskAdapter({
   clientId: WEB3_AUTH_CLIENT_ID,
   sessionTime: 3600, // 1 hour in seconds
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
-  chainConfig: {
-    chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: zkSyncInMemoryNode.id.toString(16),
-    rpcTarget: zkSyncInMemoryNode.rpcUrls.default.http[0],
-  },
+  chainConfig,
 })
 
 const web3AuthOptions: Web3AuthOptions = {
@@ -93,18 +91,16 @@ export default function CollectionLayout({
 }>) {
   return (
     <Web3AuthProvider config={web3AuthContextConfig}>
-      <WalletServicesProvider context={Web3AuthInnerContext}>
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <Layout className="h-screen !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-              <NavBarAction />
-              <Content className="h-full overflow-auto no-scrollbar ">
-                {children}
-              </Content>
-            </Layout>
-          </QueryClientProvider>
-        </WagmiProvider>
-      </WalletServicesProvider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <Layout className="h-screen !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+            <NavBarAction />
+            <Content className="h-full overflow-auto no-scrollbar ">
+              {children}
+            </Content>
+          </Layout>
+        </QueryClientProvider>
+      </WagmiProvider>
     </Web3AuthProvider>
   )
 }

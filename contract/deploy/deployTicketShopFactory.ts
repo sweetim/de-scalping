@@ -1,4 +1,5 @@
 import { TicketShopFactory } from "../typechain-types"
+import { persistToEnvFie } from "./persistToEnvFile"
 import { deployContract } from "./utils"
 
 export default async function() {
@@ -6,9 +7,13 @@ export default async function() {
     "TicketShopFactory",
     [],
   ) as any
-  const ticketShopFactoryAddress = await ticketShopFactory.getAddress()
+  const TICKET_SHOP_FACTORY_ADDRESS = await ticketShopFactory.getAddress()
+
+  persistToEnvFie({
+    TICKET_SHOP_FACTORY_ADDRESS,
+  })
 
   console.table({
-    ticketShopFactoryAddress,
+    TICKET_SHOP_FACTORY_ADDRESS,
   })
 }

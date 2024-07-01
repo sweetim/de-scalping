@@ -3,6 +3,7 @@ import {
   TicketERC20,
   USDT,
 } from "../typechain-types"
+import { persistToEnvFie } from "./persistToEnvFile"
 import { deployContract } from "./utils"
 
 export default async function() {
@@ -11,25 +12,31 @@ export default async function() {
     [],
   ) as any
 
-  const ticketErc20Address = await ticketErc20.getAddress()
+  const TICKET_ERC20_ADDRESS = await ticketErc20.getAddress()
 
   const usdt: USDT = await deployContract(
     "USDT",
     [],
   ) as any
 
-  const usdtAddress = await usdt.getAddress()
+  const USDT_ADDRESS = await usdt.getAddress()
 
   const jpyc: JPYC = await deployContract(
     "JPYC",
     [],
   ) as any
 
-  const jpycAddress = await jpyc.getAddress()
+  const JPYC_ADDRESS = await jpyc.getAddress()
+
+  persistToEnvFie({
+    TICKET_ERC20_ADDRESS,
+    JPYC_ADDRESS,
+    USDT_ADDRESS,
+  })
 
   console.table({
-    ticketErc20Address,
-    usdtAddress,
-    jpycAddress,
+    TICKET_ERC20_ADDRESS,
+    JPYC_ADDRESS,
+    USDT_ADDRESS,
   })
 }
