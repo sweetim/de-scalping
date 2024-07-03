@@ -1,7 +1,7 @@
-export const TICKET_ERC20_ADDRESS = process.env.NEXT_PUBLIC_TICKET_ERC20_ADDRESS
-export const USDT_ADDRESS = process.env.NEXT_PUBLIC_USDT_ADDRESS
-export const JPYC_ADDRESS = process.env.NEXT_PUBLIC_JPYC_ADDRESS
-export const TICKET_SHOP_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_TICKET_SHOP_FACTORY_ADDRESS
+export const TICKET_ERC20_ADDRESS = import.meta.env.VITE_TICKET_ERC20_ADDRESS
+export const USDT_ADDRESS = import.meta.env.VITE_USDT_ADDRESS
+export const JPYC_ADDRESS = import.meta.env.VITE_JPYC_ADDRESS
+export const TICKET_SHOP_FACTORY_ADDRESS = import.meta.env.VITE_TICKET_SHOP_FACTORY_ADDRESS
 
 export type TicketMetadata = {
   id: string

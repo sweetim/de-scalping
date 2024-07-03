@@ -43,8 +43,10 @@ contract TicketShop {
         uint ticketPrice = ticketMetadata.pricing[ticketTypeIndex].price;
         uint ticketsLeft = ticketMetadata.pricing[ticketTypeIndex].tickets;
 
-        bool hasTicketAlready = ticketNft.balanceOf(msg.sender) == 0;
+        uint allowance = erc20Token.allowance(msg.sender, address(this));
+        bool hasTicketAlready = ticketNft.balanceOf(msg.sender) < 10;
 
+        require(allowance >= ticketPrice, "not enough allowance");
         require(hasTicketAlready, "only allow to purchase 1 ticket");
         require(ticketsLeft > 0, "tickets sold out");
 

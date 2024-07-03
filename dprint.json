@@ -15,7 +15,11 @@
   },
   "excludes": [
     "**/node_modules",
-    "**/*-lock.json"
+    "**/*-lock.json",
+    "**/typechain-types",
+    "**/deployment-zk",
+    "**/cache-zk",
+    "**/artifacts-zk"
   ],
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.90.5.wasm",

@@ -1,5 +1,3 @@
-"use client"
-
 import { TICKET_SHOP_FACTORY_ADDRESS } from "@/contract"
 import {
   useReadTicketShopFactoryGetTicketShops,
@@ -9,8 +7,8 @@ import {
   CenterDiv,
   LoadingGif,
 } from "@/modules"
-import Link from "next/link"
 import { FC } from "react"
+import { Link } from "react-router-dom"
 
 export default function EventPage() {
   const { data: ticketShops, isSuccess, status } = useReadTicketShopFactoryGetTicketShops({
@@ -49,7 +47,7 @@ const TicketShopCard: FC<TicketShopCardProps> = ({ address }) => {
   }
 
   return (
-    <Link key={address} href={`/ticket/${address}`}>
+    <Link key={address} to={`/app/ticket/${address}`}>
       <div className="bg-white p-5 m-3 rounded-2xl min-w-[28rem] max-w-[28rem]">
         <h1 className="text-xl font-bold">{metadata.name}</h1>
         <p className="text-gray-500 text-base">

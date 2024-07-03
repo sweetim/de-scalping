@@ -1,16 +1,14 @@
-"use client"
-
 import { PlusOutlined } from "@ant-design/icons"
 import {
   Col,
   DatePicker,
   Flex,
-  type GetProp,
   Image,
   Input,
   Row,
   Space,
   Upload,
+  type GetProp,
   type UploadFile,
   type UploadProps,
 } from "antd"

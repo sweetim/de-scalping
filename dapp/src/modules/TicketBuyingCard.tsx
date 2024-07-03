@@ -1,6 +1,3 @@
-"use client"
-
-import { TicketPageParams } from "@/app/(zksync)/ticket/[address]/page"
 import {
   JPYC_ADDRESS,
   TicketPricing,
@@ -8,10 +5,10 @@ import {
 import {
   jpycAbi,
   ticketShopAbi,
-  useReadJpycAllowance,
   useReadJpycBalanceOf,
   useReadTicketShopGetShopPaymasterAddress,
 } from "@/generated"
+import { TicketPageParams } from "@/routes/app/TicketPage"
 import { IProvider } from "@web3auth/base"
 import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import {
@@ -19,11 +16,12 @@ import {
   Flex,
   Select,
 } from "antd"
-import { useParams } from "next/navigation"
+
 import {
   FC,
   useState,
 } from "react"
+import { useParams } from "react-router-dom"
 import {
   createPublicClient,
   createWalletClient,
@@ -53,14 +51,6 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     },
   )
 
-  const { data: allowance } = useReadJpycAllowance({
-    address: JPYC_ADDRESS,
-    args: [
-      address!,
-      ticketShopAddress,
-    ],
-  })
-
   const { data: jpycBalance } = useReadJpycBalanceOf({
     address: JPYC_ADDRESS,
     args: [
@@ -76,13 +66,6 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     if (!shopPaymasterAddress) return
     if (!ticketShopAddress) return
 
-    console.log(allowance)
-
-    // const privateKey = await provider.request({
-    //   method: "eth_private_key",
-    // })
-    // console.log("here", privateKey)
-
     const publicClient = createPublicClient({
       chain: zkSyncInMemoryNode,
       transport: http(),
@@ -95,46 +78,72 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
 
     const [ address ] = await walletClient.getAddresses()
 
-    const paymasterParams = utils.getPaymasterParams(
-      shopPaymasterAddress,
-      {
-        type: "ApprovalBased",
-        token: JPYC_ADDRESS,
-        minimalAllowance: BigInt(1),
-        innerInput: new Uint8Array(),
-      },
-    )
-
-    const gasApprove = await publicClient.estimateContractGas({
-      account: address,
+    const allowance = await publicClient.readContract({
       abi: jpycAbi,
       address: JPYC_ADDRESS,
-      functionName: "approve",
+      functionName: "allowance",
       args: [
+        address,
         ticketShopAddress,
-        BigInt(1_000),
       ],
     })
-    console.log(gasApprove, address)
-    // await publicClient.waitForTransactionReceipt({
-    //   hash: await walletClient.writeContract({
-    //     account: address,
-    //     abi: jpycAbi,
-    //     address: JPYC_ADDRESS,
-    //     functionName: "approve",
-    //     args: [
-    //       ticketShopAddress,
-    //       BigInt(1_000),
-    //     ],
-    //     // gas: BigInt(100_000),
-    //     gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-    //     maxFeePerGas: BigInt(25_000_000_000),
-    //     paymaster: paymasterParams.paymaster as `0x${string}`,
-    //     paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
-    //   }),
-    // })
 
-    console.log("done")
+    console.log("allowance", allowance)
+    if (allowance < BigInt(1_000)) {
+      const paymasterParams = utils.getPaymasterParams(
+        shopPaymasterAddress,
+        {
+          type: "ApprovalBased",
+          token: JPYC_ADDRESS,
+          minimalAllowance: BigInt(1),
+          innerInput: new Uint8Array(),
+        },
+      )
+
+      const gasApprove = await publicClient.estimateContractGas({
+        account: address,
+        abi: jpycAbi,
+        address: JPYC_ADDRESS,
+        functionName: "approve",
+        args: [
+          ticketShopAddress,
+          BigInt(10_000),
+        ],
+      })
+
+      console.log(gasApprove, address)
+      await publicClient.waitForTransactionReceipt({
+        hash: await walletClient.writeContract({
+          account: address,
+          abi: jpycAbi,
+          address: JPYC_ADDRESS,
+          functionName: "approve",
+          args: [
+            ticketShopAddress,
+            BigInt(10_000),
+          ],
+          // gas: BigInt(100_000),
+          gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
+          maxPriorityFeePerGas: BigInt(25_000_000_000),
+          maxFeePerGas: BigInt(50_000_000_000),
+          paymaster: paymasterParams.paymaster as `0x${string}`,
+          paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
+        }),
+      })
+
+      const allowance = await publicClient.readContract({
+        abi: jpycAbi,
+        address: JPYC_ADDRESS,
+        functionName: "allowance",
+        args: [
+          address,
+          ticketShopAddress,
+        ],
+      })
+
+      console.log("after", allowance)
+    }
+
     console.log("start estimate", ticketShopAddress)
     const gasBuyTicket = await publicClient.estimateContractGas({
       account: address,
@@ -147,6 +156,16 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     })
 
     console.log(formatEther(gasBuyTicket))
+    const paymasterParams = utils.getPaymasterParams(
+      shopPaymasterAddress,
+      {
+        type: "ApprovalBased",
+        token: JPYC_ADDRESS,
+        minimalAllowance: BigInt(1),
+        innerInput: new Uint8Array(),
+      },
+    )
+
     const txBuyTicket = await walletClient.writeContract({
       account: address,
       abi: ticketShopAbi,
@@ -157,8 +176,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       ],
       // gas: gasBuyTicket,
       gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-      maxFeePerGas: BigInt(25_000_000_000),
-      maxPriorityFeePerGas: BigInt(25_000_000_000),
+      maxFeePerGas: BigInt(50_000_000_000),
       paymaster: paymasterParams.paymaster as `0x${string}`,
       paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
     })

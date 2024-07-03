@@ -207,7 +207,7 @@ export const shopPaymasterAbi = [
   {
     type: 'constructor',
     inputs: [
-      { name: '_allowedContract', internalType: 'address', type: 'address' },
+      { name: '_allowedToken', internalType: 'address', type: 'address' },
     ],
     stateMutability: 'nonpayable',
   },

@@ -1,6 +1,3 @@
-"use client"
-
-import NavBarAction from "@/modules/NavBarActions"
 import {
   QueryClient,
   QueryClientProvider,
@@ -18,15 +15,52 @@ import {
   Web3AuthProvider,
 } from "@web3auth/modal-react-hooks"
 import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin"
-import { Layout } from "antd"
-import { Content } from "antd/lib/layout/layout"
-import { toHex } from "viem"
+import React from "react"
+import ReactDOM from "react-dom/client"
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom"
+import {
+  http,
+  toHex,
+} from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
 import {
   createConfig,
-  http,
   WagmiProvider,
 } from "wagmi"
+import "./index.css"
+import LandingPage from "./routes/LandingPage"
+import EventPage from "./routes/app/EventPage"
+import AppRootPage from "./routes/app/RootPage"
+import TicketPage from "./routes/app/TicketPage"
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  {
+    path: "app",
+    element: <AppRootPage />,
+    children: [
+      {
+        path: "",
+        loader: async () => redirect("events"),
+      },
+      {
+        path: "events",
+        element: <EventPage />,
+      },
+      {
+        path: "ticket/:address",
+        element: <TicketPage />,
+      },
+    ],
+  },
+])
 
 const queryClient = new QueryClient()
 const WEB3_AUTH_CLIENT_ID = "BNJRSXS1UtdwjQ_Ox5dwgdUQe3G9QbHp2oNfVR_6E8dsZePqGzumiY8R9UKsENq5D_Psuh6Fr0jJdNMQlqxJ_Uk"
@@ -84,23 +118,14 @@ const config = createConfig({
   },
 })
 
-export default function CollectionLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  return (
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
     <Web3AuthProvider config={web3AuthContextConfig}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <Layout className="h-screen !bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-            <NavBarAction />
-            <Content className="h-full overflow-auto no-scrollbar ">
-              {children}
-            </Content>
-          </Layout>
+          <RouterProvider router={router} />
         </QueryClientProvider>
       </WagmiProvider>
     </Web3AuthProvider>
-  )
-}
+  </React.StrictMode>,
+)

@@ -1,11 +1,10 @@
 import { CenterDiv } from "@/modules"
-import Image from "next/image"
-import Link from "next/link"
+import { Link } from "react-router-dom"
 
-export default function Home() {
+export default function LandingPage() {
   return (
     <main className="p-3 w-screen h-screen">
-      <Image
+      <img
         className="absolute top-0 left-0 -z-10 object-cover h-screen w-screen"
         src="/bg_1.jpg"
         alt="bg_1"
@@ -13,7 +12,7 @@ export default function Home() {
         height={720}
       />
 
-      <Image
+      <img
         width={36}
         height={36}
         className="absolute top-3 left-3 z-10"
@@ -33,7 +32,7 @@ export default function Home() {
           <p>no more scalper to steal your tickets</p>
           <p>with us you could enjoy the best ticket buying experience</p>
         </div>
-        <Link href="/events" className="btn-colorful">
+        <Link to="/app/events" className="btn-colorful">
           Explore Events
         </Link>
       </CenterDiv>

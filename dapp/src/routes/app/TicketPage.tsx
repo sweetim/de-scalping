@@ -1,5 +1,3 @@
-"use client"
-
 import { TicketMetadata } from "@/contract"
 import { useReadTicketShopGetTicketMetadata } from "@/generated"
 import {
@@ -13,7 +11,7 @@ import {
   Col,
   Row,
 } from "antd"
-import { useParams } from "next/navigation"
+import { useParams } from "react-router-dom"
 
 export type TicketPageParams = {
   address: `0x${string}`

@@ -12,6 +12,7 @@
     "interact:mint-stable-coin": "hardhat deploy-zksync --script mintStableCoin.ts",
     "interact:create-ticket-shop": "hardhat deploy-zksync --script createTicketShop.ts",
     "interact:buy-ticket-using-paymaster": "hardhat deploy-zksync --script buyTicketUsingPaymaster.ts",
+    "interact:fund-paymaster": "hardhat deploy-zksync --script fundPaymaster.ts",
     "interact:all": "npm run interact:mint-stable-coin && npm run interact:create-ticket-shop",
     "compile": "hardhat compile",
     "clean": "hardhat clean",
