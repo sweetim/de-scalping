@@ -28,6 +28,7 @@ import {
   custom,
   formatEther,
   http,
+  parseEther,
 } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
 import { eip712WalletActions } from "viem/zksync"
@@ -123,9 +124,10 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
             BigInt(10_000),
           ],
           // gas: BigInt(100_000),
+          // nonce: 1,
           gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-          maxPriorityFeePerGas: BigInt(25_000_000_000),
-          maxFeePerGas: BigInt(50_000_000_000),
+          maxPriorityFeePerGas: parseEther("25", "gwei"),
+          // maxFeePerGas: BigInt(500_000),
           paymaster: paymasterParams.paymaster as `0x${string}`,
           paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
         }),
@@ -156,6 +158,11 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     })
 
     console.log(formatEther(gasBuyTicket))
+    const paymasterBalance = await publicClient.getBalance({
+      address: shopPaymasterAddress,
+    })
+    console.log({ paymasterBalance })
+
     const paymasterParams = utils.getPaymasterParams(
       shopPaymasterAddress,
       {
@@ -176,7 +183,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       ],
       // gas: gasBuyTicket,
       gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-      maxFeePerGas: BigInt(50_000_000_000),
+      // maxPriorityFeePerGas: parseEther("25", "gwei"),
       paymaster: paymasterParams.paymaster as `0x${string}`,
       paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
     })
