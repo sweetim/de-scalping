@@ -3,22 +3,16 @@ import {
   TicketPricing,
 } from "@/contract"
 import {
-  CenterDiv,
   TicketMetadataCard,
   TicketPricingCard,
 } from "@/modules"
 import EditTicketMetadataCard, { EditTicketMetadataForm } from "@/modules/EditTicketMetadataCard"
 import EditTicketPricingCard, { EditTicketPriceForm } from "@/modules/EditTicketPricingCard"
 import PublishTicketMetadata from "@/modules/PublishTicketMetadata"
+import StepperEditForm from "@/modules/StepperEditForm"
 import {
-  LeftOutlined,
-  RightOutlined,
-} from "@ant-design/icons"
-import {
-  Button,
   Col,
   Row,
-  Steps,
 } from "antd"
 import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"
@@ -35,11 +29,7 @@ const steps = [
   },
 ]
 
-const items = steps.map((item) => ({ key: item.title, title: item.title }))
-
 export default function CreatePage() {
-  const [ currentStep, setCurrentStep ] = useState(0)
-
   const [ ticketMetadata, setTicketMetadata ] = useState<TicketMetadata>({
     id: uuidv4(),
     name: "",
@@ -56,23 +46,15 @@ export default function CreatePage() {
     pricing: [],
   })
 
-  function previousClickHandler() {
-    setCurrentStep(step => step - 1)
-  }
-
-  function nextClickHandler() {
-    setCurrentStep(step => step + 1)
-  }
-
   function editTicketMetadataHandler(data: EditTicketMetadataForm) {
     const [ lat, lng ] = data.location
-
+    console.log(data)
     setTicketMetadata(prev => ({
       ...prev,
       name: data.title,
       description: data.description,
       uri: data.images,
-      dates: data.dates,
+      dates: data.dates.map(item => BigInt((new Date(item)).getTime())),
       location: {
         name: "Tokyo Dome, Tokyo",
         uri: `http://maps.google.com/maps?z=12&t=m&q=loc:${lat}+${lng}`,
@@ -161,8 +143,8 @@ export default function CreatePage() {
         uri: "https://maps.app.goo.gl/VftKxYjWcWr9Sxfr7",
       },
       dates: [
-        "2023-06-20",
-        "2023-06-22",
+        BigInt((new Date("2023-06-20")).getTime()),
+        BigInt((new Date("2023-06-22")).getTime()),
       ],
       pricing: [
         {
@@ -194,57 +176,14 @@ export default function CreatePage() {
     return <PublishTicketMetadata ticketMetadata={ticketMetadata} />
   }
 
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 0:
-        return renderEditTicketMetadata()
-      case 1:
-        return renderViewTicketMetadata()
-      case 2:
-        return renderPublishTicketMetadata()
-      default:
-        return renderEditTicketMetadata()
-    }
-  }
-
   return (
-    <CenterDiv>
-      <Row className="w-full">
-        <Col span={12} offset={6}>
-          <div className="flex flex-row justify-between">
-            {currentStep > 0
-              ? (
-                <Button
-                  className="!bg-purple-300 !text-black"
-                  hidden={currentStep > 0}
-                  type="primary"
-                  icon={<LeftOutlined />}
-                  onClick={previousClickHandler}
-                >
-                  Previous
-                </Button>
-              )
-              : null}
-            <Steps className="!px-8" current={currentStep} items={items} />
-            {steps.length > currentStep + 1
-              ? (
-                <Button
-                  className="!bg-purple-300 !text-black"
-                  type="primary"
-                  iconPosition="end"
-                  icon={<RightOutlined />}
-                  onClick={nextClickHandler}
-                >
-                  Next
-                </Button>
-              )
-              : null}
-          </div>
-        </Col>
-      </Row>
-
-      {renderStepContent()}
-    </CenterDiv>
+    <div className="mt-10">
+      <StepperEditForm steps={steps.map(item => item.title)}>
+        {renderEditTicketMetadata()}
+        {renderViewTicketMetadata()}
+        {renderPublishTicketMetadata()}
+      </StepperEditForm>
+    </div>
   )
 }
 

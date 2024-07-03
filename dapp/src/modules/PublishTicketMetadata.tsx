@@ -1,17 +1,14 @@
-import {
-  TICKET_SHOP_CONTRACT_ADDRESS,
-  TicketMetadata,
-} from "@/contract"
-import { ticketShopAbi } from "@/generated"
+import { TicketMetadata } from "@/contract"
 import {
   Button,
   Divider,
 } from "antd"
-import Link from "next/link"
+
 import {
   FC,
   useState,
 } from "react"
+import { Link } from "react-router-dom"
 import { useWalletClient } from "wagmi"
 
 type PublishTicketMetadataProps = {
@@ -22,22 +19,24 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
   const [ ticketUri, setTicketUri ] = useState("")
   const { data: walletClient } = useWalletClient()
   const [ finish, setFinish ] = useState(false)
-
+  console.log(walletClient)
   async function publishClickHandler() {
-    const { id } = ticketMetadata
+    if (!walletClient) return
 
-    const tx = await walletClient?.writeContract({
-      abi: ticketShopAbi,
-      address: TICKET_SHOP_CONTRACT_ADDRESS,
-      functionName: "createNewCollection",
-      args: [
-        id,
-        ticketMetadata,
-      ],
-    })
+    // const { id } = ticketMetadata
 
-    setFinish(true)
-    setTicketUri(id)
+    // const tx = await walletClient?.writeContract({
+    //   abi: ticketShopFactoryAbi,
+    //   address: TICKET_SHOP_FACTORY_ADDRESS,
+    //   functionName: "createTicketShop",
+    //   args: [
+    //     ticketMetadata,
+    //     JPYC_ADDRESS
+    //   ],
+    // })
+
+    // setFinish(true)
+    // setTicketUri(id)
   }
 
   return (
@@ -45,8 +44,8 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
       {finish
         ? (
           <>
-            <Link className="text-center" href={`/ticket/${ticketUri}`}>
-              {`Go to ticket page - ${window.location.origin}/ticket/${ticketUri}`}
+            <Link className="text-center" to={`/app/ticket/${ticketUri}`}>
+              {`Go to ticket page - ${window.location.origin}/app/ticket/${ticketUri}`}
             </Link>
           </>
         )
