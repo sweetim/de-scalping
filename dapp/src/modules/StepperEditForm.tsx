@@ -3,7 +3,6 @@ import {
   RightOutlined,
 } from "@ant-design/icons"
 import {
-  Button,
   Col,
   Row,
   Steps,
@@ -14,6 +13,7 @@ import {
   ReactElement,
   useState,
 } from "react"
+import PrimaryButton from "./ui/PrimaryButton"
 
 export type StepperEditFormProps = {
   steps: string[]
@@ -38,11 +38,19 @@ const StepperEditForm: FC<StepperEditFormProps> = ({ steps, children: childrens 
   )
 
   function previousClickHandler() {
-    setCurrentStep(step => step - 1)
+    setCurrentStep(step =>
+      step === 0
+        ? step
+        : step - 1
+    )
   }
 
   function nextClickHandler() {
-    setCurrentStep(step => step + 1)
+    setCurrentStep(step =>
+      step + 1 === steps.length
+        ? step
+        : step + 1
+    )
   }
 
   const items = steps.map((item) => ({
@@ -50,37 +58,35 @@ const StepperEditForm: FC<StepperEditFormProps> = ({ steps, children: childrens 
     title: item,
   }))
 
+  console.log(currentStep)
+
   return (
     <div className="flex flex-col w-full justify-center">
       <Row className="w-full">
         <Col span={12} offset={6}>
-          <div className="flex flex-row justify-between">
-            <Button
-              className={previousClassName}
-              type="primary"
+          <div className="flex flex-row justify-between align-middle items-center">
+            <PrimaryButton
               icon={<LeftOutlined />}
               onClick={previousClickHandler}
             >
               Previous
-            </Button>
+            </PrimaryButton>
             <Steps
               className="!px-8"
               current={currentStep}
               items={items}
             />
-            <Button
-              className={nextClassName}
-              type="primary"
+            <PrimaryButton
               iconPosition="end"
               icon={<RightOutlined />}
               onClick={nextClickHandler}
             >
               Next
-            </Button>
+            </PrimaryButton>
           </div>
         </Col>
       </Row>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center py-6">
         {childrens[currentStep]}
       </div>
     </div>

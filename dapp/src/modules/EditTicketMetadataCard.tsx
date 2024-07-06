@@ -3,12 +3,12 @@ import {
   Col,
   DatePicker,
   Flex,
+  type GetProp,
   Image,
   Input,
   Row,
   Space,
   Upload,
-  type GetProp,
   type UploadFile,
   type UploadProps,
 } from "antd"
@@ -127,10 +127,10 @@ const EditTicketMetadataCard: FC<EditTicketMetadataProps> = ({ onChange }) => {
   }
 
   return (
-    <Row>
-      <Col sm={{ flex: "auto" }}>
-        <Flex align="end" vertical>
-          <Space direction="vertical" size="middle" className="bg-white p-5 m-3 rounded-2xl min-w-96 max-w-xl">
+    <Row className="w-1/2">
+      <Col className="w-full">
+        <Flex>
+          <Space direction="vertical" size="middle" className="bg-white p-5 m-3 rounded-2xl w-full">
             <Space className="w-full" direction="vertical" size="small">
               <h2>Title</h2>
               <Input className="font-bold" placeholder="Title" onChange={titleInputHandler} />

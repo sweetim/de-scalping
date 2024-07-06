@@ -1,13 +1,10 @@
-import {
-  TicketMetadata,
-  TicketPricing,
-} from "@/contract"
+import { TicketMetadata } from "@/contract"
 import {
   TicketMetadataCard,
   TicketPricingCard,
 } from "@/modules"
 import EditTicketMetadataCard, { EditTicketMetadataForm } from "@/modules/EditTicketMetadataCard"
-import EditTicketPricingCard, { EditTicketPriceForm } from "@/modules/EditTicketPricingCard"
+import EditTicketPriceTable, { EditTicketPriceItem } from "@/modules/EditTicketPriceTable"
 import PublishTicketMetadata from "@/modules/PublishTicketMetadata"
 import StepperEditForm from "@/modules/StepperEditForm"
 import {
@@ -19,17 +16,20 @@ import { v4 as uuidv4 } from "uuid"
 
 const steps = [
   {
-    title: "Create",
+    title: "Title",
   },
   {
-    title: "Review",
+    title: "Tickets",
+  },
+  {
+    title: "Preview",
   },
   {
     title: "Publish",
   },
 ]
 
-export default function CreatePage() {
+export default function ShopCreatePage() {
   const [ ticketMetadata, setTicketMetadata ] = useState<TicketMetadata>({
     id: uuidv4(),
     name: "",
@@ -48,13 +48,14 @@ export default function CreatePage() {
 
   function editTicketMetadataHandler(data: EditTicketMetadataForm) {
     const [ lat, lng ] = data.location
-    console.log(data)
+    const [ startDate, endDate ] = data.dates.map(item => BigInt((new Date(item)).getTime()))
+
     setTicketMetadata(prev => ({
       ...prev,
       name: data.title,
       description: data.description,
       uri: data.images,
-      dates: data.dates.map(item => BigInt((new Date(item)).getTime())),
+      dates: [ startDate, endDate ],
       location: {
         name: "Tokyo Dome, Tokyo",
         uri: `http://maps.google.com/maps?z=12&t=m&q=loc:${lat}+${lng}`,
@@ -62,50 +63,23 @@ export default function CreatePage() {
     }))
   }
 
-  function editTicketPricingHandler(index: number, data: EditTicketPriceForm) {
-    setTicketMetadata(prev => {
-      const { pricing } = prev
-
-      const newPricing: TicketPricing = {
-        name: data.name,
-        description: data.description,
-        price: BigInt(data.price),
-        tickets: BigInt(data.tickets),
-      }
-
-      if (pricing[index]) {
-        pricing[index] = newPricing
-      } else {
-        pricing.push(newPricing)
-      }
-
-      return {
-        ...prev,
-      }
-    })
+  function editTicketPriceTableHandler(data: EditTicketPriceItem[]) {
+    setTicketMetadata(prev => ({
+      ...prev,
+      pricing: data.map(item => ({
+        name: item.name,
+        description: item.description,
+        price: BigInt(item.price),
+        tickets: BigInt(item.tickets),
+      })),
+    }))
   }
 
-  const renderEditTicketMetadata = () => (
-    <Row>
-      <Col span={12} sm={{ flex: "auto" }}>
-        <EditTicketMetadataCard onChange={editTicketMetadataHandler} />
-      </Col>
-      <Col className="overflow-auto h-full">
-        <Row>
-          {Array(1).fill(0).map(
-            (_, i) => (
-              <EditTicketPricingCard
-                key={i}
-                onChange={(data) => editTicketPricingHandler(i, data)}
-              />
-            ),
-          )}
-        </Row>
-      </Col>
-    </Row>
-  )
+  const renderEditTicketDescription = () => <EditTicketMetadataCard onChange={editTicketMetadataHandler} />
 
-  const renderViewTicketMetadata = () => (
+  const renderEditTicketPricing = () => <EditTicketPriceTable onChange={editTicketPriceTableHandler} />
+
+  const renderPreviewTicketMetadata = () => (
     <Row>
       <Col span={12} sm={{ flex: "auto" }}>
         <TicketMetadataCard metadata={ticketMetadata} />
@@ -179,8 +153,9 @@ export default function CreatePage() {
   return (
     <div className="mt-10">
       <StepperEditForm steps={steps.map(item => item.title)}>
-        {renderEditTicketMetadata()}
-        {renderViewTicketMetadata()}
+        {renderEditTicketDescription()}
+        {renderEditTicketPricing()}
+        {renderPreviewTicketMetadata()}
         {renderPublishTicketMetadata()}
       </StepperEditForm>
     </div>

@@ -9,6 +9,7 @@ import {
   useState,
 } from "react"
 import { Link } from "react-router-dom"
+import { match } from "ts-pattern"
 import { useWalletClient } from "wagmi"
 
 type PublishTicketMetadataProps = {
@@ -20,6 +21,7 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
   const { data: walletClient } = useWalletClient()
   const [ finish, setFinish ] = useState(false)
   console.log(walletClient)
+
   async function publishClickHandler() {
     if (!walletClient) return
 
@@ -41,15 +43,15 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
 
   return (
     <div className="bg-white rounded-lg p-3 min-w-96 max-w-96 m-10 flex flex-col justify-center">
-      {finish
-        ? (
+      {match(finish)
+        .with(true, () => (
           <>
             <Link className="text-center" to={`/app/ticket/${ticketUri}`}>
               {`Go to ticket page - ${window.location.origin}/app/ticket/${ticketUri}`}
             </Link>
           </>
-        )
-        : null}
+        ))
+        .otherwise(() => null)}
 
       {finish
         ? null

@@ -1,4 +1,4 @@
-import NavBarAction from "@/modules/NavBarActions"
+import NavBarAction from "@/modules/nav/NavBarActions"
 import { Layout } from "antd"
 import { Content } from "antd/lib/layout/layout"
 import { Outlet } from "react-router-dom"

@@ -16,7 +16,7 @@ const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
     <Row>
       <Col sm={{ flex: "auto" }}>
         <Flex align="end" vertical>
-          <div className="bg-white p-5 m-3 rounded-2xl max-w-xl">
+          <div className="bg-white p-5 m-3 rounded-xl max-w-xl">
             <Flex justify="space-between">
               <h1 className="text-2xl font-bold">{metadata.name}</h1>
             </Flex>

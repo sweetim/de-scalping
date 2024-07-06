@@ -33,10 +33,13 @@ import {
 } from "wagmi"
 import "./index.css"
 import LandingPage from "./routes/LandingPage"
-import CreatePage from "./routes/app/CreatePage"
 import EventPage from "./routes/app/EventPage"
 import AppRootPage from "./routes/app/RootPage"
 import TicketPage from "./routes/app/TicketPage"
+import WalletPage from "./routes/app/WalletPage"
+import ShopCreatePage from "./routes/app/shop/ShopCreatePage"
+import ShopHomePage from "./routes/app/shop/ShopHomePage"
+import ShopNewPage from "./routes/app/shop/ShopNewPage"
 
 const router = createBrowserRouter([
   {
@@ -56,8 +59,26 @@ const router = createBrowserRouter([
         element: <EventPage />,
       },
       {
-        path: "create",
-        element: <CreatePage />,
+        path: "shop",
+        element: <ShopHomePage />,
+        children: [
+          {
+            path: "new",
+            element: <ShopNewPage />,
+          },
+          {
+            path: "home",
+            element: <ShopHomePage />,
+          },
+          {
+            path: "create",
+            element: <ShopCreatePage />,
+          },
+        ],
+      },
+      {
+        path: "wallet",
+        element: <WalletPage />,
       },
       {
         path: "ticket/:address",

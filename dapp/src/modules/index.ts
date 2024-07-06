@@ -1,5 +1,5 @@
 export { default as CenterDiv } from "./CenterDiv"
 export { default as LoadingGif } from "./LoadingGif"
-export { default as TicketBuyingCard } from "./TicketBuyingCard"
-export { default as TicketMetadataCard } from "./TicketMetadataCard"
-export { default as TicketPricingCard } from "./TicketPricingCard"
+export { default as TicketBuyingCard } from "./tickets/TicketBuyingCard"
+export { default as TicketMetadataCard } from "./tickets/TicketMetadataCard"
+export { default as TicketPricingCard } from "./tickets/TicketPricingCard"

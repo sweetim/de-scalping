@@ -28,7 +28,6 @@ import {
   custom,
   formatEther,
   http,
-  parseEther,
 } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
 import { eip712WalletActions } from "viem/zksync"
@@ -76,6 +75,11 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       chain: zkSyncInMemoryNode,
       transport: custom<IProvider>(provider),
     }).extend(eip712WalletActions())
+
+    const transactionCount = await publicClient.getTransactionCount({
+      address: shopPaymasterAddress,
+    })
+    console.log({ transactionCount })
 
     const [ address ] = await walletClient.getAddresses()
 
@@ -126,7 +130,6 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
           // gas: BigInt(100_000),
           // nonce: 1,
           gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-          maxPriorityFeePerGas: parseEther("25", "gwei"),
           // maxFeePerGas: BigInt(500_000),
           paymaster: paymasterParams.paymaster as `0x${string}`,
           paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
@@ -187,11 +190,10 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       paymaster: paymasterParams.paymaster as `0x${string}`,
       paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
     })
-    console.log("done")
+
     await publicClient.waitForTransactionReceipt({
       hash: txBuyTicket,
     })
-    console.log("finish")
   }
 
   const selectedTicketPrice = pricing
@@ -199,7 +201,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     .map(p => p.price)[0] || 0
 
   return (
-    <Flex vertical className="w-full h-full m-3 bg-white p-3 max-w-[530px]">
+    <Flex vertical className="w-full h-full m-3 bg-white p-3 max-w-[530px] rounded-xl">
       <h1 className="text-2xl font-bold">Checkout</h1>
       <Flex justify="space-between" align="center">
         <Flex
