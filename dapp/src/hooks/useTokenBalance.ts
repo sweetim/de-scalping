@@ -12,11 +12,18 @@ import {
   http,
 } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
-import { useAccount } from "wagmi"
+import {
+  useAccount,
+  useBalance,
+} from "wagmi"
 
 export function useTokenBalance() {
   const [ joctBalance, setJoctBalance ] = useState(0)
   const { address: walletAddress } = useAccount()
+
+  const { data: ethBalance } = useBalance({
+    address: walletAddress,
+  })
 
   const { data: jpycBalance, isSuccess: isSuccessJpyc, refetch: refetchJpyc } = useReadJpycBalanceOf({
     address: import.meta.env.VITE_JPYC_ADDRESS,
@@ -47,6 +54,13 @@ export function useTokenBalance() {
 
   const tokensData = useMemo(() => {
     return [
+      {
+        title: "ETH",
+        amount: ethBalance
+          ? Number(ethBalance.value) / Math.pow(10, ethBalance.decimals)
+          : 0,
+        icon: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032",
+      },
       {
         title: "USDT",
         amount: usdtBalance,

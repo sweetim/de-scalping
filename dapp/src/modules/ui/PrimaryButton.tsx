@@ -12,8 +12,9 @@ type PrimaryButtonProps = {
   dark?: boolean
   rounded?: boolean
   icon?: ReactNode
-  onClick?: MouseEventHandler<HTMLButtonElement>
   iconPosition?: "start" | "end"
+  selected?: boolean
+  onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
 const PrimaryButton: FC<PrimaryButtonProps> = ({
@@ -22,6 +23,7 @@ const PrimaryButton: FC<PrimaryButtonProps> = ({
   children,
   icon,
   iconPosition,
+  selected,
   onClick,
 }) => {
   const items = [
@@ -42,6 +44,7 @@ const PrimaryButton: FC<PrimaryButtonProps> = ({
       "bg-zinc-700": dark,
       "hover:bg-zinc-600": dark,
       "rounded-3xl": rounded,
+      "ring-2 ring-offset-2 ring-purple-500": selected,
     },
   )
 

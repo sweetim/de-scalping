@@ -21,6 +21,7 @@ import {
 } from "react"
 
 type EditTicketPriceTableProps = {
+  priceUnit: string
   onChange: (data: EditTicketPriceItem[]) => void
 }
 
@@ -130,7 +131,7 @@ type EditableTableProps = Parameters<typeof Table>[0]
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>
 
-const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange }) => {
+const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUnit }) => {
   const [ dataSource, setDataSource ] = useState<EditTicketPriceItem[]>([])
 
   useEffect(() => {
@@ -174,7 +175,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange }) => {
       numeric: true,
     },
     {
-      title: "Price",
+      title: `Price ${priceUnit || ""}`,
       dataIndex: "price",
       editable: true,
       numeric: true,
@@ -231,7 +232,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange }) => {
   })
 
   return (
-    <Space className="py-5 w-1/2" direction="vertical">
+    <Space className="py-5 w-full" direction="vertical">
       <Button className="!bg-purple-300 !text-black" onClick={handleAdd}>
         Add ticket
       </Button>

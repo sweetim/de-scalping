@@ -21,7 +21,7 @@ import {
 } from "react"
 
 const { TextArea } = Input
-const { Dragger } = Upload
+// const { Dragger } = Upload
 const { RangePicker } = DatePicker
 
 type EditTicketMetadataProps = {
@@ -71,13 +71,13 @@ const EditTicketMetadataCard: FC<EditTicketMetadataProps> = ({ onChange }) => {
     })
   }, [ data ])
 
-  const props: UploadProps = {
-    name: "file",
-    maxCount: 1,
-    multiple: false,
-    onChange(info) {
-    },
-  }
+  // const props: UploadProps = {
+  //   name: "file",
+  //   maxCount: 1,
+  //   multiple: false,
+  //   onChange(info) {
+  //   },
+  // }
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {

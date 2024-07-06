@@ -35,11 +35,13 @@ import "./index.css"
 import LandingPage from "./routes/LandingPage"
 import EventPage from "./routes/app/EventPage"
 import AppRootPage from "./routes/app/RootPage"
-import TicketPage from "./routes/app/TicketPage"
+import TicketAddressPage from "./routes/app/TicketAddressPage"
+import TicketsPage from "./routes/app/TicketsPage"
 import WalletPage from "./routes/app/WalletPage"
 import ShopCreatePage from "./routes/app/shop/ShopCreatePage"
 import ShopHomePage from "./routes/app/shop/ShopHomePage"
 import ShopNewPage from "./routes/app/shop/ShopNewPage"
+import ShopRootPage from "./routes/app/shop/ShopRootPage"
 
 const router = createBrowserRouter([
   {
@@ -60,8 +62,12 @@ const router = createBrowserRouter([
       },
       {
         path: "shop",
-        element: <ShopHomePage />,
+        element: <ShopRootPage />,
         children: [
+          {
+            path: "",
+            loader: async () => redirect("new"),
+          },
           {
             path: "new",
             element: <ShopNewPage />,
@@ -81,8 +87,12 @@ const router = createBrowserRouter([
         element: <WalletPage />,
       },
       {
+        path: "ticket",
+        element: <TicketsPage />,
+      },
+      {
         path: "ticket/:address",
-        element: <TicketPage />,
+        element: <TicketAddressPage />,
       },
     ],
   },
@@ -139,6 +149,9 @@ const web3AuthContextConfig: Web3AuthContextConfig = {
 
 const config = createConfig({
   chains: [ zkSyncInMemoryNode ],
+  batch: {
+    multicall: true,
+  },
   transports: {
     [zkSyncInMemoryNode.id]: http(),
   },

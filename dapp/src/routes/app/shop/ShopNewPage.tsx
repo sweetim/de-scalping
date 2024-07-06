@@ -11,7 +11,7 @@ const ShopNewPage: FC = () => {
   const navigate = useNavigate()
 
   function createClickHandler() {
-    navigate("/app/create")
+    navigate("/app/shop/create")
   }
 
   return (

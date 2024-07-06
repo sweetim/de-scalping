@@ -1,8 +1,5 @@
 import { TicketMetadata } from "@/contract"
-import {
-  Button,
-  Divider,
-} from "antd"
+import { Divider } from "antd"
 
 import {
   FC,
@@ -11,6 +8,7 @@ import {
 import { Link } from "react-router-dom"
 import { match } from "ts-pattern"
 import { useWalletClient } from "wagmi"
+import PrimaryButton from "./ui/PrimaryButton"
 
 type PublishTicketMetadataProps = {
   ticketMetadata: TicketMetadata
@@ -25,7 +23,7 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
   async function publishClickHandler() {
     if (!walletClient) return
 
-    // const { id } = ticketMetadata
+    const { id } = ticketMetadata
 
     // const tx = await walletClient?.writeContract({
     //   abi: ticketShopFactoryAbi,
@@ -37,12 +35,12 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
     //   ],
     // })
 
-    // setFinish(true)
-    // setTicketUri(id)
+    setFinish(true)
+    setTicketUri(id)
   }
 
   return (
-    <div className="bg-white rounded-lg p-3 min-w-96 max-w-96 m-10 flex flex-col justify-center">
+    <div className="bg-white rounded-lg p-3 w-1/2 m-10 flex flex-col justify-center">
       {match(finish)
         .with(true, () => (
           <>
@@ -59,14 +57,18 @@ const PublishTicketMetadata: FC<PublishTicketMetadataProps> = ({ ticketMetadata 
           <>
             <h2 className="text-2xl">Publish tickets</h2>
             <Divider />
-            <p>
-              Expected paymaster fee <strong>0.05 ETH</strong>
-            </p>
-            <p className="text-slate-500">
-              <strong>0.05 ETH</strong>{" "}
-              will be transferred from your account to paymaster account to fund the transaction fee for your users
-            </p>
-            <Button className="m-3 !bg-purple-300" onClick={publishClickHandler}>PUBLISH</Button>
+            <div className="pb-8">
+              <p>
+                Expected paymaster fee <strong>0.05 ETH</strong>
+              </p>
+              <p className="text-slate-500">
+                <strong>0.05 ETH</strong>{" "}
+                will be transferred from your account to paymaster account to fund the transaction fee for your users
+              </p>
+            </div>
+            <PrimaryButton onClick={publishClickHandler}>
+              PUBLISH
+            </PrimaryButton>
           </>
         )}
     </div>

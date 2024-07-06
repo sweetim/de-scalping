@@ -8,7 +8,7 @@ import {
   useReadJpycBalanceOf,
   useReadTicketShopGetShopPaymasterAddress,
 } from "@/generated"
-import { TicketPageParams } from "@/routes/app/TicketPage"
+import { TicketPageParams } from "@/routes/app/TicketAddressPage"
 import { IProvider } from "@web3auth/base"
 import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import {
@@ -23,10 +23,13 @@ import {
 } from "react"
 import { useParams } from "react-router-dom"
 import {
+  match,
+  P,
+} from "ts-pattern"
+import {
   createPublicClient,
   createWalletClient,
   custom,
-  formatEther,
   http,
 } from "viem"
 import { zkSyncInMemoryNode } from "viem/chains"
@@ -59,12 +62,14 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
   })
   console.log(jpycBalance)
 
-  const [ selectedTicketType, setSelectedTicketType ] = useState("")
+  const [ selectedTicketTypeIndex, setSelectedTicketTypeIndex ] = useState<number | null>(null)
 
   async function buyClickHandler() {
     if (!provider) return
     if (!shopPaymasterAddress) return
     if (!ticketShopAddress) return
+    if (!selectedTicketPrice) return
+    if (!selectedTicketTypeIndex) return
 
     const publicClient = createPublicClient({
       chain: zkSyncInMemoryNode,
@@ -94,7 +99,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     })
 
     console.log("allowance", allowance)
-    if (allowance < BigInt(1_000)) {
+    if (allowance < BigInt(selectedTicketPrice)) {
       const paymasterParams = utils.getPaymasterParams(
         shopPaymasterAddress,
         {
@@ -105,18 +110,6 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
         },
       )
 
-      const gasApprove = await publicClient.estimateContractGas({
-        account: address,
-        abi: jpycAbi,
-        address: JPYC_ADDRESS,
-        functionName: "approve",
-        args: [
-          ticketShopAddress,
-          BigInt(10_000),
-        ],
-      })
-
-      console.log(gasApprove, address)
       await publicClient.waitForTransactionReceipt({
         hash: await walletClient.writeContract({
           account: address,
@@ -127,44 +120,14 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
             ticketShopAddress,
             BigInt(10_000),
           ],
-          // gas: BigInt(100_000),
-          // nonce: 1,
           gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-          // maxFeePerGas: BigInt(500_000),
           paymaster: paymasterParams.paymaster as `0x${string}`,
           paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
         }),
       })
-
-      const allowance = await publicClient.readContract({
-        abi: jpycAbi,
-        address: JPYC_ADDRESS,
-        functionName: "allowance",
-        args: [
-          address,
-          ticketShopAddress,
-        ],
-      })
-
-      console.log("after", allowance)
     }
 
     console.log("start estimate", ticketShopAddress)
-    const gasBuyTicket = await publicClient.estimateContractGas({
-      account: address,
-      abi: ticketShopAbi,
-      address: ticketShopAddress,
-      functionName: "buyTicket",
-      args: [
-        BigInt(0),
-      ],
-    })
-
-    console.log(formatEther(gasBuyTicket))
-    const paymasterBalance = await publicClient.getBalance({
-      address: shopPaymasterAddress,
-    })
-    console.log({ paymasterBalance })
 
     const paymasterParams = utils.getPaymasterParams(
       shopPaymasterAddress,
@@ -182,11 +145,9 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       address: ticketShopAddress,
       functionName: "buyTicket",
       args: [
-        BigInt(0),
+        BigInt(selectedTicketTypeIndex),
       ],
-      // gas: gasBuyTicket,
       gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
-      // maxPriorityFeePerGas: parseEther("25", "gwei"),
       paymaster: paymasterParams.paymaster as `0x${string}`,
       paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
     })
@@ -196,9 +157,9 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     })
   }
 
-  const selectedTicketPrice = pricing
-    .filter(p => p.name === selectedTicketType)
-    .map(p => p.price)[0] || 0
+  const selectedTicketPrice = match(selectedTicketTypeIndex)
+    .with(P.number, () => pricing[selectedTicketTypeIndex!].price)
+    .otherwise(() => null)
 
   return (
     <Flex vertical className="w-full h-full m-3 bg-white p-3 max-w-[530px] rounded-xl">
@@ -212,14 +173,14 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
           <Select
             className="w-60"
             size="large"
-            onSelect={(item) => setSelectedTicketType(item)}
-            options={pricing.map(item => ({
-              value: item.name,
+            onSelect={(item) => setSelectedTicketTypeIndex(item)}
+            options={pricing.map((item, index) => ({
+              value: index,
               label: item.name,
             }))}
           />
         </Flex>
-        <h2 className="text-xl font-bold">{`${selectedTicketPrice} USDC`}</h2>
+        <h2 className="text-xl font-bold">{`${selectedTicketPrice || 0} USDC`}</h2>
       </Flex>
       <Flex justify="center" align="center" className="mt-5">
         <Button

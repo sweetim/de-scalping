@@ -66,7 +66,7 @@ const NavBarAction: FC = () => {
   async function logoutClickHandler() {
     await logout()
   }
-  console.log(address)
+
   const renderLoginButton = match(isConnected)
     .with(false, () => (
       <Button
@@ -131,9 +131,11 @@ const NavBarAction: FC = () => {
               </Button>
             </Link>
             <Divider className="bg-black" type="vertical" />
-            <Button size="large" shape="round">
-              Tickets
-            </Button>
+            <Link to="/app/ticket">
+              <Button size="large" shape="round">
+                Tickets
+              </Button>
+            </Link>
             <Divider className="bg-black" type="vertical" />
             <Link to="/app/wallet">
               <Button size="large" shape="round">

@@ -97,7 +97,7 @@ describe("TicketNFT", function() {
     const tokenId = 1
     const tokenUri = await ticketNFT.tokenURI(tokenId)
 
-    expect(tokenUri).to.be.eq(tokenUri)
+    expect(JSON.parse(tokenUri)).to.be.deep.eq(ticketUri)
   })
 
   it("should not allow burnable role to mint", async function() {

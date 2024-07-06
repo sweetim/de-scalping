@@ -1,5 +1,5 @@
 {
-  "name": "dapp2",
+  "name": "dapp",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -22,9 +22,11 @@
     "@web3auth/wallet-services-plugin-react-hooks": "^8.7.0",
     "antd": "^5.19.0",
     "classnames": "^2.5.1",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-qr-code": "^2.0.15",
     "react-router-dom": "^6.24.1",
     "ts-pattern": "^5.2.0",
     "uuid": "^10.0.0",

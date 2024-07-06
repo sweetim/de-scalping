@@ -1,5 +1,4 @@
-import { FC } from "react";
-
+import { FC } from "react"
 
 const LoadingGif: FC = () => {
   return (
@@ -9,7 +8,8 @@ const LoadingGif: FC = () => {
         width={148}
         height={263}
         src="/loading.webp"
-        alt="loading" />
+        alt="loading"
+      />
       <p className="text-white my-5">... preparing ... to ... concert ...</p>
     </>
   )

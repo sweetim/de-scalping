@@ -18,7 +18,6 @@ import {
 const WalletPage: FC = () => {
   const { userInfo } = useWeb3Auth()
   const { tokensData, walletAddress } = useTokenBalance()
-  console.log(tokensData, userInfo?.profileImage)
 
   const renderAvatar = match(userInfo?.profileImage)
     .with(P.string, () => <Avatar size={64} src={userInfo?.profileImage} />)

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./TicketSchema.sol";
 import "./nft/TicketNFT.sol";
@@ -61,7 +62,7 @@ contract TicketShop {
         uint ticketTypeIndex
     ) internal view returns (string memory) {
         bytes memory uriData = abi.encodePacked(
-            "{",
+             "{",
                 '"name":"', ticketMetadata.name, '",'
                 '"description":"', ticketMetadata.description, '",'
                 '"image":"', ticketMetadata.uri, '",'
@@ -69,36 +70,36 @@ contract TicketShop {
                     "{",
                         '"display_type": "date",'
                         '"trait_type": "Start date",'
-                        '"value":', ticketMetadata.dates[0],
-                    "}",
+                        '"value":', Strings.toString(ticketMetadata.dates[0]),
+                    "},",
                     "{",
                         '"display_type": "date",'
                         '"trait_type": "End date",'
-                        '"value":', ticketMetadata.dates[1],
-                    "}",
+                        '"value":', Strings.toString(ticketMetadata.dates[1]),
+                    "},",
                     "{",
                         '"trait_type": "Location name",'
-                        '"value":', ticketMetadata.location.name,
-                    "}",
+                        '"value":"', ticketMetadata.location.name, '"'
+                    "},",
                     "{",
                         '"trait_type": "Location uri",'
-                        '"value":', ticketMetadata.location.uri,
-                    "}",
+                        '"value":"', ticketMetadata.location.uri, '"'
+                    "},",
                     "{",
                         '"trait_type": "Ticket type",'
-                        '"value":', ticketMetadata.pricing[ticketTypeIndex].name,
-                    "}",
+                        '"value":"', ticketMetadata.pricing[ticketTypeIndex].name, '"'
+                    "},",
                     "{",
                         '"trait_type": "Ticket description",'
-                        '"value":', ticketMetadata.pricing[ticketTypeIndex].description,
-                    "}",
+                        '"value":"', ticketMetadata.pricing[ticketTypeIndex].description, '"'
+                    "},",
                     "{",
                         '"trait_type": "Ticket price",'
-                        '"value":', ticketMetadata.pricing[ticketTypeIndex].price,
-                    "}",
+                        '"value":', Strings.toString(ticketMetadata.pricing[ticketTypeIndex].price),
+                    "},",
                     "{",
                         '"trait_type": "Ticket ID",'
-                        '"value":', ticketMetadata.pricing[ticketTypeIndex].tickets,
+                        '"value":', Strings.toString(ticketMetadata.pricing[ticketTypeIndex].tickets),
                     "}",
                 "]"
             "}"

@@ -17,7 +17,7 @@ export type TicketPageParams = {
   address: `0x${string}`
 }
 
-export default function CollectionPage() {
+export default function TicketAddressPage() {
   const { address } = useParams<TicketPageParams>()
 
   const { data: ticketMetadata, isSuccess } = useReadTicketShopGetTicketMetadata({

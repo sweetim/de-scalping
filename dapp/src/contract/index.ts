@@ -24,3 +24,28 @@ export type TicketPricing = {
   price: bigint
   tickets: bigint
 }
+
+export type TicketNftTokenUri = {
+  name: string
+  description: string
+  image: string
+  startDate: number
+  endDate: number
+  locationName: string
+  locationUri: string
+  ticketId: number
+  ticketType: string
+}
+
+export type TicketNftTokenUriRaw = {
+  name: string
+  description: string
+  image: string
+  attributes: TicketNftTokenAttributes[]
+}
+
+export type TicketNftTokenAttributes = {
+  display_type?: "date"
+  trait_type: string
+  value: number | string
+}

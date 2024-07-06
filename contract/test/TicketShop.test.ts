@@ -216,14 +216,42 @@ describe("TicketShop", function() {
     expect(ticketCount_before - ticketCount_after).to.be.eq(0)
   })
 
-  // it("should able to approve allowance", async () => {
-  //   const beforeAllowance = await jpyc.allowance(user_1.address, ticketShopAddress)
+  it("should able to get parse nft tokenURI to json object", async () => {
+    const expected = {
+      name: "Coldplay Concert Tokyo 2023",
+      description:
+        "Experience the magic of Coldplay live in Tokyo and sing along to all your favorite Coldplay hits, from Yellow to Viva La Vida",
+      image:
+        "https://www.billboard.com/wp-content/uploads/2022/05/coldplay-2022-credit-stevie-rae-gibbs-press-billboard-1548.jpg",
+      attributes: [
+        {
+          display_type: "date",
+          trait_type: "Start date",
+          value: 1675987200,
+        },
+        { display_type: "date", trait_type: "End date", value: 1676246400 },
+        { trait_type: "Location name", value: "Tokyo Dome, Japan" },
+        {
+          trait_type: "Location uri",
+          value: "https://maps.app.goo.gl/VftKxYjWcWr9Sxfr7",
+        },
+        { trait_type: "Ticket type", value: "Gold" },
+        {
+          trait_type: "Ticket description",
+          value: "exclusive merchandise and a dedicated entrance",
+        },
+        { trait_type: "Ticket price", value: 500 },
+        { trait_type: "Ticket ID", value: 0 },
+      ],
+    }
 
-  //   await (
-  //     await ticketShop.connect(user_1).approve(0)
-  //   ).wait()
-  //   const afterAllowance = await jpyc.allowance(user_1.address, ticketShopAddress)
+    const tokenUriText = await ticketNft.tokenURI(BigInt(1))
+    const actual = JSON.parse(
+      Buffer
+        .from(tokenUriText.substring(29), "base64")
+        .toString(),
+    )
 
-  //   console.log(beforeAllowance, afterAllowance)
-  // })
+    expect(actual).to.be.deep.eq(expected)
+  })
 })
