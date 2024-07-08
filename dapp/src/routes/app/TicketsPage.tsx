@@ -1,5 +1,5 @@
 import { TicketNftTokenUri } from "@/contract"
-import { TICKET_QUERY } from "@/graphql/queries/ticketShop"
+import { TICKET_QUERY_BY_OWNER } from "@/graphql/queries/ticketShop"
 import { useTicketNft } from "@/hooks/useTicketNft"
 import { useWalletInfo } from "@/hooks/useWalletInfo"
 import { useQuery } from "@apollo/client"
@@ -20,11 +20,14 @@ const TicketsPage: FC = () => {
   const [ selectedTicket, setSelectedTicket ] = useState<TicketNftTokenUri | null>(null)
   const { walletAddress } = useWalletInfo()
 
-  const { data: tickets } = useQuery(TICKET_QUERY, {
-    variables: {
-      owner: walletAddress,
+  const { data: tickets } = useQuery(
+    TICKET_QUERY_BY_OWNER,
+    {
+      variables: {
+        owner: walletAddress,
+      },
     },
-  })
+  )
 
   console.log(tickets)
 

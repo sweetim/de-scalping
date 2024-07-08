@@ -1,7 +1,11 @@
 import { CodegenConfig } from "@graphql-codegen/cli"
 
+import "dotenv/config"
+
+const { VITE_GRAPH_QUERY_URL } = process.env
+
 const config: CodegenConfig = {
-  schema: "http://localhost:8000/subgraphs/name/graph-learn-zksync-testnet",
+  schema: VITE_GRAPH_QUERY_URL,
   // this assumes that all your source files are in a top-level `src/` directory - you might need to adjust this to your file structure
   documents: [ "src/**/*.{ts,tsx}" ],
   generates: {

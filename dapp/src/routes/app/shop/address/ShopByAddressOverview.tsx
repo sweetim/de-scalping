@@ -4,9 +4,9 @@ import {
   useReadJpycBalanceOf,
   useReadTicketShopGetTicketMetadata,
 } from "@/generated"
-import { TICKET_QUERY_ALL } from "@/graphql/queries/ticketShop"
+
 import { PrimaryButton } from "@/modules"
-import { useQuery } from "@apollo/client"
+
 import {
   Space,
   Statistic,
@@ -36,12 +36,6 @@ const ShopByAddressOverview = () => {
     (acc, item) => acc + Number(item.totalTickets),
     0,
   )
-
-  const { data: tickets } = useQuery(
-    TICKET_QUERY_ALL,
-  )
-
-  console.log({ tickets, ticketShopAddress })
 
   return (
     <div>

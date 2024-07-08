@@ -1,0 +1,2 @@
+schema: "http://localhost:8000/subgraphs/name/de-scalping"
+documents: "src/**/*.{graphql,js,ts,jsx,tsx}"

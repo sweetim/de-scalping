@@ -12,7 +12,11 @@ import {
   http,
   toHex,
 } from "viem"
-import { createConfig } from "wagmi"
+import {
+  createConfig,
+  createStorage,
+  noopStorage,
+} from "wagmi"
 
 const WEB3_AUTH_CLIENT_ID = import.meta.env.VITE_WEB3_AUTH_CLIENT_ID
 
@@ -65,12 +69,22 @@ export const web3AuthProviderContextConfig: Web3AuthContextConfig = {
   // plugins: [],
 }
 
+const chains = [ CHAIN_TO_USE ] as const
+const chainIds = chains.map(chain => chain.id).join(",")
+const key = `wagmi-chains-${chainIds}`
+
 export const wagmiConfig = createConfig({
-  chains: [ CHAIN_TO_USE ],
+  chains,
   batch: {
     multicall: true,
   },
   transports: {
     [CHAIN_TO_USE.id]: http("https://zksync-sepolia.g.alchemy.com/v2/0vJMNnaIbQ-5F598k5rI7LYI4fZZBYEd"),
   },
+  storage: createStorage({
+    key,
+    storage: typeof window !== "undefined" && window.localStorage
+      ? window.localStorage
+      : noopStorage,
+  }),
 })

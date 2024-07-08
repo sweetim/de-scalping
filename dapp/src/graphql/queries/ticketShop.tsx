@@ -10,44 +10,42 @@ export const TICKET_SHOP_QUERY = gql(`
   }
 `)
 
-export const TICKET_QUERY = gql(`
-  query TicketQuery($owner: Bytes!) {
-    tickets(where: { owner: $owner }) {
+export const TICKET_QUERY_BY_OWNER = gql(`
+  query TicketQueryByOwner($owner: Bytes!) {
+    tickets(
+      where: {
+        owner: $owner
+      }
+    ) {
       id
       owner
-      ticketShop
       ticketId
-      ticketTypeIndex
       ticketName
-      timestamp
+      ticketShop
+      ticketTypeIndex
+      ticketPrice
+      timestamp_s
+      transactionHash
     }
   }
 `)
 
-export const TICKET_QUERY_ALL = gql(`
-  query TicketQueryAll() {
-    tickets {
+export const TICKET_ACTIVITY_QUERY = gql(`
+  query TicketActivityQuery($ticketShop: Bytes!) {
+    tickets(
+      where: {
+        ticketShop: $ticketShop
+      }
+    ) {
       id
       owner
-      ticketShop
       ticketId
-      ticketTypeIndex
       ticketName
-      timestamp
-    }
-  }
-`)
-
-export const TICKET_QUERY_BY_TICKET_SHOP = gql(`
-  query TicketQueryByOwner($ticketShop: Bytes!) {
-    tickets(where: { ticketShop: $ticketShop }) {
-      id
-      owner
       ticketShop
-      ticketId
       ticketTypeIndex
-      ticketName
-      timestamp
+      ticketPrice
+      timestamp_s
+      transactionHash
     }
   }
 `)

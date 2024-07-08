@@ -13,7 +13,7 @@ const ShopHomePage: FC = () => {
     },
     fetchPolicy: "no-cache",
   })
-  console.log(data)
+
   return (
     <div>
       <h1>Welcome</h1>

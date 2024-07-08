@@ -15,6 +15,7 @@ import {
   TicketsPage,
   WalletPage,
 } from "@/routes"
+import ShopByAddressActivity from "@/routes/app/shop/address/ShopByAddressActivity"
 import { createBrowserRouter } from "react-router-dom"
 
 export type ShopByAddressPageParams = {
@@ -61,6 +62,11 @@ export const router = createBrowserRouter([
               {
                 path: "overview",
                 element: <ShopByAddressOverview />,
+                loader: shopByAddressPageLoader,
+              },
+              {
+                path: "activity",
+                element: <ShopByAddressActivity />,
                 loader: shopByAddressPageLoader,
               },
               {

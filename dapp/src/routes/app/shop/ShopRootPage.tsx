@@ -51,6 +51,7 @@ const ShopRootPage: FC = () => {
           label: address,
           children: [
             { key: `${address}-overview`, label: <Link to={`address/${address}/overview`}>Overview</Link> },
+            { key: `${address}-activity`, label: <Link to={`address/${address}/activity`}>Activity</Link> },
             { key: `${address}-paymaster`, label: <Link to={`address/${address}/paymaster`}>Paymaster</Link> },
             { key: `${address}-nft`, label: <Link to={`address/${address}/nft`}>NFT</Link> },
           ],
