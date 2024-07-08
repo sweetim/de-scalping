@@ -139,6 +139,10 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       },
     )
 
+    const nonce = await publicClient.getTransactionCount({
+      address: address!,
+    })
+
     const txBuyTicket = await walletClient.writeContract({
       account: address,
       abi: ticketShopAbi,
@@ -147,6 +151,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
       args: [
         BigInt(selectedTicketTypeIndex),
       ],
+      nonce,
       gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
       paymaster: paymasterParams.paymaster as `0x${string}`,
       paymasterInput: paymasterParams.paymasterInput as `0x${string}`,
