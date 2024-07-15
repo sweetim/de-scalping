@@ -9,11 +9,15 @@ import {
   Space,
 } from "antd"
 import { Header } from "antd/lib/layout/layout"
+import classnames from "classnames"
 import {
   FC,
   useEffect,
 } from "react"
-import { Link } from "react-router-dom"
+import {
+  Link,
+  useLocation,
+} from "react-router-dom"
 import { match } from "ts-pattern"
 
 type NavBarItem = {
@@ -44,6 +48,11 @@ const NavBarAction: FC = () => {
     logout,
     web3Auth,
   } = useWeb3Auth()
+
+  const location = useLocation()
+  const currentToRoute = location.pathname
+    .split("/", 3)
+    .join("/")
 
   const { walletAddress } = useWalletInfo()
 
@@ -95,7 +104,13 @@ const NavBarAction: FC = () => {
       navBarItems.map((item) => (
         <>
           <Link to={item.to} key={item.to}>
-            <Button size="large" shape="round">
+            <Button
+              className={classnames("", {
+                "bg-[#52525b]": currentToRoute === item.to,
+              })}
+              size="large"
+              shape="round"
+            >
               {item.title}
             </Button>
           </Link>
@@ -115,13 +130,13 @@ const NavBarAction: FC = () => {
           },
           Button: {
             defaultHoverColor: "#FFF",
-            defaultHoverBg: "rgb(82 82 91)",
-            defaultHoverBorderColor: "rgb(82 82 91)",
+            defaultHoverBg: "#52525b",
+            defaultHoverBorderColor: "#52525b",
             defaultColor: "#FFF",
             defaultBg: "#404040",
-            defaultActiveBg: "rgb(82 82 91)",
+            defaultActiveBg: "#52525b",
             defaultActiveColor: "#FFF",
-            defaultActiveBorderColor: "rgb(82 82 91)",
+            defaultActiveBorderColor: "#52525b",
             defaultBorderColor: "#404040",
             contentFontSizeLG: 14,
           },

@@ -32,7 +32,7 @@ export default function LandingPage() {
           <p>no more scalper to steal your tickets</p>
           <p>with us you could enjoy the best ticket buying experience</p>
         </div>
-        <Link to="/app/events" className="btn-colorful">
+        <Link to="/app" className="btn-colorful">
           Explore Events
         </Link>
       </CenterDiv>

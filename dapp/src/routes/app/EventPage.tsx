@@ -1,20 +1,16 @@
 import { TICKET_SHOP_FACTORY_ADDRESS } from "@/contract"
-import {
-  useReadTicketShopFactoryGetTicketShops,
-  useReadTicketShopGetTicketMetadata,
-} from "@/generated"
+import { useReadTicketShopFactoryGetTicketShops } from "@/generated"
 import {
   CenterDiv,
   LoadingGif,
+  TicketShopCard,
 } from "@/modules"
-import { FC } from "react"
-import { Link } from "react-router-dom"
 
 export default function EventPage() {
-  const { data: ticketShops, isSuccess, status } = useReadTicketShopFactoryGetTicketShops({
+  const { data: ticketShops, isSuccess } = useReadTicketShopFactoryGetTicketShops({
     address: TICKET_SHOP_FACTORY_ADDRESS,
   })
-  console.log(isSuccess, status)
+
   if (!isSuccess) {
     return (
       <CenterDiv>
@@ -27,39 +23,12 @@ export default function EventPage() {
     .map(address => <TicketShopCard key={address} address={address} />)
 
   return (
-    <div className="flex flex-row flex-wrap">
+    <div className="p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+      {renderTicketShops}
+      {renderTicketShops}
+      {renderTicketShops}
+      {renderTicketShops}
       {renderTicketShops}
     </div>
-  )
-}
-
-type TicketShopCardProps = {
-  address: `0x${string}`
-}
-
-const TicketShopCard: FC<TicketShopCardProps> = ({ address }) => {
-  const { data: metadata, isSuccess } = useReadTicketShopGetTicketMetadata({
-    address,
-  })
-
-  if (!isSuccess) {
-    return <p>loading...</p>
-  }
-
-  return (
-    <Link key={address} to={`/app/ticket/${address}`}>
-      <div className="bg-white p-5 m-3 rounded-2xl min-w-[28rem] max-w-[28rem]">
-        <h1 className="text-xl font-bold">{metadata.name}</h1>
-        <p className="text-gray-500 text-base">
-          November 6 - 7, 2023 | {metadata.location.name}
-        </p>
-        <img
-          className="rounded-xl my-2"
-          src={metadata.uri}
-          alt="ticket-image"
-        />
-        <section className="text-gray-500">{metadata.description}</section>
-      </div>
-    </Link>
   )
 }

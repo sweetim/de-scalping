@@ -14,6 +14,12 @@ contract TicketShop {
     TicketNFT private immutable ticketNft;
     ShopPaymaster private immutable shopPaymaster;
 
+    event TicketPurchase(
+        address indexed ticketShop,
+        address indexed buyer,
+        uint ticketTypeIndex
+    );
+
     constructor(
         TicketSchema.Metadata memory _ticketMetadata,
         address _allowedErc20Token
@@ -56,6 +62,8 @@ contract TicketShop {
 
         string memory uri = generateUri(ticketTypeIndex);
         ticketNft.mint(msg.sender, uri);
+
+        emit TicketPurchase(address(this), msg.sender, ticketTypeIndex);
     }
 
     function generateUri(

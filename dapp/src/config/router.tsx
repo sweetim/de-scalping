@@ -1,19 +1,18 @@
+import ProtectedRoute from "@/modules/common/ProtectedRoute"
 import {
   AppRootPage,
+  EventAddressPage,
   EventPage,
   LandingPage,
+  ShopByAddressPage,
   ShopCreatePage,
   ShopHomePage,
   ShopNewPage,
   ShopRootPage,
-  TicketAddressPage,
   TicketsPage,
   WalletPage,
 } from "@/routes"
-import {
-  createBrowserRouter,
-  redirect,
-} from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom"
 
 export const router = createBrowserRouter([
   {
@@ -25,28 +24,28 @@ export const router = createBrowserRouter([
     element: <AppRootPage />,
     children: [
       {
-        path: "",
-        loader: async () => redirect("events"),
-      },
-      {
-        path: "events",
+        index: true,
         element: <EventPage />,
       },
       {
+        path: "events/:address",
+        element: <EventAddressPage />,
+      },
+      {
         path: "shop",
-        element: <ShopRootPage />,
+        element: (
+          <ProtectedRoute>
+            <ShopRootPage />
+          </ProtectedRoute>
+        ),
         children: [
           {
-            path: "",
-            loader: async () => redirect("new"),
+            index: true,
+            element: <ShopHomePage />,
           },
           {
             path: "new",
             element: <ShopNewPage />,
-          },
-          {
-            path: "home",
-            element: <ShopHomePage />,
           },
           {
             path: "create",
@@ -55,16 +54,24 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: "shop/:ticketShopAddress",
+        element: <ShopByAddressPage />,
+      },
+      {
         path: "wallet",
-        element: <WalletPage />,
+        element: (
+          <ProtectedRoute>
+            <WalletPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "ticket",
-        element: <TicketsPage />,
-      },
-      {
-        path: "ticket/:address",
-        element: <TicketAddressPage />,
+        element: (
+          <ProtectedRoute>
+            <TicketsPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

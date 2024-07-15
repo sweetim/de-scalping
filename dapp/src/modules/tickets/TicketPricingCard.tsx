@@ -7,7 +7,7 @@ type TicketPricingCardProps = {
 
 const TicketPricingCard: FC<TicketPricingCardProps> = ({ pricing }) => {
   return (
-    <div className="bg-white rounded-lg p-3 min-w-64 max-w-64 m-3">
+    <div className="bg-white/80 rounded-lg p-3 w-full">
       <div>
         <div className="flex justify-between">
           <h2 className="text-xl font-bold">{pricing.name}</h2>

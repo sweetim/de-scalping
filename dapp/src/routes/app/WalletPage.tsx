@@ -23,7 +23,7 @@ const WalletPage: FC = () => {
 
   return (
     <CenterDiv>
-      <div className="bg-white p-5 rounded-xl min-w-96">
+      <div className="backdrop-blur-xl bg-white/50 p-5 rounded-xl min-w-96">
         <Space
           className="w-full"
           direction="vertical"

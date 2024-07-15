@@ -1,198 +1,75 @@
+import TICKET_SHOP_QUERY from "@/graphql/queries/ticketShop"
+import { useWalletInfo } from "@/hooks/useWalletInfo"
+import { useQuery } from "@apollo/client"
 import {
-  JPYC_ADDRESS,
-  TicketMetadata,
-} from "@/contract"
-import {
-  useReadJpycBalanceOf,
-  useReadTicketNftGetAllBurner,
-  useReadTicketShopGetNftAddress,
-  useReadTicketShopGetShopPaymasterAddress,
-  useReadTicketShopGetTicketMetadata,
-} from "@/generated"
-import {
-  TicketMetadataCard,
-  TicketPricingCard,
-} from "@/modules"
-import PrimaryButton from "@/modules/ui/PrimaryButton"
-import {
-  Col,
-  Flex,
-  Row,
-  Space,
-  Statistic,
+  Menu,
+  MenuProps,
 } from "antd"
-import {
-  FC,
-  useEffect,
-  useState,
-} from "react"
-import { formatEther } from "viem"
-import { usePublicClient } from "wagmi"
+
+import { FC } from "react"
+
+type MenuItem = Required<MenuProps>["items"][number]
 
 const ShopHomePage: FC = () => {
-  const ticketShopAddress: `0x${string}` = "0xA33Cd7351093c25c95B77aDe6726dF49614F2B48"
+  const { walletAddress } = useWalletInfo()
 
-  const [ paymasterBalance, setPaymasterBalance ] = useState(0n)
-
-  const { data: shopPaymasterAddress } = useReadTicketShopGetShopPaymasterAddress(
-    {
-      address: ticketShopAddress,
+  const { data, loading, error } = useQuery(TICKET_SHOP_QUERY, {
+    variables: {
+      id: walletAddress,
     },
-  )
-
-  const { data: ticketNftAddress } = useReadTicketShopGetNftAddress({
-    address: ticketShopAddress,
   })
 
-  const { data: ticketNftAllBurners } = useReadTicketNftGetAllBurner({
-    address: ticketNftAddress,
-  })
-
-  const { data: ticketMetadata, isSuccess } = useReadTicketShopGetTicketMetadata({
-    address: ticketShopAddress,
-  })
-
-  const { data: shopPaymasterBalance_jpyc } = useReadJpycBalanceOf({
-    address: JPYC_ADDRESS,
-    args: [
-      shopPaymasterAddress!,
-    ],
-  })
-
-  const { data: ticketShopBalance_jpyc } = useReadJpycBalanceOf({
-    address: JPYC_ADDRESS,
-    args: [
-      ticketShopAddress,
-    ],
-  })
-
-  const metadata = ticketMetadata as TicketMetadata
-
-  const ticketsLeft = ticketMetadata?.pricing.reduce(
-    (acc, item) => acc + Number(item.tickets),
-    0,
-  )
-
-  const publicClient = usePublicClient()
-
-  useEffect(() => {
-    ;(async () => {
-      if (!publicClient) return
-      if (!shopPaymasterAddress) return
-
-      setPaymasterBalance(
-        await publicClient.getBalance({
-          address: shopPaymasterAddress,
-        }),
-      )
-    })()
-  }, [ shopPaymasterAddress, publicClient ])
+  const items: MenuItem[] = [
+    {
+      key: "sub1",
+      label: "Navigation One",
+      children: [
+        {
+          key: "g1",
+          label: "Item 1",
+          type: "group",
+          children: [
+            { key: "1", label: "Option 1" },
+            { key: "2", label: "Option 2" },
+          ],
+        },
+        {
+          key: "g2",
+          label: "Item 2",
+          type: "group",
+          children: [
+            { key: "3", label: "Option 3" },
+            { key: "4", label: "Option 4" },
+          ],
+        },
+      ],
+    },
+    {
+      key: "sub2",
+      label: "Navigation Two",
+      children: [
+        { key: "5", label: "Option 5" },
+        { key: "6", label: "Option 6" },
+        {
+          key: "sub3",
+          label: "Submenu",
+          children: [
+            { key: "7", label: "Option 7" },
+            { key: "8", label: "Option 8" },
+          ],
+        },
+      ],
+    },
+  ]
 
   return (
-    <>
-      <Row>
-        <Col span={12}>
-          <Row>
-            <Col span={24}>
-              <Flex align="end" vertical>
-                <Space className="bg-white p-3 px-5 m-3 rounded-xl" direction="vertical">
-                  <h1 className="text-xl capitalize font-bold">Shop</h1>
-                  <Statistic
-                    title="address"
-                    value={ticketShopAddress}
-                  />
-                  <div className="flex flex-row justify-between">
-                    <Statistic
-                      title="balance (JPYC)"
-                      value={Number(ticketShopBalance_jpyc) || 0}
-                    />
-                    <Space>
-                      <PrimaryButton>Withdraw</PrimaryButton>
-                    </Space>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <Statistic
-                      title="tickets left"
-                      value={Number(ticketsLeft) || "Unknown"}
-                    />
-                  </div>
-                </Space>
-              </Flex>
-            </Col>
-            <Col span={24}>
-              <Flex align="end" vertical>
-                <Space className="bg-white p-3 px-5 m-3 rounded-xl" direction="vertical">
-                  <h1 className="text-xl capitalize font-bold">NFT</h1>
-                  <Statistic
-                    title="address"
-                    value={ticketNftAddress}
-                  />
-                  <Statistic
-                    title="burners"
-                    value={ticketNftAllBurners?.join(",")}
-                  />
-                </Space>
-              </Flex>
-            </Col>
-          </Row>
-        </Col>
-        <Col span={12}>
-          <Flex align="start" vertical>
-            <Space className="bg-white p-3 px-5 m-3 rounded-xl" direction="vertical">
-              <h1 className="text-xl capitalize font-bold">Shop paymaster</h1>
-              <Statistic
-                title="address"
-                value={shopPaymasterAddress}
-              />
-              <div className="flex flex-row justify-between">
-                <Statistic
-                  title="balance (ETH)"
-                  value={formatEther(paymasterBalance)}
-                  precision={5}
-                />
-                <Space>
-                  <PrimaryButton>Deposit</PrimaryButton>
-                  <PrimaryButton>Withdraw</PrimaryButton>
-                </Space>
-              </div>
-              <div className="flex flex-row justify-between">
-                <Statistic
-                  title="balance (JPYC)"
-                  value={Number(shopPaymasterBalance_jpyc) || 0}
-                />
-                <Space>
-                  <PrimaryButton>Withdraw</PrimaryButton>
-                </Space>
-              </div>
-            </Space>
-          </Flex>
-        </Col>
-      </Row>
-
-      {isSuccess && (
-        <Row>
-          <Col span={12} sm={{ flex: "auto" }}>
-            <Row>
-              <Col span={24}>
-                <TicketMetadataCard metadata={metadata} />
-              </Col>
-            </Row>
-          </Col>
-          <Col span={12} className="overflow-auto h-full no-scrollbar">
-            <Row>
-              {metadata.pricing.map(
-                item => (
-                  <TicketPricingCard
-                    key={item.name}
-                    pricing={item}
-                  />
-                ),
-              )}
-            </Row>
-          </Col>
-        </Row>
-      )}
-    </>
+    <Menu
+      style={{ width: 256 }}
+      defaultSelectedKeys={[ "1" ]}
+      defaultOpenKeys={[ "sub1" ]}
+      mode="inline"
+      items={items}
+    />
   )
 }
 

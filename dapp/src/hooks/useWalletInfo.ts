@@ -27,6 +27,7 @@ export function useWalletInfo() {
   const [ walletAddress, setWalletAddress ] = useState<`0x${string}` | null>(null)
 
   const {
+    isConnected,
     userInfo,
     provider,
   } = useWeb3Auth()
@@ -85,9 +86,9 @@ export function useWalletInfo() {
         icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcd1FLPY6Qq-GOSm-8M4bka9NKSY2MHUf_3w&s",
       },
       {
-        title: "Ticket",
+        title: "TKT",
         amount: balance_ticketErc20,
-        icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcd1FLPY6Qq-GOSm-8M4bka9NKSY2MHUf_3w&s",
+        icon: "/scalp.png",
       },
     ]
   }, [ balance_usdt, balance_jpyc, balance_eth ])
@@ -95,6 +96,7 @@ export function useWalletInfo() {
   const isSuccess = isSuccessJpyc && isSuccessUsdt && isSuccessticketErc20
 
   return {
+    isConnected,
     isSuccess,
     userInfo,
     walletAddress,

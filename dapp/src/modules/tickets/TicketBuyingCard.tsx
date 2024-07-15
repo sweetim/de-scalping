@@ -8,7 +8,7 @@ import {
   useReadJpycBalanceOf,
   useReadTicketShopGetShopPaymasterAddress,
 } from "@/generated"
-import { TicketPageParams } from "@/routes/app/TicketAddressPage"
+import { TicketPageParams } from "@/routes/app/EventAddressPage"
 import { IProvider } from "@web3auth/base"
 import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import {
@@ -167,7 +167,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     .otherwise(() => null)
 
   return (
-    <Flex vertical className="w-full h-full m-3 bg-white p-3 max-w-[530px] rounded-xl">
+    <Flex vertical className="w-full h-full bg-white/80 p-3 rounded-xl">
       <h1 className="text-2xl font-bold">Checkout</h1>
       <Flex justify="space-between" align="center">
         <Flex
