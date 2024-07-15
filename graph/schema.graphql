@@ -1,0 +1,5 @@
+type TicketShop @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  ticketShop: Bytes! # address
+}

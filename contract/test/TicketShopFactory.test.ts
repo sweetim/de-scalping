@@ -1,3 +1,4 @@
+import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs"
 import { expect } from "chai"
 import * as hre from "hardhat"
 import {
@@ -52,21 +53,24 @@ describe("TicketShopFactory", function() {
       ticketShopFactory,
       jpycAddress,
       user_1,
+      owner,
     } = await deployTicketShopFactory()
 
-    await (
-      await ticketShopFactory.createTicketShop(
+    await expect(
+      ticketShopFactory.createTicketShop(
         TICKET_METADATA("1"),
         jpycAddress,
-      )
-    ).wait()
+      ),
+    ).to.emit(ticketShopFactory, "TicketShopCreated")
+      .withArgs(owner.address, anyValue)
 
-    await (
-      await ticketShopFactory.createTicketShop(
+    await expect(
+      ticketShopFactory.createTicketShop(
         TICKET_METADATA("2"),
         jpycAddress,
-      )
-    ).wait()
+      ),
+    ).to.emit(ticketShopFactory, "TicketShopCreated")
+      .withArgs(owner.address, anyValue)
 
     const ticketShops = await ticketShopFactory.getTicketShops()
 

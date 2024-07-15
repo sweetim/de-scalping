@@ -1,0 +1,8 @@
+{
+  "zksync-era-sepolia": {
+    "contracts/TicketShopFactory.sol:TicketShopFactory": {
+      "address": "0x4a0EDD269Bdff775c7a6a8C629E1107B096B935d",
+      "startBlock": 3418998
+    }
+  }
+}
