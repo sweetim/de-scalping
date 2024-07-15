@@ -1,13 +1,14 @@
 import { TicketMetadata } from "@/contract"
 import {
+  PrimaryButton,
+  PublishTicketMetadata,
+  StepperEditForm,
   TicketMetadataCard,
   TicketPricingCard,
 } from "@/modules"
 import EditTicketMetadataCard, { EditTicketMetadataForm } from "@/modules/EditTicketMetadataCard"
 import EditTicketPriceTable, { EditTicketPriceItem } from "@/modules/EditTicketPriceTable"
-import PublishTicketMetadata from "@/modules/PublishTicketMetadata"
-import StepperEditForm from "@/modules/StepperEditForm"
-import PrimaryButton from "@/modules/ui/PrimaryButton"
+
 import {
   Avatar,
   Col,

@@ -1,7 +1,6 @@
-import { useTokenBalance } from "@/hooks/useTokenBalance"
+import { useWalletInfo } from "@/hooks/useWalletInfo"
 import { CenterDiv } from "@/modules"
 import { UserList } from "@phosphor-icons/react"
-import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import {
   Avatar,
   List,
@@ -16,8 +15,7 @@ import {
 } from "ts-pattern"
 
 const WalletPage: FC = () => {
-  const { userInfo } = useWeb3Auth()
-  const { tokensData, walletAddress } = useTokenBalance()
+  const { tokensData, walletAddress, userInfo } = useWalletInfo()
 
   const renderAvatar = match(userInfo?.profileImage)
     .with(P.string, () => <Avatar size={64} src={userInfo?.profileImage} />)

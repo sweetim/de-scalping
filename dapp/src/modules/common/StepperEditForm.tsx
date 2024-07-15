@@ -13,7 +13,7 @@ import {
   ReactElement,
   useState,
 } from "react"
-import PrimaryButton from "./ui/PrimaryButton"
+import { PrimaryButton } from "../ui"
 
 export type StepperEditFormProps = {
   steps: string[]

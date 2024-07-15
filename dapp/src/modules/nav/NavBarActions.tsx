@@ -1,5 +1,5 @@
+import { useWalletInfo } from "@/hooks/useWalletInfo"
 import { User } from "@phosphor-icons/react"
-import { IProvider } from "@web3auth/base"
 import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import {
   Button,
@@ -12,15 +12,29 @@ import { Header } from "antd/lib/layout/layout"
 import {
   FC,
   useEffect,
-  useState,
 } from "react"
 import { Link } from "react-router-dom"
 import { match } from "ts-pattern"
-import {
-  createWalletClient,
-  custom,
-} from "viem"
-import { zkSyncInMemoryNode } from "viem/chains"
+
+type NavBarItem = {
+  title: string
+  to: string
+}
+
+const navBarItems: NavBarItem[] = [
+  {
+    title: "Shops",
+    to: "/app/shop",
+  },
+  {
+    title: "Tickets",
+    to: "/app/ticket",
+  },
+  {
+    title: "Wallet",
+    to: "/app/wallet",
+  },
+]
 
 const NavBarAction: FC = () => {
   const {
@@ -29,23 +43,9 @@ const NavBarAction: FC = () => {
     isConnected,
     logout,
     web3Auth,
-    provider,
   } = useWeb3Auth()
 
-  // console.log(asa)
-  const [ address, setAddress ] = useState<`0x${string}`[]>([])
-
-  useEffect(() => {
-    ;(async () => {
-      if (!provider) return
-
-      const walletClient = createWalletClient({
-        chain: zkSyncInMemoryNode,
-        transport: custom<IProvider>(provider),
-      })
-      setAddress(await walletClient.getAddresses())
-    })()
-  }, [ provider ])
+  const { walletAddress } = useWalletInfo()
 
   useEffect(() => {
     ;(async () => {
@@ -85,10 +85,26 @@ const NavBarAction: FC = () => {
         icon={<User size={20} color="#ffebeb" weight="fill" />}
         iconPosition="end"
       >
-        {`${(address[0] || "").slice(0, 8)}...`}
+        {`${(walletAddress || "").slice(0, 8)}...`}
       </Button>
     ))
     .exhaustive()
+
+  const renderNavBarItem = match(isConnected)
+    .with(true, () => (
+      navBarItems.map((item) => (
+        <>
+          <Link to={item.to} key={item.to}>
+            <Button size="large" shape="round">
+              {item.title}
+            </Button>
+          </Link>
+
+          <Divider className="bg-black" type="vertical" />
+        </>
+      ))
+    ))
+    .otherwise(() => null)
 
   return (
     <ConfigProvider
@@ -125,24 +141,7 @@ const NavBarAction: FC = () => {
             />
           </Link>
           <Space>
-            <Link to="/app/shop">
-              <Button size="large" shape="round">
-                Shops
-              </Button>
-            </Link>
-            <Divider className="bg-black" type="vertical" />
-            <Link to="/app/ticket">
-              <Button size="large" shape="round">
-                Tickets
-              </Button>
-            </Link>
-            <Divider className="bg-black" type="vertical" />
-            <Link to="/app/wallet">
-              <Button size="large" shape="round">
-                Wallet
-              </Button>
-            </Link>
-            <Divider className="bg-black" type="vertical" />
+            {renderNavBarItem}
             {renderLoginButton}
           </Space>
         </Flex>
