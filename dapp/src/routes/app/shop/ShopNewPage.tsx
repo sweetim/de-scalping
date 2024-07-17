@@ -15,13 +15,13 @@ const ShopNewPage: FC = () => {
   }
 
   return (
-    <CenterDiv className="text-white">
-      <Storefront size={128} color="#ccc" weight="fill" />
+    <CenterDiv className="text-black">
+      <Storefront size={128} color="#404040" weight="duotone" />
       <h1>create a shop now</h1>
       <p>and start selling your merchandise with us</p>
       <div className="mt-10">
-        <PrimaryButton onClick={createClickHandler}>
-          <PlusCircle size={32} color="#404040" weight="fill" />
+        <PrimaryButton dark onClick={createClickHandler}>
+          <PlusCircle size={32} color="#c7aef6" weight="fill" />
           <h2 className="capitalize">create</h2>
         </PrimaryButton>
       </div>

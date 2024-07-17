@@ -4,7 +4,10 @@ import {
   EventAddressPage,
   EventPage,
   LandingPage,
-  ShopByAddressPage,
+  ShopByAddressNft,
+  ShopByAddressOverview,
+  ShopByAddressPaymaster,
+  ShopByAddressRootPage,
   ShopCreatePage,
   ShopHomePage,
   ShopNewPage,
@@ -13,6 +16,14 @@ import {
   WalletPage,
 } from "@/routes"
 import { createBrowserRouter } from "react-router-dom"
+
+export type ShopByAddressPageParams = {
+  ticketShopAddress: `0x${string}`
+}
+
+const shopByAddressPageLoader = async ({ params }: any) => {
+  return params as ShopByAddressPageParams
+}
 
 export const router = createBrowserRouter([
   {
@@ -33,11 +44,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "shop",
-        element: (
-          <ProtectedRoute>
-            <ShopRootPage />
-          </ProtectedRoute>
-        ),
+        element: <ShopRootPage />,
         children: [
           {
             index: true,
@@ -48,14 +55,35 @@ export const router = createBrowserRouter([
             element: <ShopNewPage />,
           },
           {
-            path: "create",
-            element: <ShopCreatePage />,
+            path: "address/:ticketShopAddress",
+            element: <ShopByAddressRootPage />,
+            children: [
+              {
+                path: "overview",
+                element: <ShopByAddressOverview />,
+                loader: shopByAddressPageLoader,
+              },
+              {
+                path: "paymaster",
+                element: <ShopByAddressPaymaster />,
+                loader: shopByAddressPageLoader,
+              },
+              {
+                path: "nft",
+                element: <ShopByAddressNft />,
+                loader: shopByAddressPageLoader,
+              },
+              {
+                path: "new",
+                element: <ShopNewPage />,
+              },
+            ],
           },
         ],
       },
       {
-        path: "shop/:ticketShopAddress",
-        element: <ShopByAddressPage />,
+        path: "shop/create",
+        element: <ShopCreatePage />,
       },
       {
         path: "wallet",

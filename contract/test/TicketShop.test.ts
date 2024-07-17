@@ -79,8 +79,8 @@ describe("TicketShop", function() {
       await ticketShop.getTicketMetadata(),
     )
 
-    const ticketCount_before = Number(
-      ticketMetadata.pricing[ticketTypeIndex].tickets,
+    const ticketSold_before = Number(
+      ticketMetadata.pricing[ticketTypeIndex].soldTickets,
     )
     const ticketPrice = Number(
       ticketMetadata.pricing[ticketTypeIndex].price,
@@ -103,10 +103,10 @@ describe("TicketShop", function() {
         .buyTicket(ticketTypeIndex)
     ).wait()
 
-    const ticketCount_after = Number(
+    const ticketSold_after = Number(
       convertToStruct(
         await ticketShop.getTicketMetadata(),
-      ).pricing[ticketTypeIndex].tickets,
+      ).pricing[ticketTypeIndex].soldTickets,
     )
 
     const balance_after = await user_1.getBalance()
@@ -115,7 +115,7 @@ describe("TicketShop", function() {
 
     expect(gasUsed).to.be.gt(0)
     expect(jpycBalance_before - jpycBalance_after).to.be.eq(ticketPrice)
-    expect(ticketCount_before - ticketCount_after).to.be.eq(1)
+    expect(ticketSold_after - ticketSold_before).to.be.eq(1)
     expect(await ticketNft.balanceOf(user_1)).to.be.eq(1)
   })
 
@@ -125,8 +125,8 @@ describe("TicketShop", function() {
       await ticketShop.getTicketMetadata(),
     )
 
-    const ticketCount_before = Number(
-      ticketMetadata.pricing[ticketTypeIndex].tickets,
+    const ticketSold_before = Number(
+      ticketMetadata.pricing[ticketTypeIndex].soldTickets,
     )
     const ticketPrice = Number(
       ticketMetadata.pricing[ticketTypeIndex].price,
@@ -153,10 +153,10 @@ describe("TicketShop", function() {
       expect(err.message).to.include("only allow to purchase 1 ticket")
     }
 
-    const ticketCount_after = Number(
+    const ticketSold_after = Number(
       convertToStruct(
         await ticketShop.getTicketMetadata(),
-      ).pricing[ticketTypeIndex].tickets,
+      ).pricing[ticketTypeIndex].soldTickets,
     )
 
     const balance_after = await user_1.getBalance()
@@ -165,7 +165,7 @@ describe("TicketShop", function() {
 
     expect(gasUsed).to.be.gt(0)
     expect(jpycBalance_before - jpycBalance_after).to.be.eq(0)
-    expect(ticketCount_before - ticketCount_after).to.be.eq(0)
+    expect(ticketSold_before - ticketSold_after).to.be.eq(0)
     expect(await ticketNft.balanceOf(user_1)).to.be.eq(1)
   })
 
@@ -175,8 +175,8 @@ describe("TicketShop", function() {
       await ticketShop.getTicketMetadata(),
     )
 
-    const ticketCount_before = Number(
-      ticketMetadata.pricing[ticketTypeIndex].tickets,
+    const ticketSold_before = Number(
+      ticketMetadata.pricing[ticketTypeIndex].soldTickets,
     )
     const ticketPrice = Number(
       ticketMetadata.pricing[ticketTypeIndex].price,
@@ -201,10 +201,10 @@ describe("TicketShop", function() {
       expect(err.message).to.include("tickets sold out")
     }
 
-    const ticketCount_after = Number(
+    const ticketSold_after = Number(
       convertToStruct(
         await ticketShop.getTicketMetadata(),
-      ).pricing[ticketTypeIndex].tickets,
+      ).pricing[ticketTypeIndex].soldTickets,
     )
 
     const balance_after = await user_2.getBalance()
@@ -213,7 +213,7 @@ describe("TicketShop", function() {
 
     expect(gasUsed).to.be.gt(0)
     expect(jpycBalance_before - jpycBalance_after).to.be.eq(0)
-    expect(ticketCount_before - ticketCount_after).to.be.eq(0)
+    expect(ticketSold_before - ticketSold_after).to.be.eq(0)
   })
 
   it("should able to get parse nft tokenURI to json object", async () => {

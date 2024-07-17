@@ -1,13 +1,14 @@
 import {
+  CHAIN_TO_USE,
   JPYC_ADDRESS,
   TicketPricing,
 } from "@/contract"
 import {
   jpycAbi,
   ticketShopAbi,
-  useReadJpycBalanceOf,
   useReadTicketShopGetShopPaymasterAddress,
 } from "@/generated"
+import { useWalletInfo } from "@/hooks/useWalletInfo"
 import { TicketPageParams } from "@/routes/app/EventAddressPage"
 import { IProvider } from "@web3auth/base"
 import { useWeb3Auth } from "@web3auth/modal-react-hooks"
@@ -27,14 +28,11 @@ import {
   P,
 } from "ts-pattern"
 import {
-  createPublicClient,
   createWalletClient,
   custom,
-  http,
 } from "viem"
-import { zkSyncInMemoryNode } from "viem/chains"
 import { eip712WalletActions } from "viem/zksync"
-import { useAccount } from "wagmi"
+import { usePublicClient } from "wagmi"
 import { utils } from "zksync-ethers"
 
 export type TicketBuyingCardProps = {
@@ -43,24 +41,16 @@ export type TicketBuyingCardProps = {
 
 const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
   const { address: ticketShopAddress } = useParams<TicketPageParams>()
-  const { address } = useAccount()
-  const {
-    provider,
-  } = useWeb3Auth()
+
+  const { walletAddress } = useWalletInfo()
+  const { provider } = useWeb3Auth()
+  const publicClient = usePublicClient()
 
   const { data: shopPaymasterAddress } = useReadTicketShopGetShopPaymasterAddress(
     {
       address: ticketShopAddress,
     },
   )
-
-  const { data: jpycBalance } = useReadJpycBalanceOf({
-    address: JPYC_ADDRESS,
-    args: [
-      address!,
-    ],
-  })
-  console.log(jpycBalance)
 
   const [ selectedTicketTypeIndex, setSelectedTicketTypeIndex ] = useState<number | null>(null)
 
@@ -70,14 +60,11 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     if (!ticketShopAddress) return
     if (!selectedTicketPrice) return
     if (!selectedTicketTypeIndex) return
-
-    const publicClient = createPublicClient({
-      chain: zkSyncInMemoryNode,
-      transport: http(),
-    })
+    if (!walletAddress) return
+    if (!publicClient) return
 
     const walletClient = createWalletClient({
-      chain: zkSyncInMemoryNode,
+      chain: CHAIN_TO_USE,
       transport: custom<IProvider>(provider),
     }).extend(eip712WalletActions())
 
@@ -86,14 +73,12 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     })
     console.log({ transactionCount })
 
-    const [ address ] = await walletClient.getAddresses()
-
     const allowance = await publicClient.readContract({
       abi: jpycAbi,
       address: JPYC_ADDRESS,
       functionName: "allowance",
       args: [
-        address,
+        walletAddress,
         ticketShopAddress,
       ],
     })
@@ -112,7 +97,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
 
       await publicClient.waitForTransactionReceipt({
         hash: await walletClient.writeContract({
-          account: address,
+          account: walletAddress,
           abi: jpycAbi,
           address: JPYC_ADDRESS,
           functionName: "approve",
@@ -140,11 +125,11 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     )
 
     const nonce = await publicClient.getTransactionCount({
-      address: address!,
+      address: walletAddress,
     })
 
     const txBuyTicket = await walletClient.writeContract({
-      account: address,
+      account: walletAddress,
       abi: ticketShopAbi,
       address: ticketShopAddress,
       functionName: "buyTicket",
@@ -185,7 +170,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
             }))}
           />
         </Flex>
-        <h2 className="text-xl font-bold">{`${selectedTicketPrice || 0} USDC`}</h2>
+        <h2 className="text-xl font-bold">{`${selectedTicketPrice?.toLocaleString() || 0} JPYC`}</h2>
       </Flex>
       <Flex justify="center" align="center" className="mt-5">
         <Button

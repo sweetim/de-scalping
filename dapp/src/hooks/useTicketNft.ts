@@ -12,10 +12,10 @@ import {
   useState,
 } from "react"
 import {
-  useAccount,
   usePublicClient,
   useReadContracts,
 } from "wagmi"
+import { useWalletInfo } from "./useWalletInfo"
 
 type UseTicketNftProps = {
   ticketShopAddress?: `0x${string}`
@@ -24,7 +24,7 @@ type UseTicketNftProps = {
 export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
   const [ tokenIds, setTokenIds ] = useState<bigint[]>([])
 
-  const { address: walletAddress } = useAccount()
+  const { walletAddress } = useWalletInfo()
   const publicClient = usePublicClient()
 
   const { data: ticketNftAddress } = useReadTicketShopGetNftAddress({
@@ -41,7 +41,7 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
       ],
     })),
   })
-
+  console.log({ rawTokenUris, ticketNftAddress, tokenIds })
   const tokenUris = useMemo<TicketNftTokenUri[]>(() => {
     if (!rawTokenUris) return []
 
@@ -86,12 +86,19 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
       })
   }, [ rawTokenUris ])
 
-  console.log({ tokenUris })
   useEffect(() => {
     ;(async () => {
       if (!publicClient) return
       if (!walletAddress) return
       if (!ticketNftAddress) return
+
+      console.log(
+        await publicClient.getContractEvents({
+          abi: ticketNftAbi,
+          address: ticketNftAddress,
+          eventName: "Transfer",
+        }),
+      )
 
       const transferEvents = await publicClient.getContractEvents({
         abi: ticketNftAbi,
@@ -102,6 +109,7 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
         },
       })
 
+      console.log({ transferEvents })
       const tokenIds = transferEvents
         .map(item => item.args.tokenId)
         .filter((item): item is bigint => Boolean(item))

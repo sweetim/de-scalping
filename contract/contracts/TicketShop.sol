@@ -17,7 +17,8 @@ contract TicketShop {
     event TicketPurchase(
         address indexed ticketShop,
         address indexed buyer,
-        uint ticketTypeIndex
+        uint ticketTypeIndex,
+        uint ticketId
     );
 
     constructor(
@@ -25,6 +26,11 @@ contract TicketShop {
         address _allowedErc20Token
     ) payable {
         ticketMetadata = _ticketMetadata;
+
+        for (uint i = 0; i < ticketMetadata.pricing.length; i++) {
+            ticketMetadata.pricing[i].soldTickets = 0;
+        }
+
         erc20Token = IERC20(_allowedErc20Token);
         ticketNft = new TicketNFT(_ticketMetadata.name, "TICKET");
         shopPaymaster = new ShopPaymaster(_allowedErc20Token);
@@ -46,9 +52,14 @@ contract TicketShop {
         return address(shopPaymaster);
     }
 
+    function getSupportedErc20Tokens() external view returns (address) {
+        return address(erc20Token);
+    }
+
     function buyTicket(uint ticketTypeIndex) external {
         uint ticketPrice = ticketMetadata.pricing[ticketTypeIndex].price;
-        uint ticketsLeft = ticketMetadata.pricing[ticketTypeIndex].tickets;
+        uint ticketsLeft = ticketMetadata.pricing[ticketTypeIndex].totalTickets
+            - ticketMetadata.pricing[ticketTypeIndex].soldTickets;
 
         uint allowance = erc20Token.allowance(msg.sender, address(this));
         bool hasTicketAlready = ticketNft.balanceOf(msg.sender) < 10;
@@ -57,13 +68,20 @@ contract TicketShop {
         require(hasTicketAlready, "only allow to purchase 1 ticket");
         require(ticketsLeft > 0, "tickets sold out");
 
+
         erc20Token.transferFrom(msg.sender, address(this), ticketPrice);
-        ticketMetadata.pricing[ticketTypeIndex].tickets -= 1;
 
         string memory uri = generateUri(ticketTypeIndex);
         ticketNft.mint(msg.sender, uri);
 
-        emit TicketPurchase(address(this), msg.sender, ticketTypeIndex);
+        uint ticketId = ticketMetadata.pricing[ticketTypeIndex].soldTickets;
+        ticketMetadata.pricing[ticketTypeIndex].soldTickets += 1;
+
+        emit TicketPurchase(
+            address(this),
+            msg.sender,
+            ticketTypeIndex,
+            ticketId);
     }
 
     function generateUri(
@@ -107,7 +125,7 @@ contract TicketShop {
                     "},",
                     "{",
                         '"trait_type": "Ticket ID",'
-                        '"value":', Strings.toString(ticketMetadata.pricing[ticketTypeIndex].tickets),
+                        '"value":', Strings.toString(ticketMetadata.pricing[ticketTypeIndex].soldTickets),
                     "}",
                 "]"
             "}"

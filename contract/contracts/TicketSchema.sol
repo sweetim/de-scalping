@@ -21,6 +21,7 @@ library TicketSchema {
         string name;
         string description;
         uint price;
-        uint tickets;
+        uint soldTickets;
+        uint totalTickets;
     }
 }

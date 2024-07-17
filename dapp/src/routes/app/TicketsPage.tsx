@@ -1,5 +1,8 @@
 import { TicketNftTokenUri } from "@/contract"
+import { TICKET_QUERY } from "@/graphql/queries/ticketShop"
 import { useTicketNft } from "@/hooks/useTicketNft"
+import { useWalletInfo } from "@/hooks/useWalletInfo"
+import { useQuery } from "@apollo/client"
 import { QrCode } from "@phosphor-icons/react"
 import {
   Modal,
@@ -15,8 +18,18 @@ import {
 const TicketsPage: FC = () => {
   const [ isModalOpen, setIsModalOpen ] = useState(false)
   const [ selectedTicket, setSelectedTicket ] = useState<TicketNftTokenUri | null>(null)
+  const { walletAddress } = useWalletInfo()
+
+  const { data: tickets } = useQuery(TICKET_QUERY, {
+    variables: {
+      owner: walletAddress,
+    },
+  })
+
+  console.log(tickets)
+
   const { tokenUris } = useTicketNft({
-    ticketShopAddress: "0xF77A3810c04d289bE9e6AFa78D4713887C0Adc74",
+    ticketShopAddress: "0x15d7ff316126f0cbb2fe20708236e57cc60e8dbb",
   })
 
   const handleCancel = () => {

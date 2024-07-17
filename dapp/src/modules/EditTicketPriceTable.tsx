@@ -19,6 +19,7 @@ import {
   useRef,
   useState,
 } from "react"
+import { PrimaryButton } from "./ui"
 
 type EditTicketPriceTableProps = {
   priceUnit: string
@@ -233,9 +234,9 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUn
 
   return (
     <Space className="py-5 w-full" direction="vertical">
-      <Button className="!bg-purple-300 !text-black" onClick={handleAdd}>
+      <PrimaryButton onClick={handleAdd}>
         Add ticket
-      </Button>
+      </PrimaryButton>
       <Table
         components={components}
         pagination={false}

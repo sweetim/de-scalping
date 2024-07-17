@@ -23,7 +23,7 @@ import "./index.css"
 const queryClient = new QueryClient()
 
 const apolloClient = new ApolloClient({
-  uri: "http://localhost:8000/subgraphs/name/graph-learn-zksync-testnet",
+  uri: import.meta.env.VITE_GRAPH_QUERY_URL,
   cache: new InMemoryCache(),
 })
 

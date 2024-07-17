@@ -992,7 +992,12 @@ export const ticketShopAbi = [
               { name: 'name', internalType: 'string', type: 'string' },
               { name: 'description', internalType: 'string', type: 'string' },
               { name: 'price', internalType: 'uint256', type: 'uint256' },
-              { name: 'tickets', internalType: 'uint256', type: 'uint256' },
+              { name: 'soldTickets', internalType: 'uint256', type: 'uint256' },
+              {
+                name: 'totalTickets',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
             ],
           },
         ],
@@ -1000,6 +1005,37 @@ export const ticketShopAbi = [
       { name: '_allowedErc20Token', internalType: 'address', type: 'address' },
     ],
     stateMutability: 'payable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'ticketShop',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'buyer',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'ticketTypeIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'ticketId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'TicketPurchase',
   },
   {
     type: 'function',
@@ -1021,6 +1057,13 @@ export const ticketShopAbi = [
     type: 'function',
     inputs: [],
     name: 'getShopPaymasterAddress',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'getSupportedErc20Tokens',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
@@ -1056,7 +1099,12 @@ export const ticketShopAbi = [
               { name: 'name', internalType: 'string', type: 'string' },
               { name: 'description', internalType: 'string', type: 'string' },
               { name: 'price', internalType: 'uint256', type: 'uint256' },
-              { name: 'tickets', internalType: 'uint256', type: 'uint256' },
+              { name: 'soldTickets', internalType: 'uint256', type: 'uint256' },
+              {
+                name: 'totalTickets',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
             ],
           },
         ],
@@ -1071,6 +1119,63 @@ export const ticketShopAbi = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const ticketShopFactoryAbi = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'ticketShop',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'ticketMetadata',
+        internalType: 'struct TicketSchema.Metadata',
+        type: 'tuple',
+        components: [
+          { name: 'id', internalType: 'string', type: 'string' },
+          { name: 'name', internalType: 'string', type: 'string' },
+          { name: 'description', internalType: 'string', type: 'string' },
+          { name: 'uri', internalType: 'string', type: 'string' },
+          { name: 'dates', internalType: 'uint256[2]', type: 'uint256[2]' },
+          {
+            name: 'location',
+            internalType: 'struct TicketSchema.Location',
+            type: 'tuple',
+            components: [
+              { name: 'name', internalType: 'string', type: 'string' },
+              { name: 'uri', internalType: 'string', type: 'string' },
+            ],
+          },
+          {
+            name: 'pricing',
+            internalType: 'struct TicketSchema.Pricing[]',
+            type: 'tuple[]',
+            components: [
+              { name: 'name', internalType: 'string', type: 'string' },
+              { name: 'description', internalType: 'string', type: 'string' },
+              { name: 'price', internalType: 'uint256', type: 'uint256' },
+              { name: 'soldTickets', internalType: 'uint256', type: 'uint256' },
+              {
+                name: 'totalTickets',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
+            ],
+          },
+        ],
+        indexed: false,
+      },
+    ],
+    name: 'TicketShopCreated',
+  },
   {
     type: 'function',
     inputs: [
@@ -1101,7 +1206,12 @@ export const ticketShopFactoryAbi = [
               { name: 'name', internalType: 'string', type: 'string' },
               { name: 'description', internalType: 'string', type: 'string' },
               { name: 'price', internalType: 'uint256', type: 'uint256' },
-              { name: 'tickets', internalType: 'uint256', type: 'uint256' },
+              { name: 'soldTickets', internalType: 'uint256', type: 'uint256' },
+              {
+                name: 'totalTickets',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
             ],
           },
         ],
@@ -2423,6 +2533,15 @@ export const useReadTicketShopGetShopPaymasterAddress =
   })
 
 /**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"getSupportedErc20Tokens"`
+ */
+export const useReadTicketShopGetSupportedErc20Tokens =
+  /*#__PURE__*/ createUseReadContract({
+    abi: ticketShopAbi,
+    functionName: 'getSupportedErc20Tokens',
+  })
+
+/**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link ticketShopAbi}__ and `functionName` set to `"getTicketMetadata"`
  */
 export const useReadTicketShopGetTicketMetadata =
@@ -2459,6 +2578,21 @@ export const useSimulateTicketShopBuyTicket =
   /*#__PURE__*/ createUseSimulateContract({
     abi: ticketShopAbi,
     functionName: 'buyTicket',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link ticketShopAbi}__
+ */
+export const useWatchTicketShopEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({ abi: ticketShopAbi })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link ticketShopAbi}__ and `eventName` set to `"TicketPurchase"`
+ */
+export const useWatchTicketShopTicketPurchaseEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: ticketShopAbi,
+    eventName: 'TicketPurchase',
   })
 
 /**
@@ -2515,6 +2649,21 @@ export const useSimulateTicketShopFactoryCreateTicketShop =
   /*#__PURE__*/ createUseSimulateContract({
     abi: ticketShopFactoryAbi,
     functionName: 'createTicketShop',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link ticketShopFactoryAbi}__
+ */
+export const useWatchTicketShopFactoryEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({ abi: ticketShopFactoryAbi })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link ticketShopFactoryAbi}__ and `eventName` set to `"TicketShopCreated"`
+ */
+export const useWatchTicketShopFactoryTicketShopCreatedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: ticketShopFactoryAbi,
+    eventName: 'TicketShopCreated',
   })
 
 /**

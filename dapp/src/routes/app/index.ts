@@ -1,7 +1,7 @@
 export { default as EventAddressPage } from "./EventAddressPage"
 export { default as EventPage } from "./EventPage"
 export { default as AppRootPage } from "./RootPage"
-export { default as ShopByAddressPage } from "./shop/ShopByAddressPage"
+export * from "./shop"
 export { default as ShopCreatePage } from "./shop/ShopCreatePage"
 export { default as ShopHomePage } from "./shop/ShopHomePage"
 export { default as ShopNewPage } from "./shop/ShopNewPage"

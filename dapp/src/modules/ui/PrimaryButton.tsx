@@ -5,10 +5,12 @@ import {
   MouseEventHandler,
   ReactNode,
 } from "react"
+import { twMerge } from "tailwind-merge"
 import { match } from "ts-pattern"
 
 type PrimaryButtonProps = {
   children: string | ReactNode
+  className?: string
   dark?: boolean
   rounded?: boolean
   icon?: ReactNode
@@ -20,6 +22,7 @@ type PrimaryButtonProps = {
 const PrimaryButton: FC<PrimaryButtonProps> = ({
   dark,
   rounded,
+  className,
   children,
   icon,
   iconPosition,
@@ -31,13 +34,13 @@ const PrimaryButton: FC<PrimaryButtonProps> = ({
     children,
   ]
 
-  const className = classnames(
+  const buttonClassName = classnames(
     `bg-purple-300
     text-black
-    rounded-lg
+    rounded-xl
     border-none
-    px-5
     py-2.5
+    px-5
     hover:bg-purple-200`,
     {
       "text-white": dark,
@@ -52,9 +55,9 @@ const PrimaryButton: FC<PrimaryButtonProps> = ({
     <button
       type="button"
       onClick={onClick}
-      className={className}
+      className={twMerge(buttonClassName, className)}
     >
-      <Space size="middle">
+      <Space className="flex flex-row items-center justify-center">
         {match(iconPosition)
           .with("end", () => items.reverse())
           .otherwise(() => items)}

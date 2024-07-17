@@ -62,7 +62,7 @@ describe("TicketShopFactory", function() {
         jpycAddress,
       ),
     ).to.emit(ticketShopFactory, "TicketShopCreated")
-      .withArgs(owner.address, anyValue)
+      .withArgs(owner.address, anyValue, anyValue)
 
     await expect(
       ticketShopFactory.createTicketShop(
@@ -70,7 +70,7 @@ describe("TicketShopFactory", function() {
         jpycAddress,
       ),
     ).to.emit(ticketShopFactory, "TicketShopCreated")
-      .withArgs(owner.address, anyValue)
+      .withArgs(owner.address, anyValue, anyValue)
 
     const ticketShops = await ticketShopFactory.getTicketShops()
 
@@ -89,5 +89,49 @@ describe("TicketShopFactory", function() {
 
     expect(id_1).to.be.eq("1")
     expect(id_2).to.be.eq("2")
+  })
+
+  it("should able to reset ticket shop ticket sold when creating", async function() {
+    const {
+      ticketShopFactory,
+      jpycAddress,
+      owner,
+    } = await deployTicketShopFactory()
+
+    const metadata = TICKET_METADATA("1")
+    const newPricing = metadata.pricing.map((item, index) => ({
+      ...item,
+      soldTickets: 100 + index,
+    }))
+
+    const randomTicketsSoldMetadata = {
+      ...metadata,
+      pricing: newPricing,
+    }
+
+    expect(randomTicketsSoldMetadata.pricing[0].soldTickets).to.be.eq(100)
+
+    await expect(
+      ticketShopFactory.createTicketShop(
+        randomTicketsSoldMetadata,
+        jpycAddress,
+      ),
+    ).to.emit(ticketShopFactory, "TicketShopCreated")
+      .withArgs(owner.address, anyValue, anyValue)
+
+    const ticketShops = await ticketShopFactory.getTicketShops()
+
+    const [ ticketMetadata ] = await Promise.all(
+      ticketShops.map(async (address, i) => {
+        const ticketShop: TicketShop = await hre.zksyncEthers.getContractAt(
+          "TicketShop",
+          address,
+        ) as any
+
+        return (await ticketShop.getTicketMetadata())
+      }),
+    )
+    console.log(ticketMetadata)
+    ticketMetadata.pricing.forEach(item => expect(item.soldTickets).to.be.eq(0))
   })
 })

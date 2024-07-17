@@ -8,7 +8,6 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider"
 import { MetamaskAdapter } from "@web3auth/metamask-adapter"
 import { Web3AuthOptions } from "@web3auth/modal"
 import { Web3AuthContextConfig } from "@web3auth/modal-react-hooks"
-import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin"
 import {
   http,
   toHex,
@@ -26,6 +25,7 @@ const chainConfig: CustomChainConfig = {
   ticker: CHAIN_TO_USE.nativeCurrency.symbol,
   tickerName: CHAIN_TO_USE.nativeCurrency.name,
   isTestnet: true,
+  logo: "/scalp.png",
 }
 
 const privateKeyProvider = new EthereumPrivateKeyProvider({
@@ -44,22 +44,24 @@ const metamaskAdapter = new MetamaskAdapter({
 const web3AuthOptions: Web3AuthOptions = {
   clientId: WEB3_AUTH_CLIENT_ID,
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
-  privateKeyProvider: privateKeyProvider,
+  privateKeyProvider,
 }
 
-const walletServicesPlugin = new WalletServicesPlugin({
-  wsEmbedOpts: {},
-  walletInitOptions: {
-    whiteLabel: {
-      showWidgetButton: true,
-    },
-  },
-})
+// const walletServicesPlugin = new WalletServicesPlugin({
+//   wsEmbedOpts: {},
+//   walletInitOptions: {
+//     whiteLabel: {
+//       showWidgetButton: false,
+//       logoDark: "/scalp.png",
+//       logoLight: "/scalp.png",
+//     },
+//   },
+// })
 
 export const web3AuthProviderContextConfig: Web3AuthContextConfig = {
   web3AuthOptions,
   adapters: [ metamaskAdapter ],
-  plugins: [ walletServicesPlugin ],
+  // plugins: [ walletServicesPlugin ],
   // plugins: [],
 }
 
@@ -69,6 +71,6 @@ export const wagmiConfig = createConfig({
     multicall: true,
   },
   transports: {
-    [CHAIN_TO_USE.id]: http(),
+    [CHAIN_TO_USE.id]: http("https://zksync-sepolia.g.alchemy.com/v2/0vJMNnaIbQ-5F598k5rI7LYI4fZZBYEd"),
   },
 })

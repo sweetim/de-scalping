@@ -9,7 +9,8 @@ contract TicketShopFactory {
 
     event TicketShopCreated(
         address indexed owner,
-        address indexed ticketShop
+        address indexed ticketShop,
+        TicketSchema.Metadata ticketMetadata
     );
 
     function createTicketShop(
@@ -23,7 +24,10 @@ contract TicketShopFactory {
 
         ticketShops.push(ticketShop);
 
-        emit TicketShopCreated(msg.sender, address(ticketShop));
+        emit TicketShopCreated(
+            msg.sender,
+            address(ticketShop),
+            ticketMetadata);
     }
 
     function getTicketShops() external view returns (TicketShop[] memory) {

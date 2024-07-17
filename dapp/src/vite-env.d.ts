@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_USDT_ADDRESS: `0x${string}`
   readonly VITE_JPYC_ADDRESS: `0x${string}`
   readonly VITE_TICKET_SHOP_FACTORY_ADDRESS: `0x${string}`
+  readonly VITE_GRAPH_QUERY_URL: string
 }
 
 interface ImportMeta {

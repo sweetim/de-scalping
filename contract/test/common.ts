@@ -21,25 +21,29 @@ export const TICKET_METADATA = (id = uuidv4()): TicketSchema.MetadataStruct => (
       name: "Gold",
       description: "exclusive merchandise and a dedicated entrance",
       price: 500,
-      tickets: 1,
+      soldTickets: 0,
+      totalTickets: 1,
     },
     {
       name: "Balcony",
       description: "secure your spot for a great view of the stage",
       price: 250,
-      tickets: 100,
+      soldTickets: 0,
+      totalTickets: 100,
     },
     {
       name: "S",
       description: "this section offers a fantastic view of the performance",
       price: 200,
-      tickets: 100,
+      soldTickets: 0,
+      totalTickets: 100,
     },
     {
       name: "A",
       description: "affordable option provides a great concert experience",
       price: 160,
-      tickets: 100,
+      soldTickets: 0,
+      totalTickets: 100,
     },
   ],
 })
@@ -73,14 +77,16 @@ export function convertToStruct(input: TicketSchema.MetadataStructOutput): Ticke
         name,
         description,
         price,
-        tickets,
+        soldTickets,
+        totalTickets,
       ] = item
 
       return {
         name,
         description,
         price: Number(price),
-        tickets: Number(tickets),
+        soldTickets: Number(soldTickets),
+        totalTickets: Number(totalTickets),
       }
     }),
   }

@@ -26,7 +26,8 @@ export type TicketPricing = {
   name: string
   description: string
   price: bigint
-  tickets: bigint
+  soldTickets: bigint
+  totalTickets: bigint
 }
 
 export type TicketNftTokenUri = {

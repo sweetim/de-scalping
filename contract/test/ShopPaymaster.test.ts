@@ -116,7 +116,7 @@ describe("ShopPaymaster", function() {
     )
 
     const ethBalance_user1_beforeAprrove = await user_1.getBalance()
-    console.log(`eth balance before ${ethBalance_user1_beforeAprrove}`)
+
     const paymasterParams = utils.getPaymasterParams(
       ticketShopPaymasterAddress,
       {

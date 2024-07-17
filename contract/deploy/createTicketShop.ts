@@ -55,26 +55,30 @@ export default async function() {
       {
         name: "Gold",
         description: "exclusive merchandise and a dedicated entrance",
-        price: 500,
-        tickets: 50,
+        price: 50000,
+        soldTickets: 0,
+        totalTickets: 50,
       },
       {
         name: "Balcony",
         description: "secure your spot for a great view of the stage",
-        price: 250,
-        tickets: 200,
+        price: 25000,
+        soldTickets: 0,
+        totalTickets: 200,
       },
       {
         name: "S",
         description: "this section offers a fantastic view of the performance",
-        price: 200,
-        tickets: 1000,
+        price: 10000,
+        soldTickets: 0,
+        totalTickets: 100,
       },
       {
         name: "A",
         description: "affordable option provides a great concert experience",
-        price: 160,
-        tickets: 5000,
+        price: 5000,
+        soldTickets: 0,
+        totalTickets: 500,
       },
     ],
   }
@@ -102,6 +106,8 @@ export default async function() {
     getWallet(),
   ) as any
 
+  console.log(await ticketShop.getTicketMetadata())
+
   const shopPaymasterAddress = await ticketShop.getShopPaymasterAddress()
 
   const wallet = getWallet()
@@ -109,7 +115,7 @@ export default async function() {
   await (
     await wallet.sendTransaction({
       to: shopPaymasterAddress,
-      value: ethers.parseEther("0.005"),
+      value: ethers.parseEther("0.01"),
     })
   ).wait()
 

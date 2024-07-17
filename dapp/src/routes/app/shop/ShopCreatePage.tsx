@@ -67,16 +67,16 @@ export default function ShopCreatePage() {
     }))
   }
 
-  function editTicketPriceTableHandler(data: EditTicketPriceItem[]) {
-    setTicketMetadata(prev => ({
-      ...prev,
-      pricing: data.map(item => ({
-        name: item.name,
-        description: item.description,
-        price: BigInt(item.price),
-        tickets: BigInt(item.tickets),
-      })),
-    }))
+  function editTicketPriceTableHandler(_data: EditTicketPriceItem[]) {
+    // setTicketMetadata(prev => ({
+    //   ...prev,
+    //   pricing: data.map(item => ({
+    //     name: item.name,
+    //     description: item.description,
+    //     price: BigInt(item.price),
+    //     tickets: BigInt(item.tickets),
+    //   })),
+    // }))
   }
 
   const renderEditTicketDescription = () => <EditTicketMetadataCard onChange={editTicketMetadataHandler} />
