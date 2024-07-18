@@ -1,13 +1,14 @@
 import { TicketMetadata } from "@/contract"
 import {
+  EditTicketMetadataCard,
   PrimaryButton,
   PublishTicketMetadata,
   StepperEditForm,
   TicketMetadataCard,
   TicketPricingCard,
 } from "@/modules"
-import EditTicketMetadataCard, { EditTicketMetadataForm } from "@/modules/EditTicketMetadataCard"
-import EditTicketPriceTable, { EditTicketPriceItem } from "@/modules/EditTicketPriceTable"
+import { EditTicketMetadataForm } from "@/modules/edit-ticket/EditTicketMetadataCard"
+import EditTicketPriceTable, { EditTicketPriceItem } from "@/modules/edit-ticket/EditTicketPriceTable"
 
 import {
   Avatar,
@@ -53,12 +54,12 @@ export default function ShopCreatePage() {
   function editTicketMetadataHandler(data: EditTicketMetadataForm) {
     const [ lat, lng ] = data.location
     const [ startDate, endDate ] = data.dates.map(item => BigInt((new Date(item)).getTime()))
-
+    console.log(data)
     setTicketMetadata(prev => ({
       ...prev,
       name: data.title,
       description: data.description,
-      uri: data.images,
+      uri: data.imageUri,
       dates: [ startDate, endDate ],
       location: {
         name: "Tokyo Dome, Tokyo",
@@ -67,19 +68,25 @@ export default function ShopCreatePage() {
     }))
   }
 
-  function editTicketPriceTableHandler(_data: EditTicketPriceItem[]) {
-    // setTicketMetadata(prev => ({
-    //   ...prev,
-    //   pricing: data.map(item => ({
-    //     name: item.name,
-    //     description: item.description,
-    //     price: BigInt(item.price),
-    //     tickets: BigInt(item.tickets),
-    //   })),
-    // }))
+  function editTicketPriceTableHandler(data: EditTicketPriceItem[]) {
+    setTicketMetadata(prev => ({
+      ...prev,
+      pricing: data.map(item => ({
+        name: item.name,
+        description: item.description,
+        price: BigInt(item.price),
+        totalTickets: BigInt(item.totalTickets),
+        soldTickets: BigInt(0),
+      })),
+    }))
   }
 
-  const renderEditTicketDescription = () => <EditTicketMetadataCard onChange={editTicketMetadataHandler} />
+  const renderEditTicketDescription = () => (
+    <EditTicketMetadataCard
+      id={ticketMetadata.id}
+      onChange={editTicketMetadataHandler}
+    />
+  )
 
   const [ supportedStableCoin, setSupportedStableCoin ] = useState([
     {
@@ -140,7 +147,7 @@ export default function ShopCreatePage() {
       </Space>
     )
   }
-
+  console.log(ticketMetadata)
   const renderPreviewTicketMetadata = () => (
     <Row>
       <Col span={12} sm={{ flex: "auto" }}>

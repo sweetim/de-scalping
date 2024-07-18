@@ -15,18 +15,21 @@ import {
 } from "antd"
 import {
   FC,
+  useEffect,
   useMemo,
   useState,
 } from "react"
 import {
   Link,
   Outlet,
+  useNavigate,
 } from "react-router-dom"
 
 type MenuItem = Required<MenuProps>["items"][number]
 
 const ShopRootPage: FC = () => {
   const { walletAddress } = useWalletInfo()
+  const navigate = useNavigate()
 
   const { data: ticketShopAddresses } = useQuery(TICKET_SHOP_QUERY, {
     variables: {
@@ -61,6 +64,14 @@ const ShopRootPage: FC = () => {
     }
 
     return [ headerMenuItem, ...ticketShopAddressMenuItem ]
+  }, [ ticketShopAddresses ])
+
+  useEffect(() => {
+    const isTicketShopAddressesEmpty = ticketShopAddresses?.ticketShops.length === 0
+
+    if (isTicketShopAddressesEmpty) {
+      navigate("new")
+    }
   }, [ ticketShopAddresses ])
 
   return (

@@ -103,7 +103,7 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
           functionName: "approve",
           args: [
             ticketShopAddress,
-            BigInt(10_000),
+            BigInt(100_000),
           ],
           gasPerPubdata: BigInt(utils.DEFAULT_GAS_PER_PUBDATA_LIMIT),
           paymaster: paymasterParams.paymaster as `0x${string}`,

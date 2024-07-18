@@ -41,7 +41,7 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
       ],
     })),
   })
-  console.log({ rawTokenUris, ticketNftAddress, tokenIds })
+
   const tokenUris = useMemo<TicketNftTokenUri[]>(() => {
     if (!rawTokenUris) return []
 
@@ -92,14 +92,6 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
       if (!walletAddress) return
       if (!ticketNftAddress) return
 
-      console.log(
-        await publicClient.getContractEvents({
-          abi: ticketNftAbi,
-          address: ticketNftAddress,
-          eventName: "Transfer",
-        }),
-      )
-
       const transferEvents = await publicClient.getContractEvents({
         abi: ticketNftAbi,
         address: ticketNftAddress,
@@ -107,9 +99,9 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
         args: {
           to: walletAddress,
         },
+        fromBlock: 3418998n,
       })
 
-      console.log({ transferEvents })
       const tokenIds = transferEvents
         .map(item => item.args.tokenId)
         .filter((item): item is bigint => Boolean(item))

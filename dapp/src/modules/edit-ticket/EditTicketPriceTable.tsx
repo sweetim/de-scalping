@@ -19,7 +19,7 @@ import {
   useRef,
   useState,
 } from "react"
-import { PrimaryButton } from "./ui"
+import { PrimaryButton } from "../ui"
 
 type EditTicketPriceTableProps = {
   priceUnit: string
@@ -34,7 +34,7 @@ export type EditTicketPriceItem = {
   key: Key
   name: string
   description: string
-  tickets: number
+  totalTickets: number
   price: number
 }
 
@@ -171,7 +171,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUn
     },
     {
       title: "Tickets",
-      dataIndex: "tickets",
+      dataIndex: "totalTickets",
       editable: true,
       numeric: true,
     },
@@ -189,7 +189,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUn
       name: "",
       description: "",
       price: 0,
-      tickets: 0,
+      totalTickets: 0,
     }
 
     setDataSource([ ...dataSource, newData ])

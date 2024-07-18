@@ -8,7 +8,7 @@ import {
 import { Link } from "react-router-dom"
 import { match } from "ts-pattern"
 import { useWalletClient } from "wagmi"
-import PrimaryButton from "./ui/PrimaryButton"
+import PrimaryButton from "../ui/PrimaryButton"
 
 type PublishTicketMetadataProps = {
   ticketMetadata: TicketMetadata
