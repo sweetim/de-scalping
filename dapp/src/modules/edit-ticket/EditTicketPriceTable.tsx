@@ -20,11 +20,7 @@ import {
   useState,
 } from "react"
 import { PrimaryButton } from "../ui"
-
-type EditTicketPriceTableProps = {
-  priceUnit: string
-  onChange: (data: EditTicketPriceItem[]) => void
-}
+import { useEditTicketStore } from "./useEditTicketStore"
 
 type FormInstance<T> = GetRef<typeof Form<T>>
 
@@ -132,12 +128,22 @@ type EditableTableProps = Parameters<typeof Table>[0]
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>
 
-const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUnit }) => {
-  const [ dataSource, setDataSource ] = useState<EditTicketPriceItem[]>([])
+const EditTicketPriceTable: FC = () => {
+  const erc20Symbol = useEditTicketStore(state => state.data.erc20Symbol)
+  const setTicketPricingForm = useEditTicketStore(state => state.setTicketPricingForm)
+  const ticketMetadata = useEditTicketStore(state => state.data.ticketMetadata)
 
-  useEffect(() => {
-    onChange(dataSource)
-  }, [ dataSource ])
+  const [ dataSource, setDataSource ] = useState<EditTicketPriceItem[]>(
+    ticketMetadata.pricing.map(item => ({
+      key: item.name,
+      name: item.name,
+      description: item.description,
+      totalTickets: Number(item.totalTickets),
+      price: Number(item.price),
+    })),
+  )
+
+  useEffect(() => setTicketPricingForm(dataSource), [ dataSource ])
 
   const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.key !== key)
@@ -176,7 +182,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUn
       numeric: true,
     },
     {
-      title: `Price ${priceUnit || ""}`,
+      title: `Price ${erc20Symbol || ""}`,
       dataIndex: "price",
       editable: true,
       numeric: true,
@@ -197,6 +203,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUn
 
   const handleSave = (row: EditTicketPriceItem) => {
     const newData = [ ...dataSource ]
+    console.log({ newData })
     const index = newData.findIndex((item) => row.key === item.key)
     const item = newData[index]
 
@@ -204,7 +211,7 @@ const EditTicketPriceTable: FC<EditTicketPriceTableProps> = ({ onChange, priceUn
       ...item,
       ...row,
     })
-
+    console.log("after", { newData })
     setDataSource(newData)
   }
 

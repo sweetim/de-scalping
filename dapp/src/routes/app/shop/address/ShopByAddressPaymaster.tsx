@@ -7,6 +7,8 @@ import { ShopByAddressPageParams } from "@/config/router"
 import { JPYC_ADDRESS } from "@/contract"
 import { PrimaryButton } from "@/modules"
 import {
+  Avatar,
+  List,
   Space,
   Statistic,
 } from "antd"
@@ -49,6 +51,21 @@ const ShopByAddressPaymaster = () => {
     })()
   }, [ shopPaymasterAddress, publicClient ])
 
+  const balanceList = [
+    {
+      title: "ETH",
+      value: formatEther(paymasterBalance),
+      icon: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=032",
+      deposit: true,
+    },
+    {
+      title: "JPYC",
+      value: Number(shopPaymasterBalance_jpyc) || 0,
+      icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcd1FLPY6Qq-GOSm-8M4bka9NKSY2MHUf_3w&s",
+      deposit: false,
+    },
+  ]
+
   return (
     <div>
       <Space className="p-3 px-5 m-3 rounded-xl" direction="vertical">
@@ -56,26 +73,24 @@ const ShopByAddressPaymaster = () => {
           title="address"
           value={shopPaymasterAddress}
         />
-        <div className="flex flex-row justify-between">
-          <Statistic
-            title="balance (ETH)"
-            value={formatEther(paymasterBalance)}
-            precision={5}
-          />
-          <Space>
-            <PrimaryButton dark>Deposit</PrimaryButton>
-            <PrimaryButton dark>Withdraw</PrimaryButton>
-          </Space>
-        </div>
-        <div className="flex flex-row justify-between">
-          <Statistic
-            title="balance (JPYC)"
-            value={Number(shopPaymasterBalance_jpyc) || 0}
-          />
-          <Space>
-            <PrimaryButton dark>Withdraw</PrimaryButton>
-          </Space>
-        </div>
+        <h1 className="text-xl">Balance</h1>
+        <List
+          dataSource={balanceList}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                item.deposit && <PrimaryButton dark>Deposit</PrimaryButton>,
+                <PrimaryButton dark>Withdraw</PrimaryButton>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={item.icon} />}
+                title={item.title}
+                description={item.value}
+              />
+            </List.Item>
+          )}
+        />
       </Space>
     </div>
   )

@@ -11,9 +11,14 @@ const ShopHomePage: FC = () => {
     variables: {
       owner: walletAddress,
     },
+    fetchPolicy: "no-cache",
   })
-
-  return <h1>{`you have ${data?.ticketShops.length} shops`}</h1>
+  console.log(data)
+  return (
+    <div>
+      <h1>Welcome</h1>
+    </div>
+  )
 }
 
 export default ShopHomePage

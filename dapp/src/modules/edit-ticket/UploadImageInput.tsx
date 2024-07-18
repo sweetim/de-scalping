@@ -10,8 +10,15 @@ import {
   FC,
   useState,
 } from "react"
+import { match } from "ts-pattern"
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0]
+
+type UploadImageInputProps = {
+  id: string
+  defaultImageUri: string
+  onUploadedImage: (ipfsHash: string) => void
+}
 
 const getBase64 = (file: FileType): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -21,18 +28,22 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error)
   })
 
-type UploadImageInputProps = {
-  id: string
-  onUploadedImage: (ipfsHash: string) => void
-}
-
 const UploadImageInput: FC<UploadImageInputProps> = ({
   id,
+  defaultImageUri,
   onUploadedImage,
 }) => {
   const [ previewOpen, setPreviewOpen ] = useState(false)
-  const [ previewImage, setPreviewImage ] = useState("")
-  const [ fileList, setFileList ] = useState<UploadFile[]>([])
+  const [ previewImage, setPreviewImage ] = useState(defaultImageUri)
+  const [ fileList, setFileList ] = useState<UploadFile[]>(
+    match(defaultImageUri.length === 0)
+      .with(true, () => [])
+      .otherwise(() => [
+        {
+          url: defaultImageUri,
+        } as any,
+      ]),
+  )
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {

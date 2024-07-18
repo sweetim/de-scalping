@@ -6,6 +6,7 @@ import {
   ConfigProvider,
   Divider,
   Flex,
+  Grid,
   Space,
 } from "antd"
 import { Header } from "antd/lib/layout/layout"
@@ -40,7 +41,11 @@ const navBarItems: NavBarItem[] = [
   },
 ]
 
+const { useBreakpoint } = Grid
+
 const NavBarAction: FC = () => {
+  const screens = useBreakpoint()
+
   const {
     initModal,
     connect,
@@ -156,7 +161,7 @@ const NavBarAction: FC = () => {
             />
           </Link>
           <Space>
-            {renderNavBarItem}
+            {screens.xs ? null : renderNavBarItem}
             {renderLoginButton}
           </Space>
         </Flex>

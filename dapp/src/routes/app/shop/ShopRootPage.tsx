@@ -35,6 +35,7 @@ const ShopRootPage: FC = () => {
     variables: {
       owner: walletAddress,
     },
+    fetchPolicy: "no-cache",
   })
 
   const [ selectedMenuKeys, setSelectedMenuKeys ] = useState<string[]>([])
@@ -58,9 +59,8 @@ const ShopRootPage: FC = () => {
 
     const headerMenuItem: MenuItem = {
       key: "Shops",
-      label: "Shops",
+      label: <Link to={`/app/shop`}>Shop</Link>,
       icon: <Storefront size={20} color="#fff" weight="duotone" />,
-      disabled: true,
     }
 
     return [ headerMenuItem, ...ticketShopAddressMenuItem ]

@@ -23,7 +23,7 @@ const TicketShopCard: FC<TicketShopCardProps> = ({ address }) => {
           November 6 - 7, 2023 | {metadata.location.name}
         </p>
         <img
-          className="rounded-xl my-2"
+          className="rounded-xl my-2 w-full sm:min-h-40 sm:max-h-40 object-cover"
           src={metadata.uri}
           alt="ticket-image"
         />

@@ -5,10 +5,10 @@ import {
 } from "antd"
 import { FC } from "react"
 
-import { TicketMetadata } from "@/contract"
+import { TicketMetadataOnChain } from "@/contract"
 
 type TicketMetadataProps = {
-  metadata: TicketMetadata
+  metadata: TicketMetadataOnChain
 }
 
 const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
@@ -24,7 +24,7 @@ const TicketMetadataCard: FC<TicketMetadataProps> = ({ metadata }) => {
               November 6 - 7, 2023 | <a target="_blank" href={metadata.location.uri}>{metadata.location.name}</a>
             </p>
             <img
-              className="rounded-xl my-2 w-full "
+              className="rounded-xl my-2 w-full"
               src={metadata.uri}
               alt="ticket-image"
             />

@@ -1,4 +1,4 @@
-import { TicketMetadata } from "@/contract"
+import { TicketMetadataOnChain } from "@/contract"
 import { useReadTicketShopGetTicketMetadata } from "@/generated"
 import { useWalletInfo } from "@/hooks/useWalletInfo"
 import {
@@ -27,7 +27,7 @@ export default function EventAddressPage() {
     address,
   })
 
-  const metadata = ticketMetadata as TicketMetadata
+  const metadata = ticketMetadata as TicketMetadataOnChain
 
   const renderLoading = () => (
     <CenterDiv>
