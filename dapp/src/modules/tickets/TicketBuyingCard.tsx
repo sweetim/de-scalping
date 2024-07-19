@@ -145,6 +145,8 @@ const TicketBuyingCard: FC<TicketBuyingCardProps> = ({ pricing }) => {
     await publicClient.waitForTransactionReceipt({
       hash: txBuyTicket,
     })
+
+    console.log("done")
   }
 
   const selectedTicketPrice = match(selectedTicketTypeIndex)

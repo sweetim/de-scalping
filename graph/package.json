@@ -1,15 +1,15 @@
 {
-  "name": "graph-learn-zksync-testnet",
-  "license": "UNLICENSED",
+  "name": "graph-de-scalping",
+  "license": "MIT",
   "scripts": {
     "precodegen": "rm abis/* && find ../contract/artifacts-zk/contracts -type f -name \"*.json\" ! -name \"*.dbg.json\" | xargs -I{} cp {} ./abis",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ graph-learn-zksync-testnet",
-    "create-local": "graph create --node http://localhost:8020/ graph-learn-zksync-testnet",
-    "remove-local": "graph remove --node http://localhost:8020/ graph-learn-zksync-testnet",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ de-scalping",
+    "create-local": "graph create --node http://localhost:8020/ de-scalping",
+    "remove-local": "graph remove --node http://localhost:8020/ de-scalping",
     "predeploy-local": "npm run create-local",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 graph-learn-zksync-testnet",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 de-scalping",
     "test": "graph test"
   },
   "dependencies": {

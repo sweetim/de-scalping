@@ -9,9 +9,9 @@ export function handleTicketShopCreated(event: TicketShopCreated): void {
   let entity = new TicketShop(event.params.ticketShop)
   entity.owner = event.params.owner
   entity.ticketShop = event.params.ticketShop
+  entity.timestamp = event.block.timestamp
   entity.ticketMetadata_id = event.params.ticketMetadata.id
   entity.ticketMetadata_name = event.params.ticketMetadata.name
-  entity.ticketName = event.params.ticketMetadata.pricing[0].name
 
   entity.save()
 

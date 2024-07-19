@@ -7,15 +7,18 @@ import { TicketPurchase } from "../generated/templates/TicketShop/contracts_Tick
 export function handleTicketPurchase(event: TicketPurchase): void {
   const id = event.transaction.hash
 
-  const ticketShop = new TicketShop(event.params.ticketShop)
+  const ticketShop = TicketShop.load(event.params.ticketShop)
 
   let entity = new Ticket(id)
+  entity.timestamp = event.block.timestamp
   entity.owner = event.params.buyer
   entity.ticketShop = event.params.ticketShop
   entity.ticketTypeIndex = event.params.ticketTypeIndex
   entity.ticketId = event.params.ticketId
-  // entity.ticketPrice = ticketShop
-  entity.ticketName = ticketShop.ticketName
+
+  if (ticketShop) {
+    entity.ticketName = ticketShop.ticketMetadata_name
+  }
 
   entity.save()
 }

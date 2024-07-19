@@ -1,5 +1,4 @@
 /* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -155,12 +154,12 @@ export type SubscriptionTicketsArgs = {
 export type Ticket = {
   __typename?: 'Ticket';
   id: Scalars['Bytes']['output'];
-  owner?: Maybe<Scalars['Bytes']['output']>;
-  ticketId?: Maybe<Scalars['BigInt']['output']>;
-  ticketName?: Maybe<Scalars['String']['output']>;
-  ticketPrice?: Maybe<Scalars['BigInt']['output']>;
-  ticketShop?: Maybe<Scalars['Bytes']['output']>;
-  ticketTypeIndex?: Maybe<Scalars['BigInt']['output']>;
+  owner: Scalars['Bytes']['output'];
+  ticketId: Scalars['BigInt']['output'];
+  ticketName: Scalars['String']['output'];
+  ticketShop: Scalars['Bytes']['output'];
+  ticketTypeIndex: Scalars['BigInt']['output'];
+  timestamp: Scalars['BigInt']['output'];
 };
 
 export type TicketShop = {
@@ -169,8 +168,8 @@ export type TicketShop = {
   owner: Scalars['Bytes']['output'];
   ticketMetadata_id: Scalars['String']['output'];
   ticketMetadata_name: Scalars['String']['output'];
-  ticketName?: Maybe<Scalars['String']['output']>;
   ticketShop: Scalars['Bytes']['output'];
+  timestamp: Scalars['BigInt']['output'];
 };
 
 export type TicketShop_Filter = {
@@ -238,26 +237,6 @@ export type TicketShop_Filter = {
   ticketMetadata_name_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   ticketMetadata_name_starts_with?: InputMaybe<Scalars['String']['input']>;
   ticketMetadata_name_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketName?: InputMaybe<Scalars['String']['input']>;
-  ticketName_contains?: InputMaybe<Scalars['String']['input']>;
-  ticketName_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketName_ends_with?: InputMaybe<Scalars['String']['input']>;
-  ticketName_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketName_gt?: InputMaybe<Scalars['String']['input']>;
-  ticketName_gte?: InputMaybe<Scalars['String']['input']>;
-  ticketName_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  ticketName_lt?: InputMaybe<Scalars['String']['input']>;
-  ticketName_lte?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not_contains?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not_ends_with?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  ticketName_not_starts_with?: InputMaybe<Scalars['String']['input']>;
-  ticketName_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketName_starts_with?: InputMaybe<Scalars['String']['input']>;
-  ticketName_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   ticketShop?: InputMaybe<Scalars['Bytes']['input']>;
   ticketShop_contains?: InputMaybe<Scalars['Bytes']['input']>;
   ticketShop_gt?: InputMaybe<Scalars['Bytes']['input']>;
@@ -268,6 +247,14 @@ export type TicketShop_Filter = {
   ticketShop_not?: InputMaybe<Scalars['Bytes']['input']>;
   ticketShop_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
   ticketShop_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  timestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  timestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export enum TicketShop_OrderBy {
@@ -275,8 +262,8 @@ export enum TicketShop_OrderBy {
   Owner = 'owner',
   TicketMetadataId = 'ticketMetadata_id',
   TicketMetadataName = 'ticketMetadata_name',
-  TicketName = 'ticketName',
-  TicketShop = 'ticketShop'
+  TicketShop = 'ticketShop',
+  Timestamp = 'timestamp'
 }
 
 export type Ticket_Filter = {
@@ -332,14 +319,6 @@ export type Ticket_Filter = {
   ticketName_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
   ticketName_starts_with?: InputMaybe<Scalars['String']['input']>;
   ticketName_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
-  ticketPrice?: InputMaybe<Scalars['BigInt']['input']>;
-  ticketPrice_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  ticketPrice_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  ticketPrice_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  ticketPrice_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  ticketPrice_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  ticketPrice_not?: InputMaybe<Scalars['BigInt']['input']>;
-  ticketPrice_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   ticketShop?: InputMaybe<Scalars['Bytes']['input']>;
   ticketShop_contains?: InputMaybe<Scalars['Bytes']['input']>;
   ticketShop_gt?: InputMaybe<Scalars['Bytes']['input']>;
@@ -358,6 +337,14 @@ export type Ticket_Filter = {
   ticketTypeIndex_lte?: InputMaybe<Scalars['BigInt']['input']>;
   ticketTypeIndex_not?: InputMaybe<Scalars['BigInt']['input']>;
   ticketTypeIndex_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  timestamp?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  timestamp_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_not?: InputMaybe<Scalars['BigInt']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export enum Ticket_OrderBy {
@@ -365,9 +352,9 @@ export enum Ticket_OrderBy {
   Owner = 'owner',
   TicketId = 'ticketId',
   TicketName = 'ticketName',
-  TicketPrice = 'ticketPrice',
   TicketShop = 'ticketShop',
-  TicketTypeIndex = 'ticketTypeIndex'
+  TicketTypeIndex = 'ticketTypeIndex',
+  Timestamp = 'timestamp'
 }
 
 export type _Block_ = {
@@ -405,21 +392,3 @@ export enum _SubgraphErrorPolicy_ {
   /** If the subgraph has indexing errors, data will be omitted. The default. */
   Deny = 'deny'
 }
-
-export type TicketShopQueryQueryVariables = Exact<{
-  owner: Scalars['Bytes']['input'];
-}>;
-
-
-export type TicketShopQueryQuery = { __typename?: 'Query', ticketShops: Array<{ __typename?: 'TicketShop', id: any, owner: any, ticketShop: any }> };
-
-export type TicketQueryQueryVariables = Exact<{
-  owner: Scalars['Bytes']['input'];
-}>;
-
-
-export type TicketQueryQuery = { __typename?: 'Query', tickets: Array<{ __typename?: 'Ticket', id: any, owner?: any | null, ticketShop?: any | null, ticketId?: any | null, ticketPrice?: any | null, ticketName?: string | null, ticketTypeIndex?: any | null }> };
-
-
-export const TicketShopQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TicketShopQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"owner"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Bytes"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ticketShops"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"owner"},"value":{"kind":"Variable","name":{"kind":"Name","value":"owner"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"ticketShop"}}]}}]}}]} as unknown as DocumentNode<TicketShopQueryQuery, TicketShopQueryQueryVariables>;
-export const TicketQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TicketQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"owner"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Bytes"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tickets"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"owner"},"value":{"kind":"Variable","name":{"kind":"Name","value":"owner"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"ticketShop"}},{"kind":"Field","name":{"kind":"Name","value":"ticketId"}},{"kind":"Field","name":{"kind":"Name","value":"ticketPrice"}},{"kind":"Field","name":{"kind":"Name","value":"ticketName"}},{"kind":"Field","name":{"kind":"Name","value":"ticketTypeIndex"}}]}}]}}]} as unknown as DocumentNode<TicketQueryQuery, TicketQueryQueryVariables>;
