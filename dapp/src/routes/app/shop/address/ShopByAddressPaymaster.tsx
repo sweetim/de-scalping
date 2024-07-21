@@ -67,8 +67,8 @@ const ShopByAddressPaymaster = () => {
   ]
 
   return (
-    <div>
-      <Space className="p-3 px-5 m-3 rounded-xl" direction="vertical">
+    <div className="w-full">
+      <Space className="p-3 px-5 m-3 w-full" direction="vertical">
         <Statistic
           title="address"
           value={shopPaymasterAddress}

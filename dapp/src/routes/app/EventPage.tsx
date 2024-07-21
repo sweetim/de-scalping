@@ -23,7 +23,7 @@ export default function EventPage() {
     .map(address => <TicketShopCard key={address} address={address} />)
 
   return (
-    <div className="p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+    <div className="p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
       {renderTicketShops}
     </div>
   )

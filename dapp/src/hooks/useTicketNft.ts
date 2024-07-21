@@ -6,32 +6,20 @@ import {
   ticketNftAbi,
   useReadTicketShopGetNftAddress,
 } from "@/generated"
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
-import {
-  usePublicClient,
-  useReadContracts,
-} from "wagmi"
-import { useWalletInfo } from "./useWalletInfo"
+import { useMemo } from "react"
+import { useReadContracts } from "wagmi"
 
 type UseTicketNftProps = {
   ticketShopAddress?: `0x${string}`
+  tokenIds: bigint[]
 }
 
-export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
-  const [ tokenIds, setTokenIds ] = useState<bigint[]>([])
-
-  const { walletAddress } = useWalletInfo()
-  const publicClient = usePublicClient()
-
+export function useTicketNft({ ticketShopAddress, tokenIds }: UseTicketNftProps) {
   const { data: ticketNftAddress } = useReadTicketShopGetNftAddress({
     address: ticketShopAddress,
   })
 
-  const { data: rawTokenUris } = useReadContracts({
+  const { data: rawTokenUris, status, error } = useReadContracts({
     contracts: tokenIds.map(id => ({
       abi: ticketNftAbi,
       address: ticketNftAddress,
@@ -53,7 +41,6 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
         ) as TicketNftTokenUriRaw
       })
       .map(item => {
-        console.log(item)
         const startDate = item.attributes.filter(attr => attr.trait_type.includes("Start date"))
           .map(attr => attr.value)[0] as number
 
@@ -85,30 +72,6 @@ export function useTicketNft({ ticketShopAddress }: UseTicketNftProps) {
         } as TicketNftTokenUri
       })
   }, [ rawTokenUris ])
-
-  useEffect(() => {
-    ;(async () => {
-      if (!publicClient) return
-      if (!walletAddress) return
-      if (!ticketNftAddress) return
-
-      const transferEvents = await publicClient.getContractEvents({
-        abi: ticketNftAbi,
-        address: ticketNftAddress,
-        eventName: "Transfer",
-        args: {
-          to: walletAddress,
-        },
-        fromBlock: 3418998n,
-      })
-
-      const tokenIds = transferEvents
-        .map(item => item.args.tokenId)
-        .filter((item): item is bigint => Boolean(item))
-
-      setTokenIds(tokenIds)
-    })()
-  }, [ publicClient, walletAddress, ticketNftAddress ])
 
   return {
     ticketNftAddress,
