@@ -1,3 +1,4 @@
+import { SupportedErc20Symbol } from "@/contract"
 import {
   Avatar,
   Space,
@@ -6,10 +7,7 @@ import { FC } from "react"
 import { useImmer } from "use-immer"
 import { PrimaryButton } from "../ui"
 import EditTicketPriceTable from "./EditTicketPriceTable"
-import {
-  SupportedErc20Symbol,
-  useEditTicketStore,
-} from "./useEditTicketStore"
+import { useEditTicketStore } from "./useEditTicketStore"
 
 const EditTicketPricingFragment: FC = () => {
   const supportedErc20Symbol = useEditTicketStore(state => state.data.erc20Symbol)

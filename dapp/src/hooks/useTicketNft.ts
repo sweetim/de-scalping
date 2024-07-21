@@ -19,7 +19,7 @@ export function useTicketNft({ ticketShopAddress, tokenIds }: UseTicketNftProps)
     address: ticketShopAddress,
   })
 
-  const { data: rawTokenUris, status, error } = useReadContracts({
+  const { data: rawTokenUris } = useReadContracts({
     contracts: tokenIds.map(id => ({
       abi: ticketNftAbi,
       address: ticketNftAddress,
