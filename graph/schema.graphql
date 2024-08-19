@@ -1,18 +1,40 @@
 type TicketShop @entity(immutable: true) {
   id: Bytes!
   timestamp_s: BigInt!
-  owner: Bytes! # address
-  ticketShop: Bytes! # address
-  name: String!
-  ticketMetadata: TicketMetadata!
+  ownerAddress: Bytes!
+  ticketShopAddress: Bytes!
+  erc20TokenAddress: Bytes!
+  paymasterAddress: Bytes!
+  nftAddress: Bytes!
+  totalTickets: BigInt!
+  metadata: TicketMetadata!
 }
 
 type TicketMetadata @entity(immutable: true) {
   id: Bytes!
-  price: [BigInt!]!
-  totalTickets: [BigInt!]!
-  name: [String!]!
+  name: String!
+  description: String!
+  uri: String!
+  dates: [BigInt!]!
+  location_uri: String!
+  location_name: String!
+  pricing: TicketPricing!
 }
+
+type TicketPricing @entity(immutable: true) {
+  id: Bytes!
+  name: [String!]!
+  description: [String!]!
+  price: [BigInt!]!
+  soldTickets: [BigInt!]!
+  totalTickets: [BigInt!]!
+}
+
+# type TicketLocation @entity(immutable: true) {
+#   id: Bytes!
+#   name: String!
+#   uri: String!
+# }
 
 type Ticket @entity(immutable: true) {
   id: Bytes!
@@ -24,6 +46,9 @@ type Ticket @entity(immutable: true) {
   ticketId: BigInt!
   ticketName: String!
   ticketPrice: BigInt!
+
+  erc20TokenAddress: Bytes
+  nftAddress: Bytes
 }
 
 # type TicketShop @entity(immutable: true) {

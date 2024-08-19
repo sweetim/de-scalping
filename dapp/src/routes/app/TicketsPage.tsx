@@ -21,7 +21,7 @@ import {
 const TicketsPage: FC = () => {
   const { walletAddress } = useWalletInfo()
 
-  const { data: tickets } = useQuery(
+  const { data: tickets, error } = useQuery(
     TICKET_QUERY_BY_OWNER,
     {
       variables: {
@@ -29,7 +29,7 @@ const TicketsPage: FC = () => {
       },
     },
   )
-
+  console.log({ tickets, walletAddress, error })
   return (
     <div className="p-3">
       <h1 className="text-2xl text-slate-300">Upcoming events</h1>
