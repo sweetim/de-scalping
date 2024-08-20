@@ -31,12 +31,15 @@ const ShopRootPage: FC = () => {
   const { walletAddress } = useWalletInfo()
   const navigate = useNavigate()
 
-  const { data: ticketShopAddresses } = useQuery(TICKET_SHOP_QUERY, {
-    variables: {
-      owner: walletAddress,
+  const { data: ticketShopAddresses } = useQuery(
+    TICKET_SHOP_QUERY,
+    {
+      variables: {
+        ownerAddress: walletAddress,
+      },
+      fetchPolicy: "no-cache",
     },
-    fetchPolicy: "no-cache",
-  })
+  )
 
   const [ selectedMenuKeys, setSelectedMenuKeys ] = useState<string[]>([])
 
@@ -44,7 +47,7 @@ const ShopRootPage: FC = () => {
     if (!ticketShopAddresses) return []
 
     const ticketShopAddressMenuItem = ticketShopAddresses.ticketShops
-      .map(item => item.ticketShop)
+      .map(item => item.ticketShopAddress)
       .map(address => (
         {
           key: address,

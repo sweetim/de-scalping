@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query TicketShopQuery($owner: Bytes!) {\n    ticketShops(where: { owner: $owner }) {\n      id\n      owner\n      ticketShop\n    }\n  }\n": types.TicketShopQueryDocument,
+    "\n  query TicketShopQuery($ownerAddress: Bytes!) {\n    ticketShops(where: { ownerAddress: $ownerAddress }) {\n      id\n      ownerAddress\n      ticketShopAddress\n    }\n  }\n": types.TicketShopQueryDocument,
     "\n  query TicketQueryByOwner($owner: Bytes!) {\n    tickets(\n      where: {\n        owner: $owner\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n": types.TicketQueryByOwnerDocument,
     "\n  query TicketActivityQuery($ticketShop: Bytes!) {\n    tickets(\n      where: {\n        ticketShop: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n": types.TicketActivityQueryDocument,
 };
@@ -35,7 +35,7 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query TicketShopQuery($owner: Bytes!) {\n    ticketShops(where: { owner: $owner }) {\n      id\n      owner\n      ticketShop\n    }\n  }\n"): (typeof documents)["\n  query TicketShopQuery($owner: Bytes!) {\n    ticketShops(where: { owner: $owner }) {\n      id\n      owner\n      ticketShop\n    }\n  }\n"];
+export function gql(source: "\n  query TicketShopQuery($ownerAddress: Bytes!) {\n    ticketShops(where: { ownerAddress: $ownerAddress }) {\n      id\n      ownerAddress\n      ticketShopAddress\n    }\n  }\n"): (typeof documents)["\n  query TicketShopQuery($ownerAddress: Bytes!) {\n    ticketShops(where: { ownerAddress: $ownerAddress }) {\n      id\n      ownerAddress\n      ticketShopAddress\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

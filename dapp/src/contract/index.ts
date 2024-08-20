@@ -1,12 +1,12 @@
 import { match } from "ts-pattern"
-import { zkSyncSepoliaTestnet } from "viem/chains"
+import { zksyncSepoliaTestnet } from "viem/chains"
 
 export const TICKET_ERC20_ADDRESS = import.meta.env.VITE_TICKET_ERC20_ADDRESS
 export const USDT_ADDRESS = import.meta.env.VITE_USDT_ADDRESS
 export const JPYC_ADDRESS = import.meta.env.VITE_JPYC_ADDRESS
 export const TICKET_SHOP_FACTORY_ADDRESS = import.meta.env.VITE_TICKET_SHOP_FACTORY_ADDRESS
 
-export const CHAIN_TO_USE = zkSyncSepoliaTestnet // zkSyncInMemoryNode
+export const CHAIN_TO_USE = zksyncSepoliaTestnet // zkSyncInMemoryNode
 
 export type SupportedErc20Symbol = "USDT" | "JPYC" | "USDC"
 

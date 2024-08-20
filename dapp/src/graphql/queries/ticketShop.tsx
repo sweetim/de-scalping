@@ -1,11 +1,11 @@
 import { gql } from "@/__generated__/gql"
 
 export const TICKET_SHOP_QUERY = gql(`
-  query TicketShopQuery($owner: Bytes!) {
-    ticketShops(where: { owner: $owner }) {
+  query TicketShopQuery($ownerAddress: Bytes!) {
+    ticketShops(where: { ownerAddress: $ownerAddress }) {
       id
-      owner
-      ticketShop
+      ownerAddress
+      ticketShopAddress
     }
   }
 `)
