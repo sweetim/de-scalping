@@ -14,8 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query TicketShopQuery($ownerAddress: Bytes!) {\n    ticketShops(where: { ownerAddress: $ownerAddress }) {\n      id\n      ownerAddress\n      ticketShopAddress\n    }\n  }\n": types.TicketShopQueryDocument,
-    "\n  query TicketQueryByOwner($owner: Bytes!) {\n    tickets(\n      where: {\n        owner: $owner\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n": types.TicketQueryByOwnerDocument,
-    "\n  query TicketActivityQuery($ticketShop: Bytes!) {\n    tickets(\n      where: {\n        ticketShop: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n": types.TicketActivityQueryDocument,
+    "\n  query TicketQueryByOwner($owner: Bytes!, $ticketShop: Bytes!) {\n    tickets(\n      where: {\n        owner_contains: $owner,\n        ticketShop_contains: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n": types.TicketQueryByOwnerDocument,
 };
 
 /**
@@ -39,11 +38,7 @@ export function gql(source: "\n  query TicketShopQuery($ownerAddress: Bytes!) {\
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query TicketQueryByOwner($owner: Bytes!) {\n    tickets(\n      where: {\n        owner: $owner\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n"): (typeof documents)["\n  query TicketQueryByOwner($owner: Bytes!) {\n    tickets(\n      where: {\n        owner: $owner\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query TicketActivityQuery($ticketShop: Bytes!) {\n    tickets(\n      where: {\n        ticketShop: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n"): (typeof documents)["\n  query TicketActivityQuery($ticketShop: Bytes!) {\n    tickets(\n      where: {\n        ticketShop: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n"];
+export function gql(source: "\n  query TicketQueryByOwner($owner: Bytes!, $ticketShop: Bytes!) {\n    tickets(\n      where: {\n        owner_contains: $owner,\n        ticketShop_contains: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n"): (typeof documents)["\n  query TicketQueryByOwner($owner: Bytes!, $ticketShop: Bytes!) {\n    tickets(\n      where: {\n        owner_contains: $owner,\n        ticketShop_contains: $ticketShop\n      }\n    ) {\n      id\n      owner\n      ticketId\n      ticketName\n      ticketShop\n      ticketTypeIndex\n      ticketPrice\n      timestamp_s\n      transactionHash\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

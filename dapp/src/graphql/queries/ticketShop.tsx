@@ -10,31 +10,12 @@ export const TICKET_SHOP_QUERY = gql(`
   }
 `)
 
-export const TICKET_QUERY_BY_OWNER = gql(`
-  query TicketQueryByOwner($owner: Bytes!) {
+export const TICKET_QUERY = gql(`
+  query TicketQueryByOwner($owner: Bytes!, $ticketShop: Bytes!) {
     tickets(
       where: {
-        owner: $owner
-      }
-    ) {
-      id
-      owner
-      ticketId
-      ticketName
-      ticketShop
-      ticketTypeIndex
-      ticketPrice
-      timestamp_s
-      transactionHash
-    }
-  }
-`)
-
-export const TICKET_ACTIVITY_QUERY = gql(`
-  query TicketActivityQuery($ticketShop: Bytes!) {
-    tickets(
-      where: {
-        ticketShop: $ticketShop
+        owner_contains: $owner,
+        ticketShop_contains: $ticketShop
       }
     ) {
       id

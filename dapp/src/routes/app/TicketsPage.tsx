@@ -1,4 +1,4 @@
-import { TICKET_QUERY_BY_OWNER } from "@/graphql/queries/ticketShop"
+import { TICKET_QUERY } from "@/graphql/queries/ticketShop"
 import { useTicketNft } from "@/hooks/useTicketNft"
 import { useWalletInfo } from "@/hooks/useWalletInfo"
 import { useQuery } from "@apollo/client"
@@ -22,10 +22,11 @@ const TicketsPage: FC = () => {
   const { walletAddress } = useWalletInfo()
 
   const { data: tickets, error } = useQuery(
-    TICKET_QUERY_BY_OWNER,
+    TICKET_QUERY,
     {
       variables: {
         owner: walletAddress,
+        ticketShop: "",
       },
     },
   )
@@ -33,6 +34,7 @@ const TicketsPage: FC = () => {
   return (
     <div className="p-3">
       <h1 className="text-2xl text-slate-300">Upcoming events</h1>
+      <h1 className="text-2xl text-slate-300">Completed</h1>
       <Space className="py-5">
         {tickets && tickets.tickets.map((item, index) => (
           <TicketByShopCard
@@ -42,7 +44,6 @@ const TicketsPage: FC = () => {
           />
         ))}
       </Space>
-      <h1 className="text-2xl text-slate-300">Completed</h1>
     </div>
   )
 }
@@ -71,7 +72,7 @@ const TicketByShopCard: FC<TicketByShopCardProps> = ({ ticketShopAddress, ticket
   return (
     <Space>
       {tokenUris.map(item => (
-        <div className="bg-white rounded-xl">
+        <div className="bg-white rounded-xl opacity-60">
           <Modal
             title={`Ticket #${item.ticketId}`}
             open={isModalOpen}
@@ -100,7 +101,7 @@ const TicketByShopCard: FC<TicketByShopCardProps> = ({ ticketShopAddress, ticket
             src={item.image}
             alt="ticket-image"
           />
-          <div className="p-2 ">
+          <div className="p-2">
             <div className="grid gap-2 grid-cols-2 text-center font-bold">
               <p className="bg-purple-300 p-2 rounded-xl">{item.ticketType}</p>
               <p className="bg-purple-300 p-2 rounded-xl">#{item.ticketId}</p>

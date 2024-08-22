@@ -1,5 +1,5 @@
 import { ShopByAddressPageParams } from "@/config"
-import { TICKET_ACTIVITY_QUERY } from "@/graphql/queries/ticketShop"
+import { TICKET_QUERY } from "@/graphql/queries/ticketShop"
 import { presetPalettes } from "@ant-design/colors"
 import { useQuery } from "@apollo/client"
 import {
@@ -14,9 +14,10 @@ const ShopByAddressActivity = () => {
   const { ticketShopAddress } = useLoaderData() as ShopByAddressPageParams
 
   const { data: tickets } = useQuery(
-    TICKET_ACTIVITY_QUERY,
+    TICKET_QUERY,
     {
       variables: {
+        owner: "",
         ticketShop: ticketShopAddress,
       },
       fetchPolicy: "no-cache",
